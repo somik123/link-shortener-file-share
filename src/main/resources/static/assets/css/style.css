@@ -1,0 +1,176 @@
+/*
+Author: Somik Khan
+*/
+body {
+    background-color: #535353;
+    background: url("/assets/img/bg.jpg") top right no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+/* Main white box 1 */
+.contents {
+    max-width: 700px;
+    min-height: 100px;
+    margin: 0 auto;
+    margin-top: 90px;
+    border: 2px solid #ffffff;
+    box-shadow: 0px 0px 1px 1px #ffffff;
+    -webkit-box-shadow: 0px 0px 1px 1px #ffffff;
+    border-radius: 20px;
+    padding: 0px 20px 20px 20px;
+    background-color: #f5f5f5;
+    color: #33b2ce;
+}
+
+/* Main white box 2 */
+.contents-2 {
+    max-width: 1100px;
+    text-align: center;
+    margin-top: 30px;
+    margin-bottom: 0px;
+    padding-bottom: 40px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+
+/* Footer black box */
+.footer{
+    max-width: 1100px;
+    background-color: #0e0e0e;
+    margin-top: 0px;
+    margin-bottom: 30px;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    padding: 10px 20px;
+    min-height: 50px;
+    color: #ffffff;
+    text-align: center;
+    font-weight: bold;
+}
+.footer a, .footer a:visited{
+    color: #ffffff;
+    text-decoration: underline;
+}
+.footer a:hover{
+    color: #33b2ce;
+}
+
+
+/* Logo and title box */
+.header-box {
+    text-align: center;
+    margin-top: -60px;
+}
+
+/* title style */
+.text-header {
+    padding: 20px 20px;
+    font-weight: bolder;
+    text-shadow: 0 0 2px #000000;
+    font-size: 32pt;
+    color: #3DD0F2;
+}
+.text-header a, .text-header a:visited{
+    color: #3DD0F2;
+    text-decoration: none;
+}
+.text-header a:hover{
+    color: #33b2ce;
+}
+
+/* Links */
+a, a:visited{
+    color: #3DD0F2;
+    text-decoration: underline;
+}
+a:hover{
+    color: #33b2ce;
+}
+
+/* Input text field */
+input{
+    min-width: 100px;
+}
+
+/* Link input form */
+.shortlink-form {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px 20px;
+}
+
+/* Short link output text */
+.short-url-txt {
+    font-weight: bold;
+    font-size: 16pt;
+    vertical-align: middle;
+}
+#qr-code{
+    width: 150px;
+    margin: 0 auto;
+    padding: 10px 10px;
+}
+.link-button{
+    cursor: pointer;
+}
+
+/* Short link output box slider */
+.slider {
+    overflow-y: hidden;
+    max-height: 500px; /* approximate max height */
+    transition-property: all;
+    transition-duration: 2s;
+    padding-bottom: 10px;
+}
+.slider.closed {
+    max-height: 0;
+}
+
+
+/* Button text */
+.btn-txt-bold {
+    font-weight: bold;
+}
+
+
+/* Table styling */
+td, th {
+    max-width: 400px;
+    word-wrap: break-word;
+    vertical-align: middle;
+    margin: 0 auto;
+}
+.table-header-left{
+    border-top-left-radius: 10px;
+}
+.table-header-right{
+    border-top-right-radius: 10px;
+}
+.longurltxtbox{
+    width: 390px;
+    overflow: hidden;
+}
+.shorturltxt{
+    text-decoration: none;
+    color: #33b2ce;
+}
+
+/* Spacer */
+.spacer{
+    margin-bottom: 10px;
+}
+
+#login-icon{
+    float: right;
+    margin-top: 76px;
+}
+
+
+/* Mobile view */
+@media screen and (max-width: 600px) {
+    #qr-code-box{
+        display: none;
+    }
+}

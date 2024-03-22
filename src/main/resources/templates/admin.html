@@ -1,0 +1,79 @@
+<!doctype html>
+<html xmlns:th="https://www.thymeleaf.org" lang="en">
+
+<head th:replace="~{layout::header(pageTitle='Short Link Admin')}" />
+
+<body>
+
+    <div th:replace="~{layout::linkGenerator}"></div>
+
+    <div class="contents contents-2">
+        <h2 class="text-header">Short Link History</h2>
+        <!-- History Table -->
+        <div class="table-responsive">
+            <table class="table table-striped" style="width: 100%;">
+                <thead>
+                    <tr class="table-dark">
+                        <th scope="col" class="table-header-left">#</th>
+                        <th scope="col">Original URL</th>
+                        <th scope="col">ShortURL</th>
+                        <th scope="col">CreatorIp</th>
+                        <th scope="col">Created on</th>
+                        <th scope="col">Clicks</th>
+                        <th scope="col">Follow</th>
+                        <th scope="col" class="table-header-right">Remove</th>
+                    </tr>
+                </thead>
+                <tbody th:if="${max >= 0}">
+                    <tr th:each="i : ${#numbers.sequence(0, max)}">
+                        <th scope="row" th:text="${i+1}">1</th>
+                        <td>
+                            <textarea class="form-control longurltxtbox" readonly onfocus="this.style.overflow='auto';"
+                                onblur="this.style.overflow='hidden';" th:text="${sList.get(i).longUrl}"></textarea>
+                        </td>
+                        <td>
+                            <a th:href="'/' + ${sList.get(i).surl}" target="_blank" class="shorturltxt"
+                                th:text="${sList.get(i).surl}"></a>
+                        </td>
+                        <td th:text="${sList.get(i).creatorIp}">123.45.67.89</td>
+                        <td class="text-center" th:text="${#strings.replace(sList.get(i).created, 'T',' ')}">2024-02-16
+                            05:57:26 PM</td>
+                        <td th:text="${sList.get(i).hits}">4</td>
+                        <td>
+                            <a href="#" th:data-surl="${sList.get(i).surl}"
+                                onclick="return admin_get_logs(this.getAttribute('data-surl'));">
+                                <img src="/assets/img/link.png" width="40" />
+                            </a>
+                        </td>
+                        <td>
+                            <a th:href="'/api/delete/' + ${sList.get(i).surl }+ '/' + ${sList.get(i).deleteKey}"
+                                target="_blank"><img src="/assets/img/trash.png" width="40" /></a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- Pagination Navigation (Disabled) -->
+        <div class="dropdown" style="display: none;">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="PageSelectButton"
+                data-bs-toggle="dropdown" aria-expanded="false">
+                Change Page
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="PageSelectButton">
+                <li><a class="dropdown-item" href="?pageno='.$i.'">Page '.$i.'</a></li>';
+            </ul>
+        </div>
+        <div style="padding-top: 10px;"></div>
+
+        <!-- Logs table will be loaded here -->
+        <div class="row g-3 slider closed" id="logsTable"></div>
+
+    </div>
+    <div class="contents footer">
+        Copyright &#169; <a href="https://somik.org/" target="_blank">Somik.org</a> |
+        <a href="https://ziox.us/contact" target="_blank">Contact us</a>
+    </div>
+    <script src="/adminAssets/main.js"></script>
+</body>
+
+</html>

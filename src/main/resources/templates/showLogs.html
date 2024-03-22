@@ -1,0 +1,32 @@
+<!doctype html>
+<html xmlns:th="https://www.thymeleaf.org" lang="en">
+
+<head th:replace="~{layout::header(pageTitle='Shorturl Logs')}" />
+
+<body>
+    <h4 th:text="'Logs for: ' + ${name}">Short Link xABC</h4>
+    <!-- History Table -->
+    <div class="table-responsive">
+        <table class="table table-striped" style="width: 100%;">
+            <thead>
+                <tr class="table-dark">
+                    <th scope="col" class="table-header-left">#</th>
+                    <th scope="col">BrowserHeaders</th>
+                    <th scope="col">IP</th>
+                    <th scope="col" class="table-header-right">Time</th>
+                </tr>
+            </thead>
+            <tbody th:if="${max >= 0}">
+                <tr th:each="i : ${#numbers.sequence(0, max)}">
+                    <th scope="row" th:text="${i+1}">1</th>
+                    <td th:text="${logs.get(i).browserHeaders}">Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:123.0) Gecko/20100101 Firefox/123.0</td>
+                    <td th:text="${logs.get(i).hitIp}">123.45.67.89</td>
+                    <td class="text-center" th:text="${#strings.replace(logs.get(i).hitTime, 'T',' ')}">2024-02-16
+                        05:57:26 PM</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>
