@@ -21,7 +21,7 @@ function generate_shorturl() {
                 document.getElementById("result-error").style.display = "";
             }
             let link = location.href + api_reply['content']['surl'];
-            document.getElementById("success-alert").innerHTML = "Short URL Generated.";
+            document.getElementById("success-alert").innerHTML = "Short URL generated.";
             document.getElementById("short_url").value = link
             document.getElementById("delete_link").value = location.href + "delete/" + api_reply['content']['surl'] + "/" + api_reply['content']['deleteKey'];
             document.getElementById("qr-code").src = "/qr/" + btoa(link);
@@ -49,6 +49,82 @@ function generate_shorturl() {
 }
 
 
+function generate_shorturl_mini() {
+    var longURL = encodeURIComponent(document.getElementById("file_url").value);
+    var http = new XMLHttpRequest();
+    http.open("POST", "/api/shorten", true);
+    http.setRequestHeader("Content-type", "application/json");
+    var params = { "url": longURL, "surl": "" };
+    http.send(JSON.stringify(params));
+    http.onload = function () {
+        var api_reply = JSON.parse(http.responseText);
+        if (api_reply['status'] == "OK" || api_reply['status'] == "FAIL") {
+            let link = location.href.replace("fileHome", "") + api_reply['content']['surl'];
+            document.getElementById("file_url").value = link;
+            document.getElementById("success-alert").innerHTML = "File URL shortened.";
+        }
+    }
+    return false;
+}
+
+
+
+function upload_file() {
+    document.getElementById("file_expiry").value = document.getElementById("expiry_sel").value;
+
+    let form = document.querySelector("form");
+    let data = new FormData(form);
+
+    let percent = document.getElementById("upload_btn");
+    let http = new XMLHttpRequest();
+    http.open("POST", "/file/upload");
+
+    http.upload.addEventListener("progress", ({ loaded, total }) => {
+        let fileLoaded = Math.floor((loaded / total) * 100);
+        let fileTotal = Math.floor(total / 1000);
+        let fileSize;
+        (fileTotal < 1024) ? fileSize = fileTotal + " KB" : fileSize = (loaded / (1024 * 1024)).toFixed(2) + " MB";
+        percent.innerHTML = fileLoaded + "%";
+        if (loaded == total) {
+            percent.innerHTML = "Upload";
+        }
+    });
+
+    http.send(data);
+    http.onload = function () {
+        if (http.responseText.length > 0) {
+            var api_reply = JSON.parse(http.responseText);
+            console.log(api_reply);
+            if (api_reply['status'] == "OK") {
+                document.getElementById("result-error").style.display = "none";
+                let link = location.href.replace("/fileHome", api_reply['content']['url']);
+                document.getElementById("success-alert").innerHTML = api_reply['content']['message'];
+                document.getElementById("file_url").value = link
+                document.getElementById("file_delete_link").value = location.href.replace("/fileHome", api_reply['content']['deleteUrl']);
+                document.getElementById("qr-code").src = "/qr/" + btoa(link);
+                document.getElementById("result-box").style.display = "";
+
+                document.getElementById('slider').classList.remove('closed');
+            }
+            else if (api_reply['status'] == "FAIL") {
+                document.getElementById("result-error").innerHTML = '<div class="alert alert-danger" role="alert"><strong>ERROR:</strong> ' + api_reply['error'] + '</div>';
+                document.getElementById("result-error").style.display = "";
+                document.getElementById("result-box").style.display = "none";
+
+                document.getElementById('slider').classList.remove('closed');
+            }
+            else {
+                alert("Server returned error.");
+            }
+        }
+        else {
+            alert("Failed contacting the server.");
+        }
+    }
+    return false;
+}
+
+
 
 function admin_get_logs(surl) {
     var divBox = document.getElementById('logsTable');
@@ -63,12 +139,29 @@ function admin_get_logs(surl) {
     return false;
 }
 
+function admin_get_file_logs(downloadKey) {
+    var divBox = document.getElementById('logsTable');
+
+    var http = new XMLHttpRequest();
+    http.open("GET", "/admin/fileLogs/" + downloadKey, true);
+    http.send();
+    http.onload = function () {
+        divBox.innerHTML = http.responseText;
+    }
+    divBox.classList.remove('closed');
+    return false;
+}
+
 
 
 function copy_link(el) {
+    var txt = "Copied to clipboard."
     var copyText = el.value;
-    copyTextToClipboard(copyText);
-    button_obj.innerHTML = "Copied";
+    if (copyText != txt) {
+        copyTextToClipboard(copyText);
+        el.value = txt;
+        setTimeout(function () { el.value = copyText; }, 2000);
+    }
     return false;
 }
 

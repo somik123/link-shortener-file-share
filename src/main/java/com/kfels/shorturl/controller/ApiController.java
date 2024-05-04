@@ -1,5 +1,13 @@
 package com.kfels.shorturl.controller;
 
+import java.util.logging.Logger;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -11,15 +19,6 @@ import com.kfels.shorturl.service.ShorturlService;
 import com.kfels.shorturl.utils.CommonUtils;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.http.MediaType;
-
-import java.util.logging.Logger;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -44,7 +43,7 @@ public class ApiController {
             return new ResponseDTO("FAIL", surlDto, "Longurl already exists.");
         }
         // Generate a new short url
-        String creatorIp = request.getRemoteAddr();
+        String creatorIp = CommonUtils.getClientIpAddress(request);
         shorturl = surlSvc.generateShorturl(longUrl, creatorIp, requestDTO.getSurl());
         if (shorturl == null) {
             return new ResponseDTO("FAIL", "", "Shorturl genertion failed.");

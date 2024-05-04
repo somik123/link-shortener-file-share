@@ -12,7 +12,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.view.RedirectView;
+
 import com.kfels.shorturl.service.ShorturlService;
+import com.kfels.shorturl.service.UploadedFileService;
 import com.kfels.shorturl.utils.CommonUtils;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,11 +25,19 @@ public class HomeController {
     @Autowired
     ShorturlService surlSvc;
 
+    @Autowired
+    UploadedFileService storagService;
+
     Logger log = Logger.getLogger(HomeController.class.getName());
 
     @GetMapping("/")
     public String siteHome() {
         return "home";
+    }
+
+    @GetMapping("/fileHome")
+    public String fileHome() {
+        return "fileHome";
     }
 
     @GetMapping("/login")
@@ -64,6 +74,14 @@ public class HomeController {
         model.addAttribute("deleteAlert", "show");
         model.addAttribute("status", status);
         return "home";
+    }
+
+    @GetMapping("/deleteFile/{downloadKey}/{deleteKey}")
+    public String deleteUploadedFile(Model model, @PathVariable String downloadKey, @PathVariable String deleteKey) {
+        String status = storagService.delete(downloadKey, deleteKey) ? "yes" : "no";
+        model.addAttribute("deleteAlert", "show");
+        model.addAttribute("status", status);
+        return "fileHome";
     }
 
     @GetMapping("/{surl}")

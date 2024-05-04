@@ -2,8 +2,10 @@ package com.kfels.shorturl.service;
 
 import java.util.List;
 import java.util.logging.Logger;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import com.kfels.shorturl.entity.Shorturl;
 import com.kfels.shorturl.repo.ShorturlRepo;
 import com.kfels.shorturl.utils.CommonUtils;
@@ -64,7 +66,7 @@ public class ShorturlServiceImpl implements ShorturlService {
 
     @Override
     public List<Shorturl> getAllShorturls() {
-        return shorturlRepo.findAll();
+        return shorturlRepo.findAllCustom();
     }
 
     @Override

@@ -7,9 +7,11 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
 import com.google.zxing.BarcodeFormat;
@@ -19,9 +21,41 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 public class CommonUtils {
 
+    private static final int[] ILLEGAL_CHARACTERS = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+            19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 34, 42, 47, 58, 60, 62, 63, 92, 124 };
+
     static Logger log = Logger.getLogger(CommonUtils.class.getName());
+
+    public static Boolean isNameValid(String name) {
+        for (char c : name.toCharArray()) {
+            if (Arrays.binarySearch(ILLEGAL_CHARACTERS, c) >= 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static String cleanFileName(String badFileName) {
+        StringBuilder cleanName = new StringBuilder();
+        for (int i = 0; i < badFileName.length(); i++) {
+            int c = (int) badFileName.charAt(i);
+            if (Arrays.binarySearch(ILLEGAL_CHARACTERS, c) < 0) {
+                cleanName.append((char) c);
+            }
+        }
+        return cleanName.toString();
+    }
+
+    public static String formatSize(long v) {
+        if (v < 1024)
+            return v + " B";
+        int z = (63 - Long.numberOfLeadingZeros(v)) / 10;
+        return String.format("%.1f %sB", (double) v / (1L << (z * 10)), " KMGTPE".charAt(z));
+    }
 
     public static String randString() {
         int len = 0;
@@ -106,5 +140,18 @@ public class CommonUtils {
             return String.valueOf(hash);
         }
 
+    }
+
+    public static String getClientIpAddress(HttpServletRequest request) {
+        String xForwardedForHeader = request.getHeader("X-Forwarded-For");
+        if (xForwardedForHeader == null) {
+            return request.getRemoteAddr();
+        } else {
+            // As of https://en.wikipedia.org/wiki/X-Forwarded-For
+            // The general format of the field is: X-Forwarded-For: client, proxy1, proxy2
+            // ...
+            // we only want the client
+            return new StringTokenizer(xForwardedForHeader, ",").nextToken().trim();
+        }
     }
 }

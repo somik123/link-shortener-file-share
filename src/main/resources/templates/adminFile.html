@@ -6,7 +6,7 @@
 <body>
     <div class="contents contents-2">
         <!-- Logo and Title -->
-        <div th:replace="~{layout::logoAndTitleAdmin(headerTitle='Admin - Short Link History')}"></div>
+        <div th:replace="~{layout::logoAndTitleAdmin(headerTitle='Admin - File Share History')}"></div>
 
         <!-- History Table -->
         <div class="table-responsive">
@@ -14,12 +14,16 @@
                 <thead>
                     <tr class="table-dark">
                         <th scope="col" class="table-header-left">#</th>
-                        <th scope="col">Original URL</th>
-                        <th scope="col">ShortURL</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Size</th>
+                        <th scope="col">Modified</th>
+                        <th scope="col">Mime</th>
+                        <th scope="col">FileName</th>
                         <th scope="col">CreatorIp</th>
-                        <th scope="col">Created</th>
                         <th scope="col">Clicks</th>
-                        <th scope="col">Follow</th>
+                        <th scope="col">Created</th>
+                        <th scope="col">Expiry</th>
+                        <th scope="col">Logs</th>
                         <th scope="col" class="table-header-right">Remove</th>
                     </tr>
                 </thead>
@@ -27,27 +31,32 @@
                     <tr th:each="i : ${#numbers.sequence(0, max)}">
                         <th scope="row" th:text="${i+1}">1</th>
                         <td>
-                            <textarea class="form-control longurltxtbox" readonly onfocus="this.style.overflow='auto';"
-                                onblur="this.style.overflow='hidden';" th:text="${surlList.get(i).longUrl}"></textarea>
+                            <a th:href="${fileList.get(i).url}" target="_blank" class="shorturltxt"
+                                th:text="${fileList.get(i).name}"></a>
                         </td>
-                        <td>
-                            <a th:href="'/' + ${surlList.get(i).surl}" target="_blank" class="shorturltxt"
-                                th:text="${surlList.get(i).surl}"></a>
-                        </td>
-                        <td th:text="${surlList.get(i).creatorIp}">123.45.67.89</td>
-                        <td class="text-center" th:text="${#strings.replace(surlList.get(i).created, 'T',' ')}">
+                        <td th:text="${fileList.get(i).size}">123 KB</td>
+                        <td class="text-center" th:text="${#strings.replace(fileList.get(i).modified, 'T',' ')}">
                             2024-02-16
                             05:57:26 PM</td>
-                        <td th:text="${surlList.get(i).hits}">4</td>
+                        <td th:text="${fileList.get(i).mimeType}">image/jpeg</td>
+                        <td th:text="${fileList.get(i).fileName}">filename</td>
+                        <td th:text="${fileList.get(i).creatorIp}">123.45.67.89</td>
+                        <td th:text="${fileList.get(i).hits}">x</td>
+                        <td class="text-center" th:text="${#strings.replace(fileList.get(i).created, 'T',' ')}">
+                            2024-02-16
+                            05:57:26 PM</td>
+                        <td class="text-center" th:text="${#strings.replace(fileList.get(i).expiryTime, 'T',' ')}">
+                            2024-02-16
+                            05:57:26 PM</td>
                         <td>
-                            <a href="#" th:data-surl="${surlList.get(i).surl}"
-                                onclick="return admin_get_logs(this.getAttribute('data-surl'));">
+                            <a href="#" th:data-downloadKey="${fileList.get(i).downloadKey}"
+                                onclick="return admin_get_file_logs(this.getAttribute('data-downloadKey'));">
                                 <img src="/assets/img/link.png" width="40" />
                             </a>
                         </td>
                         <td>
-                            <a th:href="'/delete/' + ${surlList.get(i).surl }+ '/' + ${surlList.get(i).deleteKey}"
-                                target="_blank"><img src="/assets/img/trash.png" width="40" /></a>
+                            <a th:href="${fileList.get(i).deleteUrl}" target="_blank"><img src="/assets/img/trash.png"
+                                    width="40" /></a>
                         </td>
                     </tr>
                 </tbody>

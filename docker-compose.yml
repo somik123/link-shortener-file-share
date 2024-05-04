@@ -1,0 +1,45 @@
+volumes:
+  shorturl_db:
+    name: shorturl_db
+  shorturl_logs:
+    name: shorturl_logs
+  shorturl_uploads:
+    name: shorturl_uploads
+
+services:
+  db:
+    container_name: mysql
+    image: mysql
+    restart: unless-stopped
+    volumes:
+      - shorturl_db:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: Pgpnc4nkwdMZpeF2w4yWz7Th
+      MYSQL_DATABASE: XYgPZX7WCiW
+      MYSQL_USER: mhvXD4AuBi7
+      MYSQL_PASSWORD: DYg3FejmiQ4RdNcFHYNU3NWs
+      TZ: Asia/Singapore
+
+  backend_java:
+    image: somik123/shorturl-fileshare
+    container_name: shorturl_java
+    restart: unless-stopped
+    volumes:
+      - shorturl_uploads:/usr/app/uploads
+      - shorturl_logs:/usr/app/logs
+    environment:
+      SHORTURL_USER: admin
+      SHORTURL_PASS: zR6CzF9bZp3@HTPzaaY%2Fzv
+      SHORTURL_PASS_HIDE: no
+      SHORTURL_LENGTH: 5
+      SHORTURL_DB_HOST: db
+      SHORTURL_DB_NAME: XYgPZX7WCiW
+      SHORTURL_DB_USER: mhvXD4AuBi7
+      SHORTURL_DB_PASS: DYg3FejmiQ4RdNcFHYNU3NWs
+      TZ: Asia/Singapore
+    ports:
+      - 6080:8080
+    depends_on:
+      - db
+    links:
+      - db

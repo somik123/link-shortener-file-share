@@ -21,13 +21,32 @@
 </head>
 
 <body>
-    <!-- Logo and Title -->
+    <!-- Logo and Title Public -->
     <div th:fragment="logoAndTitle(headerTitle)">
         <div class="header-box">
-            <img src="/assets/img/logo.png" style="height: 100px;" alt="Logo" />
+            <div id="nav-box">
+                <a href="/">ShortLink</a>
+                <a href="/fileHome">FileShare</a>
+            </div>
             <div id="login-icon">
                 <a href="/admin/"><img src="/assets/img/login.png" style="width: 40px;" alt="Login" /></a>
             </div>
+            <img src="/assets/img/logo.png" style="height: 100px; margin-left: -100px;" alt="Logo" />
+            <h2 class="text-header"><a href="/" th:text="${headerTitle}">Short Link Generator</a></h2>
+        </div>
+    </div>
+
+    <!-- Logo and Title Admin -->
+    <div th:fragment="logoAndTitleAdmin(headerTitle)">
+        <div class="header-box">
+            <div id="nav-box">
+                <a href="/admin/">ShortLink</a>
+                <a href="/admin/file">FileShare</a>
+            </div>
+            <div id="login-icon">
+                <a href="/admin/"><img src="/assets/img/login.png" style="width: 40px;" alt="Login" /></a>
+            </div>
+            <img src="/assets/img/logo.png" style="height: 100px; margin-left: -100px;" alt="Logo" />
             <h2 class="text-header"><a href="/" th:text="${headerTitle}">Short Link Generator</a></h2>
         </div>
     </div>
@@ -99,6 +118,97 @@
         </div>
     </div>
 
+    <div th:fragment="fileUpload">
+        <div class="contents">
+            <!-- Logo and Title -->
+            <div th:replace="~{layout::logoAndTitle(headerTitle='File Share')}"></div>
+
+            <div class="file-upload-form">
+                <!-- File Upload Input Box -->
+
+                <div class="row g-1">
+                    <div class="col-md-7">
+                        <form action="#" id="upload_form" method="post" enctype="multipart/form-data">
+                            <input class="form-control" type="file" id="file" name="file">
+                            <input class="form-control" type="hidden" id="file_expiry" name="expiry_hour">
+                        </form>
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-select" aria-label="Default select example" id="expiry_sel">
+                            <option value="1">1 Hour</option>
+                            <option value="24">1 Day</option>
+                            <option value="48">2 Days</option>
+                            <option value="168">1 Week</option>
+                            <option selected value="720">1 Month</option>
+                            <option value="2160">3 Months</option>
+                            <option value="8760">1 Year</option>
+                            <option value="87600">10 Years</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-info btn-txt-bold" id="upload_btn"
+                            onclick="return upload_file();">
+                            Upload
+                        </button>
+                    </div>
+                </div>
+
+
+                <!-- Spacer -->
+                <div style="margin-bottom: 40px;"></div>
+
+                <!-- Delete Message -->
+                <div th:if="${deleteAlert == 'show'}">
+                    <div th:if="${status == 'yes'}" class="alert alert-success" role="alert">
+                        File successfully deleted.
+                    </div>
+                    <div th:if="${status != 'yes'}" class="alert alert-danger" role="alert">
+                        Something went wrong and the file could not be delted.<br />
+                        Ensure file delete link is correct and file has not already been deleted.
+                    </div>
+                </div>
+
+                <!-- Short URL Output Box -->
+                <div class="row g-3 slider closed" id="slider">
+                    <div style="padding-top: 30px; display: none;" id="result-error"></div>
+                    <div id="result-box">
+                        <div class="alert alert-success" role="alert" id="success-alert"></div>
+                        <div class="row" style="width: 98%;">
+                            <div class="col-md-4" id="qr-code-box">
+                                <img src="" id="qr-code" alt="qr-code" />
+                            </div>
+                            <div class="col-md-8">
+                                <div class="spacer"></div>
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text">Link:</span>
+                                    <input type="text" class="form-control" id="file_url" aria-label="File URL"
+                                        onclick="return copy_link(this);">
+                                    <button class="btn btn-outline-secondary" type="button" style="padding: 3px 5px;"
+                                        onclick="return generate_shorturl_mini()">
+                                        <img src="/assets/img/shorten.png" width="24" />
+                                    </button>
+                                </div>
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text">Delete:</span>
+                                    <input type="text" class="form-control" id="file_delete_link"
+                                        aria-label="File Delete Link" onclick="return copy_link(this);">
+                                </div>
+                                <div class="spacer"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:fragment="mainFooter">
+        <div class="contents footer footer-main">
+            Copyright &#169; <a href="https://somik.org/" target="_blank">Somik.org</a> |
+            <a href="https://ziox.us/contact" target="_blank">Contact us</a>
+        </div>
+    </div>
+
     <div th:fragment="loginForm">
         <div class="contents">
             <!-- Logo and Title -->
@@ -116,7 +226,7 @@
                         </div>
                         <form th:action="@{/login}" method="post">
                             <div class="mb-3">
-                                <label for="username" class="form-label">Email address</label>
+                                <label for="username" class="form-label">Username</label>
                                 <input type="text" class="form-control" id="username" name="username" />
                             </div>
                             <div class="mb-3">

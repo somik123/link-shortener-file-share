@@ -1,9 +1,11 @@
 package com.kfels.shorturl.entity;
 
-import com.kfels.shorturl.utils.CommonUtils;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.kfels.shorturl.utils.CommonUtils;
+
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

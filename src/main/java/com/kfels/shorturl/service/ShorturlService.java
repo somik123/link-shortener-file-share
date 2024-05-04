@@ -1,6 +1,7 @@
 package com.kfels.shorturl.service;
 
 import java.util.List;
+
 import com.kfels.shorturl.entity.Shorturl;
 
 public interface ShorturlService {
