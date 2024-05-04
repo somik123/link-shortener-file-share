@@ -36,6 +36,10 @@ services:
       SHORTURL_DB_NAME: XYgPZX7WCiW
       SHORTURL_DB_USER: mhvXD4AuBi7
       SHORTURL_DB_PASS: DYg3FejmiQ4RdNcFHYNU3NWs
+      UPLOADFILE_MAX_SIZE: 50
+      TELEGRAM_APIKEY: 1234567890:ABcd7EFghIJk3lMN_ABc5dEF6ghIJklMNop
+      TELEGRAM_CHATID: 123456789
+      SITE_FULL_URL: "https://www.example.com/"
       TZ: Asia/Singapore
     ports:
       - 6080:8080

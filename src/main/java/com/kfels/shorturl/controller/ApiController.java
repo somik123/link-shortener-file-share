@@ -50,6 +50,11 @@ public class ApiController {
         } else {
             surlDto = new ShorturlDTO(shorturl.getSurl(), shorturl.getLongUrl(), shorturl.getDeleteKey(),
                     shorturl.getIsEnabled());
+
+            String msg = "New Short url: " + System.getenv("SITE_FULL_URL") + shorturl.getSurl() + "\n" +
+                    "Delete: " + System.getenv("SITE_FULL_URL") + "delete/" + shorturl.getSurl() + "/"
+                    + shorturl.getDeleteKey();
+            CommonUtils.sendTelegramMessage(msg);
             return new ResponseDTO("OK", surlDto, "");
         }
     }

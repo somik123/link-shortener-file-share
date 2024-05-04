@@ -68,7 +68,7 @@
                             id="short-url">
                     </div>
                     <div class="col-md-2">
-                        <button type="submit" class="btn btn-info btn-txt-bold" onclick="return generate_shorturl();">
+                        <button type="submit" class="btn btn-info btn-txt-bold"  id="submit_btn" onclick="return generate_shorturl();">
                             Shorten
                         </button>
                     </div>
@@ -198,7 +198,9 @@
                         </div>
                     </div>
                 </div>
+
             </div>
+            <div th:if="${maxSize != null}" style="text-align: center;">Max allowed file size: <span th:text="${maxSize} + ' MB'"></span></div>
         </div>
     </div>
 

@@ -2,8 +2,12 @@
 
 function generate_shorturl() {
 
+    var submitBtn = document.getElementById("submit_btn");
+
     var longURL = encodeURIComponent(document.getElementById("long-url").value);
     var shortUrl = encodeURIComponent(document.getElementById("short-url").value);
+
+    submit_btn.innerHTML = "Processing...";
 
     var http = new XMLHttpRequest();
     http.open("POST", "/api/shorten", true);
@@ -11,7 +15,10 @@ function generate_shorturl() {
     var params = { "url": longURL, "surl": shortUrl };
     http.send(JSON.stringify(params));
     http.onload = function () {
+        document.getElementById('slider').classList.remove('closed');
+        submit_btn.innerHTML = "Shorten";
         var api_reply = JSON.parse(http.responseText);
+        console.log(api_reply);
         if (api_reply['status'] == "OK") {
             if (api_reply['content']['isEnabled']) {
                 document.getElementById("result-error").style.display = "none";
@@ -43,8 +50,6 @@ function generate_shorturl() {
             }
         }
     }
-
-    document.getElementById('slider').classList.remove('closed');
     return false;
 }
 
@@ -86,13 +91,14 @@ function upload_file() {
         (fileTotal < 1024) ? fileSize = fileTotal + " KB" : fileSize = (loaded / (1024 * 1024)).toFixed(2) + " MB";
         percent.innerHTML = fileLoaded + "%";
         if (loaded == total) {
-            percent.innerHTML = "Upload";
+            percent.innerHTML = "Processing...";
         }
     });
 
     http.send(data);
     http.onload = function () {
         if (http.responseText.length > 0) {
+            percent.innerHTML = "Upload";
             var api_reply = JSON.parse(http.responseText);
             console.log(api_reply);
             if (api_reply['status'] == "OK") {
@@ -123,36 +129,6 @@ function upload_file() {
     }
     return false;
 }
-
-
-
-function admin_get_logs(surl) {
-    var divBox = document.getElementById('logsTable');
-
-    var http = new XMLHttpRequest();
-    http.open("GET", "/admin/logs/" + surl, true);
-    http.send();
-    http.onload = function () {
-        divBox.innerHTML = http.responseText;
-    }
-    divBox.classList.remove('closed');
-    return false;
-}
-
-function admin_get_file_logs(downloadKey) {
-    var divBox = document.getElementById('logsTable');
-
-    var http = new XMLHttpRequest();
-    http.open("GET", "/admin/fileLogs/" + downloadKey, true);
-    http.send();
-    http.onload = function () {
-        divBox.innerHTML = http.responseText;
-    }
-    divBox.classList.remove('closed');
-    return false;
-}
-
-
 
 function copy_link(el) {
     var txt = "Copied to clipboard."

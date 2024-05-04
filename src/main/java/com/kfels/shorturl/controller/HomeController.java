@@ -36,7 +36,11 @@ public class HomeController {
     }
 
     @GetMapping("/fileHome")
-    public String fileHome() {
+    public String fileHome(Model model) {
+        String maxSize = System.getenv("UPLOADFILE_MAX_SIZE");
+        if (maxSize != null && maxSize.length() > 0) {
+            model.addAttribute("maxSize", maxSize);
+        }
         return "fileHome";
     }
 

@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.kfels.shorturl.dto.FileDTO;
+import com.kfels.shorturl.dto.FileLoadDTO;
 import com.kfels.shorturl.dto.FileDetailsDTO;
 import com.kfels.shorturl.dto.ResponseDTO;
 import com.kfels.shorturl.entity.UploadedFile;
@@ -41,6 +42,16 @@ public class UploadedFileServiceImpl implements UploadedFileService {
         try {
             String name = file.getOriginalFilename();
             String mimeType = file.getContentType();
+            float size = file.getSize() / (1024 * 1024);
+            float maxSize = 0;
+            String maxSizeStr = System.getenv("UPLOADFILE_MAX_SIZE");
+            if (maxSizeStr != null && maxSizeStr.length() > 0) {
+                maxSize = Float.parseFloat(maxSizeStr);
+            }
+            if (maxSize > 0 && size > maxSize) {
+                log.warning("File size of [" + size + " MB] is greater then max size of [" + maxSize + " MB]");
+                return null;
+            }
 
             name = CommonUtils.cleanFileName(name);
             if (name == null || name.length() < 2) {
@@ -73,21 +84,21 @@ public class UploadedFileServiceImpl implements UploadedFileService {
     }
 
     @Override
-    public Resource load(String downloadKey, String ip, String browserHeaders) {
+    public FileLoadDTO load(String downloadKey, String ip, String browserHeaders) {
         try {
-            UploadedFile uploadedFile = getUploadFileFromDownloadKey(downloadKey);
-            if (uploadedFile == null)
+            UploadedFile file = getUploadFileFromDownloadKey(downloadKey);
+            if (file == null)
                 return null;
-            Path file = storagePath.resolve(uploadedFile.accessFile(ip, browserHeaders));
-            URI uri = file.toUri();
+            Path filePath = storagePath.resolve(file.accessFile(ip, browserHeaders));
+            URI uri = filePath.toUri();
             if (uri == null) {
-                log.warning("Could not read the file: " + file.toString());
+                log.warning("Could not read the file: " + filePath.toString());
                 return null;
             }
             Resource resource = new UrlResource(uri);
             if (resource.exists() && resource.isReadable()) {
-                fileRepo.save(uploadedFile);
-                return resource;
+                fileRepo.save(file);
+                return new FileLoadDTO(file, resource);
             } else {
                 log.warning("Could not read the file: " + file.toString());
                 return null;

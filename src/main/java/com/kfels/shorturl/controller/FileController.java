@@ -20,7 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.kfels.shorturl.dto.FileDTO;
+import com.kfels.shorturl.dto.FileLoadDTO;
 import com.kfels.shorturl.dto.ResponseDTO;
+import com.kfels.shorturl.entity.UploadedFile;
 import com.kfels.shorturl.service.UploadedFileService;
 import com.kfels.shorturl.utils.CommonUtils;
 
@@ -46,6 +48,9 @@ public class FileController {
             String message = "Upload failed.";
             return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO("FAIL", null, message));
         } else {
+            String msg = "New File uploaded: " + System.getenv("SITE_FULL_URL") + fileDTO.getUrl().substring(1) + "\n" +
+                    "Delete: " + System.getenv("SITE_FULL_URL") + fileDTO.getDeleteUrl().substring(1);
+            CommonUtils.sendTelegramMessage(msg);
             return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO("OK", fileDTO, null));
         }
     }
@@ -63,8 +68,10 @@ public class FileController {
         try {
             String creatorIp = CommonUtils.getClientIpAddress(request);
             String browserHeaders = request.getHeader("User-Agent");
-            Resource file = storageService.load(downloadKey, creatorIp, browserHeaders);
-            if (file == null) {
+            FileLoadDTO fileLoadDTO = storageService.load(downloadKey, creatorIp, browserHeaders);
+            Resource resource = fileLoadDTO.getResource();
+            UploadedFile file = fileLoadDTO.getFile();
+            if (resource == null) {
                 message = "file does not exist.";
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDTO("FAIL", null, message));
             }
@@ -73,13 +80,13 @@ public class FileController {
                 mimeType = "application/octet-stream";
             MediaType mediaType = MediaType.parseMediaType(mimeType);
 
-            InputStream in = file.getInputStream();
+            InputStream in = resource.getInputStream();
 
-            log.info(file.toString());
+            log.info(resource.toString());
             log.info(mediaType.toString());
 
             return ResponseEntity.ok().contentType(mediaType)
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + file.getFilename() + "\"")
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + file.getName() + "\"")
                     .body(new InputStreamResource(in));
 
         } catch (IOException e) {
