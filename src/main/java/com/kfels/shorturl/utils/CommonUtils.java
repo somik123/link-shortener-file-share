@@ -65,11 +65,14 @@ public class CommonUtils {
         return String.format("%.1f %sB", (double) v / (1L << (z * 10)), " KMGTPE".charAt(z));
     }
 
-    public static String randString() {
+    public static String generateStringForShorturl(String surl) {
         int len = 0;
         String lengthString = System.getenv("SHORTURL_LENGTH");
         if (lengthString != null && lengthString.length() > 0) {
             len = Integer.parseInt(lengthString);
+        }
+        if (surl != null && surl.length() >= len) {
+            return surl;
         }
         if (len <= 2) {
             len = 5;
@@ -77,7 +80,15 @@ public class CommonUtils {
         return randString(len, 3);
     }
 
-    public static String randString(int len) {
+    public static String generateStringForFileurl() {
+        int len = 0;
+        String lengthString = System.getenv("FILEURL_LENGTH");
+        if (lengthString != null && lengthString.length() > 0) {
+            len = Integer.parseInt(lengthString);
+        }
+        if (len <= 2) {
+            len = 5;
+        }
         return randString(len, 3);
     }
 
@@ -163,6 +174,10 @@ public class CommonUtils {
         }
     }
 
+    public static void asynSendTelegramMessage(String msg) {
+        new Thread(() -> sendTelegramMessage(msg)).start();
+    }
+
     public static boolean sendTelegramMessage(String msg) {
         try {
             String apiKey = System.getenv("TELEGRAM_APIKEY");
@@ -178,24 +193,25 @@ public class CommonUtils {
             postData.put("chat_id", chatId);
             postData.put("text", msg);
             postData.put("disable_web_page_preview", "true");
-            //postData.put("parse_mode","Markdown");
+            // postData.put("parse_mode","Markdown");
 
             String requestBody = getFormDataAsString(postData);
             System.out.println(requestBody);
 
-            String url = "https://api.telegram.org/bot" + apiKey + "/sendMessage?" + requestBody;
+            String url = "https://api.telegram.org/bot" + apiKey + "/sendMessage";
 
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(url))
-                    .POST(HttpRequest.BodyPublishers.noBody())
+                    .header("Content-Type", "application/x-www-form-urlencoded")
+                    .POST(HttpRequest.BodyPublishers.ofString(requestBody))
                     .build();
 
             HttpResponse<String> response = client.send(request,
                     HttpResponse.BodyHandlers.ofString());
 
             System.out.println(response.body());
-            return (response.body().contains("{\"ok\":true)")) ? true : false;
+            return (response.body().contains("message_id")) ? true : false;
         } catch (Exception e) {
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);

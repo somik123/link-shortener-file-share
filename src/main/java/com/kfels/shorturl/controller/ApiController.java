@@ -54,7 +54,7 @@ public class ApiController {
             String msg = "New Short url: " + System.getenv("SITE_FULL_URL") + shorturl.getSurl() + "\n" +
                     "Delete: " + System.getenv("SITE_FULL_URL") + "delete/" + shorturl.getSurl() + "/"
                     + shorturl.getDeleteKey();
-            CommonUtils.sendTelegramMessage(msg);
+            CommonUtils.asynSendTelegramMessage(msg);
             return new ResponseDTO("OK", surlDto, "");
         }
     }

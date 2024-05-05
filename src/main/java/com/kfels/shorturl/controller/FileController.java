@@ -50,7 +50,7 @@ public class FileController {
         } else {
             String msg = "New File uploaded: " + System.getenv("SITE_FULL_URL") + fileDTO.getUrl().substring(1) + "\n" +
                     "Delete: " + System.getenv("SITE_FULL_URL") + fileDTO.getDeleteUrl().substring(1);
-            CommonUtils.sendTelegramMessage(msg);
+            CommonUtils.asynSendTelegramMessage(msg);
             return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO("OK", fileDTO, null));
         }
     }

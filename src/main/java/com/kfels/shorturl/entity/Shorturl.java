@@ -53,13 +53,13 @@ public class Shorturl {
     public Shorturl(String longUrl, String creatorIp, String surl) {
         // Generate short url is not provided
         if (surl == null || surl.length() == 0)
-            surl = CommonUtils.randString();
+            surl = CommonUtils.generateStringForShorturl("");
 
         this.surl = surl;
         this.surlHash = CommonUtils.getHash(surl);
         this.longUrl = longUrl;
         this.longUrlHash = CommonUtils.getHash(longUrl);
-        this.deleteKey = CommonUtils.randString(32);
+        this.deleteKey = CommonUtils.randString(32, 3);
         this.creatorIp = creatorIp;
         this.hits = 0;
         this.created = LocalDateTime.now();

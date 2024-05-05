@@ -23,13 +23,12 @@ public class ShorturlServiceImpl implements ShorturlService {
         // Ensure required data is there
         if (creatorIp == null || creatorIp.length() == 0)
             return null;
+        String lengthString = System.getenv("SHORTURL_LENGTH");
         // If not provided, generate a shorturl
-        if (surl == null || surl.length() == 0) {
-            surl = CommonUtils.randString();
-        }
+        surl = CommonUtils.generateStringForShorturl(surl);
         // Ensure shorturl is unique, otherwise generate a random one
         while (!isSurlUnique(surl)) {
-            surl = CommonUtils.randString();
+            surl = CommonUtils.generateStringForShorturl(null);
         }
         Shorturl shorturl = new Shorturl(longUrl, creatorIp, surl);
         shorturlRepo.save(shorturl);

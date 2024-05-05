@@ -18,6 +18,9 @@ import com.kfels.shorturl.service.UploadedFileService;
 import com.kfels.shorturl.utils.CommonUtils;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class HomeController {
@@ -100,4 +103,25 @@ public class HomeController {
             return new RedirectView("/");
         }
     }
+
+    @GetMapping("/contact")
+    public String showContactForm() {
+        return "contactForm";
+    }
+
+    @PostMapping("/contact")
+    public String submitContactForm(@RequestParam String name, @RequestParam String email, @RequestParam String link_id,
+            @RequestParam String reason, @RequestParam String message, Model model) {
+        // TODO: process POST request
+        String msg = "New message received via contact form.\n\n";
+        msg += "Name: " + name + "\n";
+        msg += "Email: " + email + "\n";
+        msg += "Link: " + link_id + "\n";
+        msg += "Reason: " + reason + "\n\n";
+        msg += "Message: " + message + "\n";
+        String status = CommonUtils.sendTelegramMessage(msg) ? "yes" : "no";
+        model.addAttribute("status", status);
+        return "contactForm";
+    }
+
 }

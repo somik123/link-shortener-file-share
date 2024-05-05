@@ -42,13 +42,13 @@ public class UploadedFile {
     }
 
     public UploadedFile(String name, String creatorIp, String mimeType, LocalDateTime expiryTime) {
-        String downloadKey = CommonUtils.randString(16);
+        String downloadKey = CommonUtils.generateStringForFileurl();
         this.name = name;
         this.mimeType = mimeType;
         this.fileName = UUID.randomUUID().toString();
         this.downloadKey = downloadKey;
         this.downloadKeyHash = CommonUtils.getHash(downloadKey);
-        this.deleteKey = CommonUtils.randString(32);
+        this.deleteKey = CommonUtils.randString(32, 3);
         this.created = LocalDateTime.now();
         this.expiryTime = expiryTime;
         this.active = true;

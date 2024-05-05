@@ -16,18 +16,20 @@ Edit the file with your favorit editor to set all the environment variables in t
 `SHORTURL_DB_USER` - MySQL database usernme
 `SHORTURL_DB_PASS` - MySQL database password
 
-`SHORTURL_USER` - Admin username to manage all shorturls and uploaded files
-`SHORTURL_PASS` - Admin password to manage all shorturls and uploaded files
-`SHORTURL_PASS_HIDE` - Set this to "yes" to disable printing the password to logs when starting up the app
-
 `SHORTURL_LENGTH` - Length of generated shorturls (if auto-generted)
-
-`UPLOADFILE_MAX_SIZE` - Max allowed size for uploaded file (in MB)
+`FILEURL_LENGTH`  - Length of generated file urls (if auto-generted)
 
 `TELEGRAM_APIKEY` - Telegram API key that will be used to send notifications to admin
 `TELEGRAM_CHATID` - Admin's chat id. This can be a group id as well. See: https://docs.tracardi.com/qa/how_can_i_get_telegram_bot/
-
 `SITE_FULL_URL` - Full url to the home page of the site with trailing slash, like: https://www.example.com/
+
+`SHORTURL_USER`      - Admin username to manage all shorturls and uploaded files
+`SHORTURL_PASS`      - Admin password to manage all shorturls and uploaded files
+`SHORTURL_PASS_HIDE` - Set this to "yes" to disable printing the password to logs when starting up the app
+
+`UPLOADFILE_MAX_SIZE` - Max allowed size for uploaded file (in MB)
+
+
 
 Once done, save the file and run the following command from the same folder as your `docker-compose.yml` file.
 ```
@@ -82,5 +84,9 @@ It is available on port `6088` once it is up.
 - [x] Add telegram bot for notifications of new events.
 - [x] Add link/file validations through telegram bot.
 - [x] Add uploaded file max size limits.
+- [x] Add uploaded file url size customization
+- [x] Add shorturl url size customization
+- [x] Added contact form for reports (report sent via telegram to admin)
+- [x] Send message via telegram asynchronously to save time
 - [ ] Test for vulnerabilities.
 

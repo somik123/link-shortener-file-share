@@ -1,0 +1,54 @@
+<!doctype html>
+<html xmlns:th="https://www.thymeleaf.org" lang="en">
+
+<head th:replace="~{layout::header(pageTitle='Contact Form')}"></head>
+
+<body>
+    <div class="contents">
+        <!-- Logo and Title -->
+        <div th:replace="~{layout::logoAndTitle(headerTitle='Contact Form')}"></div>
+
+        <!-- Contact Form Message -->
+        <div th:if="${status == 'yes'}" class="alert alert-success" role="alert">
+            Site admin has been notified of your message and will get back to you over email (if required) in 7 days.
+        </div>
+
+        <!-- Contact Form -->
+        <form method="POST" action="" style="text-align: left; font-weight: bold;">
+            <div class="mb-3">
+                <label class="form-label">Name:</label>
+                <input type="text" class="form-control" placeholder="James Smith" name="name">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Email:</label>
+                <input type="email" class="form-control" placeholder="james.smith@gmail.com" name="email">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">File/Link ID:</label>
+                <input type="text" class="form-control" placeholder="https://site.com/file/oj2hnq5f3hr" name="link_id">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Contact Reason:</label>
+                <select name="reason" class="form-select">
+                    <option></option>
+                    <option>Others</option>
+                    <option>Inquery</option>
+                    <option>Ad/Offer</option>
+                    <option>Report</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="exampleFormControlTextarea1" class="form-label">Short message:</label>
+                <textarea class="form-control" rows="3" name="message"></textarea>
+            </div>
+            <div class="mb-3">
+                <input class="btn btn-info" type="submit" value="Send Message">
+            </div>
+            
+        </form>
+    </div>
+    <div th:replace="~{layout::mainFooter}"></div>
+
+</body>
+
+</html>
