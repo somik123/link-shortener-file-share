@@ -22,7 +22,7 @@ public class WebSecurityConfig {
         http.cors(cors -> cors.disable()).csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/*", "/assets/**", "/api/**", "/qr/**", "/delete/**", "/deleteFile/**",
-                                "/fileHome", "/file/**", "/contact")
+                                "/file/**")
                         .permitAll()
                         .anyRequest().authenticated())
                 .formLogin((form) -> form.loginPage("/login").permitAll())

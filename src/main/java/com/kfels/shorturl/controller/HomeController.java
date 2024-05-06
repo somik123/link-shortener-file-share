@@ -11,6 +11,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.view.RedirectView;
 
 import com.kfels.shorturl.service.ShorturlService;
@@ -18,9 +20,6 @@ import com.kfels.shorturl.service.UploadedFileService;
 import com.kfels.shorturl.utils.CommonUtils;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class HomeController {
@@ -91,6 +90,26 @@ public class HomeController {
         return "fileHome";
     }
 
+    @GetMapping("/reach-out")
+    public String showContactForm() {
+        return "contactForm";
+    }
+
+    @PostMapping("/reach-out")
+    public String submitContactForm(@RequestParam String name, @RequestParam String email, @RequestParam String link_id,
+            @RequestParam String reason, @RequestParam String message, Model model) {
+
+        String msg = "New message received via contact form.\n\n";
+        msg += "Name: " + name + "\n";
+        msg += "Email: " + email + "\n";
+        msg += "Link: " + link_id + "\n";
+        msg += "Reason: " + reason + "\n\n";
+        msg += "Message: " + message + "\n";
+        String status = CommonUtils.sendTelegramMessage(msg) ? "yes" : "no";
+        model.addAttribute("status", status);
+        return "contactForm";
+    }
+
     @GetMapping("/{surl}")
     public RedirectView redirectToShortUrl(@PathVariable String surl, HttpServletRequest request) {
         String creatorIp = request.getRemoteAddr();
@@ -102,26 +121,6 @@ public class HomeController {
         } else {
             return new RedirectView("/");
         }
-    }
-
-    @GetMapping("/contact")
-    public String showContactForm() {
-        return "contactForm";
-    }
-
-    @PostMapping("/contact")
-    public String submitContactForm(@RequestParam String name, @RequestParam String email, @RequestParam String link_id,
-            @RequestParam String reason, @RequestParam String message, Model model) {
-        // TODO: process POST request
-        String msg = "New message received via contact form.\n\n";
-        msg += "Name: " + name + "\n";
-        msg += "Email: " + email + "\n";
-        msg += "Link: " + link_id + "\n";
-        msg += "Reason: " + reason + "\n\n";
-        msg += "Message: " + message + "\n";
-        String status = CommonUtils.sendTelegramMessage(msg) ? "yes" : "no";
-        model.addAttribute("status", status);
-        return "contactForm";
     }
 
 }
