@@ -187,3 +187,8 @@ function copyTextToClipboard(text) {
 
 
 
+function reloadImage() {
+    var rand = Math.floor((Math.random() * 1000) + 100);
+    document.getElementById("user_code_img").src = "/showImage?v=" + rand;
+    return false;
+}

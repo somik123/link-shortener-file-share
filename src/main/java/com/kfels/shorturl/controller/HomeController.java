@@ -2,6 +2,7 @@ package com.kfels.shorturl.controller;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Random;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +19,10 @@ import org.springframework.web.servlet.view.RedirectView;
 import com.kfels.shorturl.service.ShorturlService;
 import com.kfels.shorturl.service.UploadedFileService;
 import com.kfels.shorturl.utils.CommonUtils;
+import com.kfels.shorturl.utils.Text2Image;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class HomeController {
@@ -56,6 +59,20 @@ public class HomeController {
         return new RedirectView("/admin/");
     }
 
+    @GetMapping("/showImage")
+    public ResponseEntity<?> generateCaptcha(HttpSession session) {
+        int codeNum = new Random().nextInt(11111, 99999);
+        String code = String.valueOf(codeNum);
+
+        session.setAttribute("captchaCode", code);
+
+        byte[] captchaImage = Text2Image.generate(code);
+        MediaType mediaType = MediaType.parseMediaType("image/png");
+        log.info("Generated captcha code: " + code);
+        return ResponseEntity.ok().contentType(mediaType)
+                .body(captchaImage);
+    }
+
     @GetMapping("/qr/{text}")
     public ResponseEntity<?> generateQRCode(@PathVariable String text) {
         if (text == null || text.length() == 0)
@@ -70,7 +87,6 @@ public class HomeController {
         } catch (Exception e) {
             return null;
         }
-
     }
 
     @GetMapping("/delete/{surl}/{deleteKey}")
@@ -97,16 +113,23 @@ public class HomeController {
 
     @PostMapping("/reach-out")
     public String submitContactForm(@RequestParam String name, @RequestParam String email, @RequestParam String link_id,
-            @RequestParam String reason, @RequestParam String message, Model model) {
+            @RequestParam String reason, @RequestParam String user_code, @RequestParam String message,
+            Model model, HttpSession session) {
 
-        String msg = "New message received via contact form.\n\n";
-        msg += "Name: " + name + "\n";
-        msg += "Email: " + email + "\n";
-        msg += "Link: " + link_id + "\n";
-        msg += "Reason: " + reason + "\n\n";
-        msg += "Message: " + message + "\n";
-        String status = CommonUtils.sendTelegramMessage(msg) ? "yes" : "no";
-        model.addAttribute("status", status);
+        String captchaCode = session.getAttribute("captchaCode").toString();
+        log.info("Session captcha code: " + captchaCode);
+        log.info("User captcha code: " + user_code);
+
+        if (captchaCode != null && captchaCode.equals(user_code)) {
+            String msg = "New message received via contact form.\n\n";
+            msg += "Name: " + name + "\n";
+            msg += "Email: " + email + "\n";
+            msg += "Link: " + link_id + "\n";
+            msg += "Reason: " + reason + "\n\n";
+            msg += "Message: " + message + "\n";
+            String status = CommonUtils.sendTelegramMessage(msg) ? "yes" : "no";
+            model.addAttribute("status", status);
+        }
         return "contactForm";
     }
 

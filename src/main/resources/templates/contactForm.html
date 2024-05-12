@@ -17,15 +17,16 @@
         <form method="POST" action="" style="text-align: left; font-weight: bold;">
             <div class="mb-3">
                 <label class="form-label">Name:</label>
-                <input type="text" class="form-control" placeholder="James Smith" name="name">
+                <input type="text" class="form-control" placeholder="James Smith" name="name" />
             </div>
             <div class="mb-3">
                 <label class="form-label">Email:</label>
-                <input type="email" class="form-control" placeholder="james.smith@gmail.com" name="email">
+                <input type="email" class="form-control" placeholder="james.smith@gmail.com" name="email" />
             </div>
             <div class="mb-3">
                 <label class="form-label">File/Link ID:</label>
-                <input type="text" class="form-control" placeholder="https://site.com/file/oj2hnq5f3hr" name="link_id">
+                <input type="text" class="form-control" placeholder="https://site.com/file/oj2hnq5f3hr"
+                    name="link_id" />
             </div>
             <div class="mb-3">
                 <label class="form-label">Contact Reason:</label>
@@ -38,13 +39,20 @@
                 </select>
             </div>
             <div class="mb-3">
+                <label class="form-label">Text match:</label>
+                <img src="/showImage" alt="user code image" id="user_code_img" />
+                <button class="btn" style="font-size: 24px; padding: 0px;"
+                    onclick="return reloadImage();">&#8634;</button>
+                <input type="text" class="form-control" name="user_code" />
+            </div>
+            <div class="mb-3">
                 <label for="exampleFormControlTextarea1" class="form-label">Short message:</label>
                 <textarea class="form-control" rows="3" name="message"></textarea>
             </div>
             <div class="mb-3">
-                <input class="btn btn-info" type="submit" value="Send Message">
+                <input class="btn btn-info" type="submit" value="Send Message" />
             </div>
-            
+
         </form>
     </div>
     <div th:replace="~{layout::mainFooter}"></div>

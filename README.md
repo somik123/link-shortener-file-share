@@ -70,23 +70,42 @@ It is available on port `6088` once it is up.
 
 <br>
 
+### Screenshots
+
+<img src="https://raw.githubusercontent.com/somik123/link-shortener-file-share/main/screenshots/1.png">
+
+<img src="https://raw.githubusercontent.com/somik123/link-shortener-file-share/main/screenshots/2.png">
+
+<img src="https://raw.githubusercontent.com/somik123/link-shortener-file-share/main/screenshots/3.png">
+
+<img src="https://raw.githubusercontent.com/somik123/link-shortener-file-share/main/screenshots/4.png">
+
+<img src="https://raw.githubusercontent.com/somik123/link-shortener-file-share/main/screenshots/5.png">
+
+<img src="https://raw.githubusercontent.com/somik123/link-shortener-file-share/main/screenshots/6.png">
+
+<img src="https://raw.githubusercontent.com/somik123/link-shortener-file-share/main/screenshots/7.png">
+
+<br>
+
 ### To-do list
 - [x] Add env variables for db settings.
-- [x] Ability to generate shorturls & visit them
-- [x] Able to delete shorturls
-- [x] Add admin section to manage shorturls
-- [x] Add API calls to generate shorturls
-- [x] Add file upload & share feature
-- [x] Shorten file upload links using url shortener
-- [x] Expire/delete the files after predefined time
+- [x] Ability to generate shorturls & visit them.
+- [x] Able to delete shorturls.
+- [x] Add admin section to manage shorturls.
+- [x] Add API calls to generate shorturls.
+- [x] Add file upload & share feature.
+- [x] Shorten file upload links using url shortener.
+- [x] Expire/delete the files after predefined time.
 - [x] Write a dockerfile to build the app for deployment.
 - [x] Write a docker compose script to build and run the stack.
 - [x] Add telegram bot for notifications of new events.
 - [x] Add link/file validations through telegram bot.
 - [x] Add uploaded file max size limits.
-- [x] Add uploaded file url size customization
-- [x] Add shorturl url size customization
-- [x] Added contact form for reports (report sent via telegram to admin)
-- [x] Send message via telegram asynchronously to save time
+- [x] Add uploaded file url size customization.
+- [x] Add shorturl url size customization.
+- [x] Added contact form for reports (report sent via telegram to admin).
+- [x] Send message via telegram asynchronously to save time.
+- [x] Add custom captcha code to the contact form.
 - [ ] Test for vulnerabilities.
 
