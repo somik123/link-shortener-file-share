@@ -58,10 +58,4 @@ public class ApiController {
             return new ResponseDTO("OK", surlDto, "");
         }
     }
-
-    @GetMapping("/delete/{surl}/{deleteKey}")
-    public ResponseDTO deleteShorturl(@PathVariable String surl, @PathVariable String deleteKey) {
-        boolean status = surlSvc.deleteShorturl(surl, deleteKey);
-        return status ? new ResponseDTO("OK") : new ResponseDTO("FAIL");
-    }
 }

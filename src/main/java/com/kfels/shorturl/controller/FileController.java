@@ -55,6 +55,7 @@ public class FileController {
         }
     }
 
+    // Allow to download with just downloadKey or downloadKey with filename
     @GetMapping("/{downloadKey}/{fileName}")
     public ResponseEntity<?> downloadFile(@PathVariable String downloadKey,
             @PathParam("fileName") String fileName, HttpServletRequest request) {
@@ -99,11 +100,6 @@ public class FileController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseDTO("FAIL", e, e.getMessage()));
         }
-    }
-
-    @GetMapping("/delete/{downloadKey}/{deleteKey}")
-    public ResponseDTO deleteFile(@PathVariable String downloadKey, @PathVariable String deleteKey) {
-        return (storageService.delete(downloadKey, deleteKey)) ? new ResponseDTO("OK") : new ResponseDTO("FAIL");
     }
 
     @GetMapping("/cron")

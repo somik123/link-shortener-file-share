@@ -23,7 +23,6 @@ public class ShorturlServiceImpl implements ShorturlService {
         // Ensure required data is there
         if (creatorIp == null || creatorIp.length() == 0)
             return null;
-        String lengthString = System.getenv("SHORTURL_LENGTH");
         // If not provided, generate a shorturl
         surl = CommonUtils.generateStringForShorturl(surl);
         // Ensure shorturl is unique, otherwise generate a random one

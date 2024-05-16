@@ -174,6 +174,7 @@ public class CommonUtils {
         }
     }
 
+    // Send telegram message, but asynchronously
     public static void asynSendTelegramMessage(String msg) {
         new Thread(() -> sendTelegramMessage(msg)).start();
     }
