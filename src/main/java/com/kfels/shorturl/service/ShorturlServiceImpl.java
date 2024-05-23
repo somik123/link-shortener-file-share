@@ -1,7 +1,6 @@
 package com.kfels.shorturl.service;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,8 +14,6 @@ public class ShorturlServiceImpl implements ShorturlService {
 
     @Autowired
     ShorturlRepo shorturlRepo;
-
-    Logger log = Logger.getLogger(ShorturlService.class.getName());
 
     @Override
     public Shorturl generateShorturl(String longUrl, String creatorIp, String surl) {

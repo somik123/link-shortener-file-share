@@ -37,7 +37,7 @@ public class FileController {
     @Autowired
     UploadedFileService storageService;
 
-    Logger log = Logger.getLogger(FileController.class.getName());
+    private static Logger LOG = Logger.getLogger(FileController.class.getName());
 
     @PostMapping(value = "/upload")
     public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file,
@@ -48,9 +48,15 @@ public class FileController {
             String message = "Upload failed.";
             return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO("FAIL", null, message));
         } else {
-            String msg = "New File uploaded: " + System.getenv("SITE_FULL_URL") + fileDTO.getUrl().substring(1) + "\n" +
-                    "Delete: " + System.getenv("SITE_FULL_URL") + fileDTO.getDeleteUrl().substring(1);
+
+            // Notify admin
+            String url = System.getenv("SITE_FULL_URL") + fileDTO.getUrl().substring(1);
+            String deleteUrl = "/deleteFile_" + fileDTO.getDownloadKey() + "_"
+                    + fileDTO.getDeleteKey();
+            String msg = "New File uploaded: " + url + "\n" +
+                    "Delete: " + deleteUrl;
             CommonUtils.asynSendTelegramMessage(msg);
+
             return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO("OK", fileDTO, null));
         }
     }
@@ -59,7 +65,7 @@ public class FileController {
     @GetMapping("/{downloadKey}/{fileName}")
     public ResponseEntity<?> downloadFile(@PathVariable String downloadKey,
             @PathParam("fileName") String fileName, HttpServletRequest request) {
-        log.info("Download key: " + downloadKey);
+        LOG.info("Download key: " + downloadKey);
         return downloadFile(downloadKey, request);
     }
 
@@ -83,8 +89,8 @@ public class FileController {
 
             InputStream in = resource.getInputStream();
 
-            log.info(resource.toString());
-            log.info(mediaType.toString());
+            LOG.info(resource.toString());
+            LOG.info(mediaType.toString());
 
             return ResponseEntity.ok().contentType(mediaType)
                     .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + file.getName() + "\"")
@@ -92,13 +98,13 @@ public class FileController {
 
         } catch (IOException e) {
             message = "Error while processing file.";
-            log.warning(message);
-            log.warning(e.getMessage());
-            log.warning(e.getStackTrace().toString());
+            LOG.warning(message);
+            CommonUtils.logErrors(LOG, e);
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
-                    .body(new ResponseDTO("FAIL", e, e.getMessage()));
+                    .body(new ResponseDTO("FAIL", null, message));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseDTO("FAIL", e, e.getMessage()));
+            message = "Error while processing file.";
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseDTO("FAIL", null, message));
         }
     }
 

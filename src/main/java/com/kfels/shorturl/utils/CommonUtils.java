@@ -5,18 +5,12 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.math.BigInteger;
 import java.net.URI;
-import java.net.URL;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.StringTokenizer;
@@ -28,6 +22,7 @@ import com.google.zxing.client.j2se.MatrixToImageConfig;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
+import com.kfels.shorturl.telegram.Telegram;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -115,17 +110,15 @@ public class CommonUtils {
         return pieces;
     }
 
-    public static String isValidURL(String url) {
-        if (url == null || url.length() == 0)
-            return null;
+    public static boolean isValidURL(String url) {
         try {
             url = URLDecoder.decode(url, StandardCharsets.UTF_8);
             log.info("Trying confirm this is a url: " + url);
-            new URL(url);
-            return url;
+            new URI(url).toURL();
+            return true;
         } catch (Exception e) {
             log.warning("Invalid url: " + url);
-            return null;
+            return false;
         }
     }
 
@@ -176,64 +169,16 @@ public class CommonUtils {
 
     // Send telegram message, but asynchronously
     public static void asynSendTelegramMessage(String msg) {
-        new Thread(() -> sendTelegramMessage(msg)).start();
+        new Thread(() -> new Telegram().sendMessage(msg)).start();
     }
 
-    public static boolean sendTelegramMessage(String msg) {
-        try {
-            String apiKey = System.getenv("TELEGRAM_APIKEY");
-            String chatId = System.getenv("TELEGRAM_CHATID");
-
-            if (apiKey == null || apiKey.length() == 0 || chatId == null || chatId.length() == 0 || msg == null
-                    || msg.length() == 0) {
-                log.warning("Telegram message failed to send due to empty variables.");
-                return false;
-            }
-
-            Map<String, String> postData = new HashMap<>();
-            postData.put("chat_id", chatId);
-            postData.put("text", msg);
-            postData.put("disable_web_page_preview", "true");
-            // postData.put("parse_mode","Markdown");
-
-            String requestBody = getFormDataAsString(postData);
-            System.out.println(requestBody);
-
-            String url = "https://api.telegram.org/bot" + apiKey + "/sendMessage";
-
-            HttpClient client = HttpClient.newHttpClient();
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(url))
-                    .header("Content-Type", "application/x-www-form-urlencoded")
-                    .POST(HttpRequest.BodyPublishers.ofString(requestBody))
-                    .build();
-
-            HttpResponse<String> response = client.send(request,
-                    HttpResponse.BodyHandlers.ofString());
-
-            System.out.println(response.body());
-            return (response.body().contains("message_id")) ? true : false;
-        } catch (Exception e) {
-            StringWriter sw = new StringWriter();
-            PrintWriter pw = new PrintWriter(sw);
-            e.printStackTrace(pw);
-            String sStackTrace = sw.toString();
-            System.out.println(sStackTrace);
-            log.warning(sStackTrace);
-        }
-        return false;
-    }
-
-    private static String getFormDataAsString(Map<String, String> formData) {
-        StringBuilder formBodyBuilder = new StringBuilder();
-        for (Map.Entry<String, String> singleEntry : formData.entrySet()) {
-            if (formBodyBuilder != null && formBodyBuilder.length() > 0) {
-                formBodyBuilder.append("&");
-            }
-            formBodyBuilder.append(URLEncoder.encode(singleEntry.getKey(), StandardCharsets.UTF_8));
-            formBodyBuilder.append("=");
-            formBodyBuilder.append(URLEncoder.encode(singleEntry.getValue(), StandardCharsets.UTF_8));
-        }
-        return formBodyBuilder.toString();
+    // Log errors
+    public static void logErrors(Logger LOG, Exception e) {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        e.printStackTrace(pw);
+        String sStackTrace = sw.toString();
+        System.out.println(sStackTrace);
+        LOG.warning(sStackTrace);
     }
 }

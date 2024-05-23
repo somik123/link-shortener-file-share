@@ -41,3 +41,5 @@ spring.log*
 ### Uploaded files ###
 /uploads/*
 !/uploads/uploaded_files_goes_here.txt
+/tmp_uploads/*
+!/tmp_uploads/temp_files_goes_here.txt

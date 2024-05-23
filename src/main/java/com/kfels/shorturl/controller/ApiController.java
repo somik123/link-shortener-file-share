@@ -4,8 +4,6 @@ import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,12 +25,14 @@ public class ApiController {
     @Autowired
     ShorturlService surlSvc;
 
-    Logger log = Logger.getLogger(ApiController.class.getName());
+    private static Logger LOG = Logger.getLogger(ApiController.class.getName());
 
     @PostMapping("/shorten")
-    public ResponseDTO postMethodName(@RequestBody RequestDTO requestDTO, HttpServletRequest request) {
+    public ResponseDTO shortenUrl(@RequestBody RequestDTO requestDTO, HttpServletRequest request) {
         // Ensure long url is valid
-        String longUrl = CommonUtils.isValidURL(requestDTO.getUrl());
+        String longUrl = null;
+        if (CommonUtils.isValidURL(requestDTO.getUrl()))
+            longUrl = requestDTO.getUrl();
         if (longUrl == null)
             return new ResponseDTO("FAIL", "", "Invalid url provided");
         // Check if the long url is already using a short url
@@ -51,10 +51,14 @@ public class ApiController {
             surlDto = new ShorturlDTO(shorturl.getSurl(), shorturl.getLongUrl(), shorturl.getDeleteKey(),
                     shorturl.getIsEnabled());
 
-            String msg = "New Short url: " + System.getenv("SITE_FULL_URL") + shorturl.getSurl() + "\n" +
-                    "Delete: " + System.getenv("SITE_FULL_URL") + "delete/" + shorturl.getSurl() + "/"
-                    + shorturl.getDeleteKey();
+            // Notify admin
+            String url = System.getenv("SITE_FULL_URL") + shorturl.getSurl();
+            String deleteUrl = "/deleteSURL_" + shorturl.getSurl() + "_" + shorturl.getDeleteKey();
+            String msg = "New Short url: " + url + "\n"
+                    + "Delete: " + deleteUrl;
             CommonUtils.asynSendTelegramMessage(msg);
+
+            LOG.info(msg);
             return new ResponseDTO("OK", surlDto, "");
         }
     }

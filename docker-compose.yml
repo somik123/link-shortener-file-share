@@ -1,10 +1,12 @@
 volumes:
-  shorturl_db:
-    name: shorturl_db
-  shorturl_logs:
-    name: shorturl_logs
-  shorturl_uploads:
-    name: shorturl_uploads
+  shorturl_fileshare_db:
+    name: shorturl_fileshare_db
+  shorturl_fileshare_logs:
+    name: shorturl_fileshare_logs
+  shorturl_fileshare_uploads:
+    name: shorturl_fileshare_uploads
+  shorturl_fileshare_temp:
+    name: shorturl_fileshare_temp
 
 services:
   db:
@@ -12,7 +14,7 @@ services:
     image: mysql
     restart: unless-stopped
     volumes:
-      - shorturl_db:/var/lib/mysql
+      - shorturl_fileshare_db:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: Pgpnc4nkwdMZpeF2w4yWz7Th
       MYSQL_DATABASE: XYgPZX7WCiW
@@ -22,11 +24,12 @@ services:
 
   backend_java:
     image: somik123/shorturl-fileshare
-    container_name: shorturl_java
+    container_name: shorturl_fileshare_java
     restart: unless-stopped
     volumes:
-      - shorturl_uploads:/usr/app/uploads
-      - shorturl_logs:/usr/app/logs
+      - shorturl_fileshare_uploads:/usr/app/uploads
+      - shorturl_fileshare_temp:/usr/app/tmp_uploads
+      - shorturl_fileshare_logs:/usr/app/logs
     environment:
       SHORTURL_USER: admin
       SHORTURL_PASS: zR6CzF9bZp3@HTPzaaY%2Fzv
@@ -39,7 +42,8 @@ services:
       SHORTURL_DB_PASS: DYg3FejmiQ4RdNcFHYNU3NWs
       UPLOADFILE_MAX_SIZE: 50
       TELEGRAM_APIKEY: 1234567890:ABcd7EFghIJk3lMN_ABc5dEF6ghIJklMNop
-      TELEGRAM_CHATID: 123456789
+      TELEGRAM_AUTHKEY: SADBniacAVEY9PQvaV7mhnMG
+      TELEGRAM_ADMINID: 123456789
       SITE_FULL_URL: "https://www.example.com/"
       TZ: Asia/Singapore
     ports:

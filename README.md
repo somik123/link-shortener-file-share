@@ -19,9 +19,11 @@ Edit the file with your favorit editor to set all the environment variables in t
 `SHORTURL_LENGTH` - Length of generated shorturls (if auto-generted)
 `FILEURL_LENGTH`  - Length of generated file urls (if auto-generted)
 
-`TELEGRAM_APIKEY` - Telegram API key that will be used to send notifications to admin
-`TELEGRAM_CHATID` - Admin's chat id. This can be a group id as well. See: https://docs.tracardi.com/qa/how_can_i_get_telegram_bot/
-`SITE_FULL_URL` - Full url to the home page of the site with trailing slash, like: https://www.example.com/
+`TELEGRAM_APIKEY`  - Telegram API key that will be used to send notifications to admin
+`TELEGRAM_ADMINID`  - Admin's chat id. This can be a group id as well. See: https://docs.tracardi.com/qa/how_can_i_get_telegram_bot/
+`TELEGRAM_AUTHKEY` - (Optional) Authorization key to be used by telegram and this app to validate requests are coming from telegram.
+`SITE_FULL_URL`    - Full url to the home page of the site with trailing slash, like: https://www.example.com/
+
 
 `SHORTURL_USER`      - Admin username to manage all shorturls and uploaded files
 `SHORTURL_PASS`      - Admin password to manage all shorturls and uploaded files
@@ -107,5 +109,9 @@ It is available on port `6088` once it is up.
 - [x] Added contact form for reports (report sent via telegram to admin).
 - [x] Send message via telegram asynchronously to save time.
 - [x] Add custom captcha code to the contact form.
+- [x] Allow urls to be shortened via telegram messages
+- [x] Allow files to be uploaded via telegram messages
+- [x] Allow file url shortening via telegram messages after upload
+- [x] Allow files/shorturls deletion via telegram commands
 - [ ] Test for vulnerabilities.
 

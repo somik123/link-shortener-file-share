@@ -17,12 +17,14 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
+    private static Logger LOG = Logger.getLogger(WebSecurityConfig.class.getName());
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.cors(cors -> cors.disable()).csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/*", "/assets/**", "/api/**", "/qr/**", "/delete/**", "/deleteFile/**",
-                                "/file/**")
+                                "/file/**", "/telegram/**")
                         .permitAll()
                         .anyRequest().authenticated())
                 .formLogin((form) -> form.loginPage("/login").permitAll())
@@ -32,8 +34,6 @@ public class WebSecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-
-        Logger log = Logger.getLogger(WebSecurityConfig.class.getName());
 
         String bucketUser = System.getenv("SHORTURL_USER");
         if (bucketUser == null || bucketUser.isEmpty())
@@ -54,15 +54,15 @@ public class WebSecurityConfig {
         String hidePass = System.getenv("SHORTURL_PASS_HIDE");
         if (hidePass == null || hidePass.isEmpty() || hidePass.toLowerCase().equals("no")
                 || bucketUser.equals("user")) {
-            log.info("\n");
-            log.info("Admin username set to: " + bucketUser);
-            log.info("Admin password set to: " + bucketPass);
-            log.info("Encrypted password to: " + encodedPassword);
-            log.info("\n");
+            LOG.info("\n");
+            LOG.info("Admin username set to: " + bucketUser);
+            LOG.info("Admin password set to: " + bucketPass);
+            LOG.info("Encrypted password to: " + encodedPassword);
+            LOG.info("\n");
         } else {
-            log.info("\n");
-            log.info("Admin username and passwords are set to from ENV values.");
-            log.info("\n");
+            LOG.info("\n");
+            LOG.info("Admin username and passwords are set to from ENV values.");
+            LOG.info("\n");
         }
 
         return new InMemoryUserDetailsManager(user);

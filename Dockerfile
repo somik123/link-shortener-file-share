@@ -17,6 +17,7 @@ FROM eclipse-temurin:21.0.2_13-jre-alpine
 WORKDIR /usr/app
 
 COPY uploads uploads
+COPY tmp_uploads tmp_uploads
 COPY logs logs
 COPY --from=builder /app/target/shorturl-*.jar shorturl-fileshare.jar
 

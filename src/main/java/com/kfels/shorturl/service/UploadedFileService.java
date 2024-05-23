@@ -13,6 +13,8 @@ import com.kfels.shorturl.entity.UploadedFile;
 public interface UploadedFileService {
     FileDTO save(MultipartFile file, String creatorIp, int expiryHours);
 
+    UploadedFile saveFromTelegram(String file, int expiryHours);
+
     FileLoadDTO load(String downloadKey, String ip, String browserHeaders);
 
     boolean delete(String downloadKey, String deleteKey);

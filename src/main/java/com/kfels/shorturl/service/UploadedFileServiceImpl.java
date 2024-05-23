@@ -20,8 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.kfels.shorturl.dto.FileDTO;
-import com.kfels.shorturl.dto.FileLoadDTO;
 import com.kfels.shorturl.dto.FileDetailsDTO;
+import com.kfels.shorturl.dto.FileLoadDTO;
 import com.kfels.shorturl.dto.ResponseDTO;
 import com.kfels.shorturl.entity.UploadedFile;
 import com.kfels.shorturl.repo.UploadedFileRepo;
@@ -35,7 +35,7 @@ public class UploadedFileServiceImpl implements UploadedFileService {
 
     private final Path storagePath = Paths.get("uploads/");
 
-    private Logger log = Logger.getLogger(UploadedFileServiceImpl.class.getName());
+    private static Logger LOG = Logger.getLogger(UploadedFileServiceImpl.class.getName());
 
     @Override
     public FileDTO save(MultipartFile file, String creatorIp, int expiryHours) {
@@ -49,16 +49,16 @@ public class UploadedFileServiceImpl implements UploadedFileService {
                 maxSize = Float.parseFloat(maxSizeStr);
             }
             if (maxSize > 0 && size > maxSize) {
-                log.warning("File size of [" + size + " MB] is greater then max size of [" + maxSize + " MB]");
+                LOG.warning("File size of [" + size + " MB] is greater then max size of [" + maxSize + " MB]");
                 return null;
             }
 
             name = CommonUtils.cleanFileName(name);
             if (name == null || name.length() < 2) {
-                log.warning("Missing filename.");
+                LOG.warning("Missing filename.");
                 return null;
             } else if (name.contains("..")) {
-                log.warning("Invalid filename.");
+                LOG.warning("Invalid filename.");
                 return null;
             }
 
@@ -66,21 +66,67 @@ public class UploadedFileServiceImpl implements UploadedFileService {
             UploadedFile uploadedFile = new UploadedFile(name, creatorIp, mimeType, expiryTime);
             String fileName = uploadedFile.getFileName();
 
-            log.info("Uploaded file: " + name);
-            log.info("Saved as: " + fileName);
+            LOG.info("Uploaded file: " + name);
+            LOG.info("Saved as: " + fileName);
             Files.copy(file.getInputStream(), storagePath.resolve(fileName), StandardCopyOption.REPLACE_EXISTING);
 
             fileRepo.save(uploadedFile);
 
             String url = "/file/" + uploadedFile.getDownloadKey() + "/" + name;
             String deleteUrl = "/deleteFile/" + uploadedFile.getDownloadKey() + "/" + uploadedFile.getDeleteKey();
-            return new FileDTO(name, "File uploaded successfully.", url, deleteUrl);
+            return new FileDTO(name, "File uploaded successfully.", url, deleteUrl,
+                    uploadedFile.getDownloadKey(), uploadedFile.getDeleteKey());
         } catch (Exception e) {
-            log.warning("Could not store the file.");
-            log.warning(e.getMessage());
-            log.warning(e.getStackTrace().toString());
+            CommonUtils.logErrors(LOG, e);
             return null;
         }
+    }
+
+    @Override
+    public UploadedFile saveFromTelegram(String filePath, int expiryHours) {
+        try {
+            Path file = Paths.get(filePath);
+            if (Files.exists(file) && Files.isWritable(file)) {
+                String mimeType = Files.probeContentType(file);
+                float size = Files.size(file) / (1024 * 1024);
+                float maxSize = 0;
+                String maxSizeStr = System.getenv("UPLOADFILE_MAX_SIZE");
+                if (maxSizeStr != null && maxSizeStr.length() > 0) {
+                    maxSize = Float.parseFloat(maxSizeStr);
+                }
+                if (maxSize > 0 && size > maxSize) {
+                    LOG.warning("File size of [" + size + " MB] is greater then max size of [" + maxSize + " MB]");
+                    return null;
+                }
+                int i = filePath.lastIndexOf("/");
+                String name = filePath.substring(i + 1);
+
+                if (name == null || name.length() < 2) {
+                    LOG.warning("Missing filename.");
+                    return null;
+                } else if (name.contains("..")) {
+                    LOG.warning("Invalid filename.");
+                    return null;
+                }
+
+                LocalDateTime expiryTime = LocalDateTime.now().plus(expiryHours, ChronoUnit.HOURS);
+                UploadedFile uploadedFile = new UploadedFile(name, "Telegram", mimeType, expiryTime);
+                String fileName = uploadedFile.getFileName();
+
+                LOG.info("Uploaded file: " + name);
+                LOG.info("Saved as: " + fileName);
+                Files.copy(Files.newInputStream(file), storagePath.resolve(fileName),
+                        StandardCopyOption.REPLACE_EXISTING);
+                fileRepo.save(uploadedFile);
+                // Remove temp file
+                Files.delete(file);
+
+                return uploadedFile;
+            }
+        } catch (Exception e) {
+            CommonUtils.logErrors(LOG, e);
+        }
+        return null;
     }
 
     @Override
@@ -92,7 +138,7 @@ public class UploadedFileServiceImpl implements UploadedFileService {
             Path filePath = storagePath.resolve(file.accessFile(ip, browserHeaders));
             URI uri = filePath.toUri();
             if (uri == null) {
-                log.warning("Could not read the file: " + filePath.toString());
+                LOG.warning("Could not read the file: " + filePath.toString());
                 return null;
             }
             Resource resource = new UrlResource(uri);
@@ -100,13 +146,12 @@ public class UploadedFileServiceImpl implements UploadedFileService {
                 fileRepo.save(file);
                 return new FileLoadDTO(file, resource);
             } else {
-                log.warning("Could not read the file: " + file.toString());
+                LOG.warning("Could not read the file: " + file.toString());
                 return null;
             }
         } catch (Exception e) {
-            log.warning("Could not retrieve the file with key: " + downloadKey);
-            log.warning(e.getMessage());
-            log.warning(e.getStackTrace().toString());
+            LOG.warning("Could not retrieve the file with key: " + downloadKey);
+            CommonUtils.logErrors(LOG, e);
             return null;
         }
     }
@@ -127,10 +172,9 @@ public class UploadedFileServiceImpl implements UploadedFileService {
                         status = true;
                 }
             } catch (IOException e) {
-                log.warning("Could not delete file with download key [" + downloadKey
+                LOG.warning("Could not delete file with download key [" + downloadKey
                         + "] and deleteKey [" + deleteKey + "]");
-                log.warning(e.getMessage());
-                log.warning(e.getStackTrace().toString());
+                CommonUtils.logErrors(LOG, e);
             }
             fileRepo.delete(uploadedFile);
         }
@@ -150,7 +194,7 @@ public class UploadedFileServiceImpl implements UploadedFileService {
     @Override
     public UploadedFile getUploadFileFromDownloadKey(String downloadKey) {
         if (downloadKey == null || downloadKey.length() < 3) {
-            log.warning("Missing download key.");
+            LOG.warning("Missing download key.");
             return null;
         }
         String downloadKeyHash = CommonUtils.getHash(downloadKey);
@@ -160,7 +204,7 @@ public class UploadedFileServiceImpl implements UploadedFileService {
             if (uploadedFile.isActive())
                 return uploadedFile;
             else {
-                log.warning("UploadedFile with id [" + uploadedFile.getId() + "] is not active.");
+                LOG.warning("UploadedFile with id [" + uploadedFile.getId() + "] is not active.");
                 return null;
             }
         } else
@@ -199,15 +243,14 @@ public class UploadedFileServiceImpl implements UploadedFileService {
                         fileDto.setModified(attr.lastModifiedTime().toString());
                     }
                 } catch (IOException e) {
-                    log.warning("Could not retrieve file details for: " + file.getFileName());
-                    log.warning(e.getMessage());
-                    log.warning(e.getStackTrace().toString());
+                    LOG.warning("Could not retrieve file details for: " + file.getFileName());
+                    CommonUtils.logErrors(LOG, e);
                     return null;
                 }
                 fileDtoList.add(fileDto);
             }
         } else {
-            log.info("Uploaded file list is empty for admin view.");
+            LOG.info("Uploaded file list is empty for admin view.");
         }
         return fileDtoList;
     }

@@ -18,6 +18,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import com.kfels.shorturl.service.ShorturlService;
 import com.kfels.shorturl.service.UploadedFileService;
+import com.kfels.shorturl.telegram.Telegram;
 import com.kfels.shorturl.utils.CommonUtils;
 import com.kfels.shorturl.utils.Text2Image;
 
@@ -33,7 +34,7 @@ public class HomeController {
     @Autowired
     UploadedFileService storagService;
 
-    Logger log = Logger.getLogger(HomeController.class.getName());
+    private static Logger LOG = Logger.getLogger(HomeController.class.getName());
 
     @GetMapping("/")
     // Display home page with url shortener
@@ -73,7 +74,7 @@ public class HomeController {
 
         byte[] captchaImage = Text2Image.generate(code);
         MediaType mediaType = MediaType.parseMediaType("image/png");
-        log.info("Generated captcha code: " + code);
+        LOG.info("Generated captcha code: " + code);
         return ResponseEntity.ok().contentType(mediaType)
                 .body(captchaImage);
     }
@@ -128,8 +129,8 @@ public class HomeController {
             Model model, HttpSession session) {
 
         String captchaCode = session.getAttribute("captchaCode").toString();
-        log.info("Session captcha code: " + captchaCode);
-        log.info("User captcha code: " + user_code);
+        LOG.info("Session captcha code: " + captchaCode);
+        LOG.info("User captcha code: " + user_code);
 
         if (captchaCode != null && captchaCode.length() > 0 && captchaCode.equals(user_code)) {
             // Remove captcha from session to prevent multiple submissions with same post
@@ -143,7 +144,7 @@ public class HomeController {
             msg += "Link: " + link_id + "\n";
             msg += "Reason: " + reason + "\n\n";
             msg += "Message: " + message + "\n";
-            String status = CommonUtils.sendTelegramMessage(msg) ? "yes" : "no";
+            String status = new Telegram().sendMessage(msg) ? "yes" : "no";
 
             model.addAttribute("status", status);
         }
@@ -157,7 +158,7 @@ public class HomeController {
         String browserHeaders = request.getHeader("User-Agent");
         String url = surlSvc.accessShorturl(surl, creatorIp, browserHeaders);
         if (url != null && url.length() > 0) {
-            log.info("Redirecting [" + surl + "] to:" + url);
+            LOG.info("Redirecting [" + surl + "] to:" + url);
             return new RedirectView(url);
         } else {
             return new RedirectView("/");
