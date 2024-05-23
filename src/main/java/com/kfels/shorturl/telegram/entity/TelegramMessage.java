@@ -7,6 +7,7 @@ public class TelegramMessage {
     private TelegramChat from;
     private TelegramChat chat;
     private int date;
+    private int edit_date;
     private String media_group_id;
     private String text;
     private List<TelegramEntities> entities;
@@ -49,6 +50,14 @@ public class TelegramMessage {
 
     public void setDate(int date) {
         this.date = date;
+    }
+
+    public int getEdit_date() {
+        return this.edit_date;
+    }
+
+    public void setEdit_date(int edit_date) {
+        this.edit_date = edit_date;
     }
 
     public String getMedia_group_id() {
@@ -122,6 +131,7 @@ public class TelegramMessage {
                 ", from='" + getFrom() + "'" +
                 ", chat='" + getChat() + "'" +
                 ", date='" + getDate() + "'" +
+                ", edit_date='" + getEdit_date() + "'" +
                 ", media_group_id='" + getMedia_group_id() + "'" +
                 ", text='" + getText() + "'" +
                 ", entities='" + getEntities() + "'" +

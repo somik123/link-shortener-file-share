@@ -3,6 +3,7 @@ package com.kfels.shorturl.telegram.entity;
 public class TelegramUpdate {
     private String update_id;
     private TelegramMessage message;
+    private TelegramMessage edited_message;
 
     public TelegramUpdate() {
     }
@@ -16,11 +17,19 @@ public class TelegramUpdate {
     }
 
     public TelegramMessage getMessage() {
-        return this.message;
+        return this.message != null ? this.message : this.edited_message;
     }
 
     public void setMessage(TelegramMessage message) {
         this.message = message;
+    }
+
+    public TelegramMessage getEdited_message() {
+        return this.edited_message;
+    }
+
+    public void setEdited_message(TelegramMessage edited_message) {
+        this.edited_message = edited_message;
     }
 
     @Override
@@ -28,6 +37,7 @@ public class TelegramUpdate {
         return "{" +
                 " update_id='" + getUpdate_id() + "'" +
                 ", message='" + getMessage() + "'" +
+                ", edited_message='" + getEdited_message() + "'" +
                 "}";
     }
 }

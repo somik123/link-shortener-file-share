@@ -1,10 +1,11 @@
-package com.kfels.shorturl.telegram;
+package com.kfels.shorturl.controller;
 
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -12,6 +13,7 @@ import com.kfels.shorturl.entity.Shorturl;
 import com.kfels.shorturl.entity.UploadedFile;
 import com.kfels.shorturl.service.ShorturlService;
 import com.kfels.shorturl.service.UploadedFileService;
+import com.kfels.shorturl.telegram.Telegram;
 import com.kfels.shorturl.utils.CommonUtils;
 
 @RestController
@@ -27,10 +29,17 @@ public class TelegramController {
     private static Logger LOG = Logger.getLogger(TelegramController.class.getName());
 
     @PostMapping("/callback")
-    public String receiveWebHook(@RequestBody String entity) {
+    public String receiveWebHook(@RequestBody String entity,
+            @RequestHeader("x-telegram-bot-api-secret-token") String token) {
         LOG.info(entity);
 
         Telegram telegram = new Telegram(entity);
+
+        if (token != null && token.length() > 0 && !telegram.isValidToken(token)){
+            LOG.warning("Invalid telegarm token. Restart app to reset token.");
+            return "";
+        }
+
         String replyToUser = "";
 
         int adminId = telegram.getAdminId();
@@ -43,7 +52,7 @@ public class TelegramController {
                 replyToUser = System.getenv("SITE_FULL_URL");
             } else if (message.startsWith("/deleteSURL_")) {
                 String[] parts = message.split("_");
-                replyToUser += surlSvc.deleteShorturl(parts[1], parts[2]) ? "Success" : "Fail";
+                replyToUser = surlSvc.deleteShorturl(parts[1], parts[2]) ? "Success" : "Fail";
             } else if (message.startsWith("/deleteFile_")) {
                 String[] parts = message.split("_");
                 replyToUser = storageService.delete(parts[1], parts[2]) ? "Success" : "Fail";

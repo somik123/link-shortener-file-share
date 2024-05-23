@@ -88,8 +88,7 @@ public class Telegram {
                 if (fileId != null && fileId.length() > 0) {
                     String url = String.format("https://api.telegram.org/%s/getFile?file_id=%s", apiKey, fileId);
                     String reply = ApiRequestHandler.getRequest(url);
-                    System.out.println(url);
-                    System.out.println(reply);
+                    LOG.info(reply);
 
                     if (reply.contains("\"ok\":true,")) {
                         ObjectMapper mapper = new ObjectMapper();
@@ -97,15 +96,10 @@ public class Telegram {
                         String telegramFilePath = response.getResult().getFile_path();
 
                         if (telegramFilePath != null && telegramFilePath.length() > 0) {
-
                             url = String.format("https://api.telegram.org/file/%s/%s", apiKey, telegramFilePath);
-                            System.out.println(url);
-
                             String ext = getFileExtension(telegramFilePath);
                             if (ext.length() > 0)
                                 filePath += ext;
-
-                            System.out.println(filePath);
                             return ApiRequestHandler.downloadFile(url, filePath) ? filePath : null;
                         }
                     }
@@ -125,7 +119,9 @@ public class Telegram {
         if (webhookUrl != null && webhookUrl.substring(0, 8).equals("https://")) {
             telegramApiUrl = String.format(telegramApiUrl, this.apiKey, webhookUrl);
             if (authKey != null && authKey.length() > 0)
-                telegramApiUrl += String.format("&auth=%s", authKey);
+                telegramApiUrl += String.format("&secret_token=%s", authKey);
+
+            LOG.info("Setting webhook to: " + telegramApiUrl);
 
             String reply = ApiRequestHandler.getRequest(telegramApiUrl);
             LOG.info(reply);
@@ -275,7 +271,7 @@ public class Telegram {
         if (this.apiKey != null && this.apiKey.length() > 20)
             return true;
         else {
-            System.out.println(apiKey);
+            LOG.info("Invalid api key: " + apiKey);
             return false;
         }
     }
@@ -283,10 +279,12 @@ public class Telegram {
     public String getFileExtension(String fileName) {
         int i = fileName.lastIndexOf(".");
         int p = Math.max(fileName.lastIndexOf('/'), fileName.lastIndexOf('\\'));
-        System.out.println("i: " + i);
-        System.out.println("p: " + p);
         if (i != -1 && i > p)
             return fileName.substring(i);
         return "";
+    }
+
+    public boolean isValidToken(String token) {
+        return this.authKey.equals(token);
     }
 }

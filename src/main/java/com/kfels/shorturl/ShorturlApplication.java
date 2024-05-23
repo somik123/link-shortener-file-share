@@ -17,7 +17,6 @@ public class ShorturlApplication {
 
 		Telegram telegram = new Telegram();
 		String webhook = telegram.getSiteUrl() + "telegram/callback";
-		LOG.info("Setting webhook to: " + webhook);
 		if (telegram.setWebhookUrl(webhook))
 			LOG.info("Webhook set successfully.");
 		else
