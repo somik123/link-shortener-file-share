@@ -55,6 +55,7 @@ public class ApiController {
             String url = System.getenv("SITE_FULL_URL") + shorturl.getSurl();
             String deleteUrl = "/deleteSURL_" + shorturl.getSurl() + "_" + shorturl.getDeleteKey();
             String msg = "New Short url: " + url + "\n"
+                    + "Long url:" + longUrl + "\n"
                     + "Delete: " + deleteUrl;
             CommonUtils.asynSendTelegramMessage(msg);
 

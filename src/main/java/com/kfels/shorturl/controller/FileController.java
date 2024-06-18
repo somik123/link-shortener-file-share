@@ -53,8 +53,11 @@ public class FileController {
             String url = System.getenv("SITE_FULL_URL") + fileDTO.getUrl().substring(1);
             String deleteUrl = "/deleteFile_" + fileDTO.getDownloadKey() + "_"
                     + fileDTO.getDeleteKey();
-            String msg = "New File uploaded: " + url + "\n" +
-                    "Delete: " + deleteUrl;
+            String msg = "New File uploaded: " + url + "\n"
+                    + "Name: " + file.getOriginalFilename() + "\n"
+                    + "Size: " + CommonUtils.formatSize(file.getSize()) + "\n"
+                    + "Type: " + file.getContentType() + "\n"
+                    + "Delete: " + deleteUrl;
             CommonUtils.asynSendTelegramMessage(msg);
 
             return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO("OK", fileDTO, null));

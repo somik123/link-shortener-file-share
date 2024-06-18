@@ -4,8 +4,8 @@ function generate_shorturl() {
 
     var submitBtn = document.getElementById("submit_btn");
 
-    var longURL = encodeURIComponent(document.getElementById("long-url").value);
-    var shortUrl = encodeURIComponent(document.getElementById("short-url").value);
+    var longURL = document.getElementById("long-url").value;
+    var shortUrl = document.getElementById("short-url").value;
 
     submit_btn.innerHTML = "Processing...";
 
@@ -55,7 +55,7 @@ function generate_shorturl() {
 
 
 function generate_shorturl_mini() {
-    var longURL = encodeURIComponent(document.getElementById("file_url").value);
+    var longURL = document.getElementById("file_url").value;
     var http = new XMLHttpRequest();
     http.open("POST", "/api/shorten", true);
     http.setRequestHeader("Content-type", "application/json");
