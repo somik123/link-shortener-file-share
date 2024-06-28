@@ -48,7 +48,6 @@ public class FileController {
             String message = "Upload failed.";
             return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO("FAIL", null, message));
         } else {
-
             // Notify admin
             String url = System.getenv("SITE_FULL_URL") + fileDTO.getUrl().substring(1);
             String deleteUrl = "/deleteFile_" + fileDTO.getDownloadKey() + "_"

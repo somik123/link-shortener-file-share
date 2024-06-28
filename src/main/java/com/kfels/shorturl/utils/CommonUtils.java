@@ -46,9 +46,12 @@ public class CommonUtils {
         StringBuilder cleanName = new StringBuilder();
         for (int i = 0; i < badFileName.length(); i++) {
             int c = (int) badFileName.charAt(i);
-            if (Arrays.binarySearch(ILLEGAL_CHARACTERS, c) < 0) {
+            if (c == ' ') {
+                cleanName.append('_');
+            } else if (Arrays.binarySearch(ILLEGAL_CHARACTERS, c) < 0) {
                 cleanName.append((char) c);
             }
+
         }
         return cleanName.toString();
     }
@@ -112,7 +115,6 @@ public class CommonUtils {
 
     public static boolean isValidURL(String url) {
         try {
-            url = URLDecoder.decode(url, StandardCharsets.UTF_8);
             log.info("Trying confirm this is a url: " + url);
             new URI(url).toURL();
             return true;

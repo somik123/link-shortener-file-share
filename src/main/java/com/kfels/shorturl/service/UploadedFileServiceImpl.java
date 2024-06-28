@@ -2,6 +2,8 @@ package com.kfels.shorturl.service;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -54,6 +56,7 @@ public class UploadedFileServiceImpl implements UploadedFileService {
             }
 
             name = CommonUtils.cleanFileName(name);
+            name = URLEncoder.encode(name, StandardCharsets.UTF_8);
             if (name == null || name.length() < 2) {
                 LOG.warning("Missing filename.");
                 return null;
