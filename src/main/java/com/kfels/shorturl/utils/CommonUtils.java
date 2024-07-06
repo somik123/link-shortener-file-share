@@ -51,7 +51,6 @@ public class CommonUtils {
             } else if (Arrays.binarySearch(ILLEGAL_CHARACTERS, c) < 0) {
                 cleanName.append((char) c);
             }
-
         }
         return cleanName.toString();
     }

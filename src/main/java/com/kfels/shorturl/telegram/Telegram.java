@@ -121,7 +121,7 @@ public class Telegram {
             if (authKey != null && authKey.length() > 0)
                 telegramApiUrl += String.format("&secret_token=%s", authKey);
 
-            LOG.info("Setting webhook to: " + telegramApiUrl);
+            LOG.info("Setting webhook to: " + webhookUrl);
 
             String reply = ApiRequestHandler.getRequest(telegramApiUrl);
             LOG.info(reply);

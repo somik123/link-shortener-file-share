@@ -192,3 +192,20 @@ function reloadImage() {
     document.getElementById("user_code_img").src = "/showImage?v=" + rand;
     return false;
 }
+
+
+function formValidation() {
+    let inputList = ["name", "email", "reason", "message", "user_code"];
+    let valid = true;
+    for(let i=0; i<inputList.length; i++){
+        let el = document.getElementById(inputList[i]);
+        if (el.value.length == 0) {
+            el.classList.add("border-danger");
+            valid = false;
+        }
+        else if (el.classList.contains("border-danger")) {
+            el.classList.remove("border-danger")
+        }
+    };
+    return valid;
+}

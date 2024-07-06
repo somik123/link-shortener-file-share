@@ -12,8 +12,8 @@ import javax.imageio.ImageIO;
 
 public class Text2Image {
     private static Random random = new Random();
-    private static int width = 100;
-    private static int height = 24;
+    private static int width = 200;
+    private static int height = 40;
     private static int lines = 80;
 
     public static byte[] generate(String code) {
@@ -22,16 +22,16 @@ public class Text2Image {
         Graphics2D g2d = image.createGraphics();
 
         g2d.fillRect(0, 0, width, height);
-        g2d.setFont(new Font("Times New Roman", Font.ROMAN_BASELINE, 18));
+        g2d.setFont(new Font("Times New Roman", Font.ROMAN_BASELINE, 36));
         g2d.setColor(getRandColor(110, 133));
 
         int margin = width / code.length();
         for (int i = 0; i < code.length(); ++i) {
-            Font font = new Font("Fixedsys", Font.CENTER_BASELINE, 24);
+            Font font = new Font("Fixedsys", Font.CENTER_BASELINE, 36);
             g2d.setFont(font);
             g2d.setColor(getRandColor(0, 100));
             g2d.translate(random.nextInt(3), random.nextInt(3));
-            g2d.drawString(String.valueOf(code.charAt(i)), margin * i, 16);
+            g2d.drawString(String.valueOf(code.charAt(i)), margin * i, 30);
         }
 
         for (int i = 0; i <= lines; i++) {

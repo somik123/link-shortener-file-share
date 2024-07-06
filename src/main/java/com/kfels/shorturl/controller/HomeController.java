@@ -128,27 +128,35 @@ public class HomeController {
             @RequestParam String reason, @RequestParam String user_code, @RequestParam String message,
             Model model, HttpSession session) {
 
+        String status = "no";
         String captchaCode = session.getAttribute("captchaCode").toString();
         LOG.info("Session captcha code: " + captchaCode);
         LOG.info("User captcha code: " + user_code);
 
-        if (captchaCode != null && captchaCode.length() > 0 && captchaCode.equals(user_code)) {
-            // Remove captcha from session to prevent multiple submissions with same post
-            // data
-            session.setAttribute("captchaCode", "");
+        // Reset session captcha
+        session.setAttribute("captchaCode", "");
 
-            // Send message via telegram
-            String msg = "New message received via contact form.\n\n";
-            msg += "Name: " + name + "\n";
-            msg += "Email: " + email + "\n";
-            msg += "Link: " + link_id + "\n";
-            msg += "Reason: " + reason + "\n\n";
-            msg += "Message: " + message + "\n";
-            String status = new Telegram().sendMessage(msg) ? "yes" : "no";
+        if (captchaCode != null && captchaCode.length() > 0) {
 
-            model.addAttribute("status", status);
+            if (captchaCode.equals(user_code) &&
+                    name != null && name.length() > 0 &&
+                    email != null && email.length() > 0 &&
+                    reason != null && reason.length() > 0 &&
+                    message != null && message.length() > 0) {
+
+                // Send message via telegram
+                String msg = "New message received via contact form.\n\n";
+                msg += "Name: " + name + "\n";
+                msg += "Email: " + email + "\n";
+                msg += "Link: " + link_id + "\n";
+                msg += "Reason: " + reason + "\n\n";
+                msg += "Message: " + message + "\n";
+                status = new Telegram().sendMessage(msg) ? "yes" : "no";
+            }
         }
+        model.addAttribute("status", status);
         return "contactForm";
+
     }
 
     // Redirect user by processing surl
