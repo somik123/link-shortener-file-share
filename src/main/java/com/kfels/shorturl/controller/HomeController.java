@@ -67,8 +67,9 @@ public class HomeController {
     // Display captcha code and set captcha in session
     @GetMapping("/showImage")
     public ResponseEntity<?> generateCaptcha(HttpSession session) {
-        int codeNum = new Random().nextInt(11111, 99999);
-        String code = String.valueOf(codeNum);
+        //int codeNum = new Random().nextInt(11111, 99999);
+        //String code = String.valueOf(codeNum);
+        String code = CommonUtils.randString(6, 3);
 
         session.setAttribute("captchaCode", code);
 
