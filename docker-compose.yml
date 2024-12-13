@@ -9,19 +9,6 @@ volumes:
     name: shorturl_fileshare_temp
 
 services:
-  db:
-    container_name: mysql
-    image: mysql
-    restart: unless-stopped
-    volumes:
-      - shorturl_fileshare_db:/var/lib/mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: Pgpnc4nkwdMZpeF2w4yWz7Th
-      MYSQL_DATABASE: XYgPZX7WCiW
-      MYSQL_USER: mhvXD4AuBi7
-      MYSQL_PASSWORD: DYg3FejmiQ4RdNcFHYNU3NWs
-      TZ: Asia/Singapore
-
   backend_java:
     image: somik123/shorturl-fileshare
     container_name: shorturl_fileshare_java
@@ -30,6 +17,7 @@ services:
       - shorturl_fileshare_uploads:/usr/app/uploads
       - shorturl_fileshare_temp:/usr/app/tmp_uploads
       - shorturl_fileshare_logs:/usr/app/logs
+      - shorturl_fileshare_db:/usr/app/db
     environment:
       SHORTURL_USER: admin
       SHORTURL_PASS: zR6CzF9bZp3@HTPzaaY%2Fzv
@@ -48,7 +36,3 @@ services:
       TZ: Asia/Singapore
     ports:
       - 6080:8080
-    depends_on:
-      - db
-    links:
-      - db

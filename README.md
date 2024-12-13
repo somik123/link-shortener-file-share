@@ -11,10 +11,10 @@ curl -o docker-compose.yml https://raw.githubusercontent.com/somik123/link-short
 
 Edit the file with your favorit editor to set all the environment variables in the docker-compose file, including the admin username/password:
 
-`SHORTURL_DB_HOST` - MySQL database host, usually localhost
-`SHORTURL_DB_NAME` - MySQL database name. Note that the database must exist. Tables will be autocreated on boot (if not exist)
-`SHORTURL_DB_USER` - MySQL database usernme
-`SHORTURL_DB_PASS` - MySQL database password
+
+`SHORTURL_DB_NAME` - Database name. Database will be saved to ./db folder. Tables will be autocreated on boot (if not exist)
+`SHORTURL_DB_USER` - Database usernme
+`SHORTURL_DB_PASS` - Database password
 
 `SHORTURL_LENGTH` - Length of generated shorturls (if auto-generted)
 `FILEURL_LENGTH`  - Length of generated file urls (if auto-generted)
@@ -32,6 +32,7 @@ Edit the file with your favorit editor to set all the environment variables in t
 `UPLOADFILE_MAX_SIZE` - Max allowed size for uploaded file (in MB)
 
 
+~~`SHORTURL_DB_HOST` - MySQL database host, usually localhost~~ (Depricated)
 
 Once done, save the file and run the following command from the same folder as your `docker-compose.yml` file.
 ```
@@ -49,6 +50,26 @@ Set the environmental variable `BUCKET_PASS_HIDE` to `no` to display the admin u
 <br>
 
 ### DB Manager
+
+Access the H2 database console on `SITE_FULL_URL/h2-SHORTURL_DB_NAME` where `SITE_FULL_URL` and `SHORTURL_DB_NAME` is what you defined in your `docker-compose.yml` file. 
+
+So if your website url is `http://example.com/` and you named your db `XYgPZX7WCiW` your H2 console url is `http://example.com/h2-XYgPZX7WCiW`
+
+At the login page:
+
+| Title | Value |
+|-------|-------|
+|Driver Class:| org.h2.Driver |
+|JDBC URL:| jdbc:h2:file:./db/`SHORTURL_DB_NAME` |
+|User Name:| `SHORTURL_DB_USER` |
+|Password:| `SHORTURL_DB_PASS` |
+
+> Note: Replace `SHORTURL_DB_NAME`, `SHORTURL_DB_USER` and `SHORTURL_DB_PASS` with what you defined in your `docker-compose.yml` file.
+
+<br>
+
+<details>
+<summary><b>MySQL DB Manager</b> (Depricated)</summary>
 PhpMyAdmin database manager is disabled by default in the `docker-compose.yml` file. It provides a simple way to troubleshoot or edit your bucket database but use it at your own risk.
 
 To use it, copy paste the following code block at the bottom of your `docker-compose.yml` file and run the `docker compose up -d` command.
@@ -71,6 +92,7 @@ To use it, copy paste the following code block at the bottom of your `docker-com
 It is available on port `6088` once it is up. 
 
 <br>
+</details>
 
 ### Screenshots
 
@@ -91,6 +113,7 @@ It is available on port `6088` once it is up.
 <br>
 
 ### To-do list
+- [x] Add embeded database support (using h2 db).
 - [x] Add env variables for db settings.
 - [x] Ability to generate shorturls & visit them.
 - [x] Able to delete shorturls.

@@ -33,7 +33,7 @@
             </div>
             <div class="mb-3">
                 <label class="form-label">Contact Reason:*</label>
-                <select name="reason" class="form-select" id="reason" >
+                <select name="reason" class="form-select" id="reason">
                     <option></option>
                     <option>Others</option>
                     <option>Inquery</option>
@@ -43,24 +43,26 @@
             </div>
             <div class="mb-3">
                 <label for="exampleFormControlTextarea1" class="form-label">Short message:*</label>
-                <textarea class="form-control" rows="3" name="message" id="message" ></textarea>
+                <textarea class="form-control" rows="3" name="message" id="message"></textarea>
             </div>
             <div class="mb-3">
                 <label class="form-label">Text match:*</label>
-                <div class="ms-1">
-                    <img src="/showImage" alt="user code image" id="user_code_img" style="border-radius: 8px;" />
-                    <button class="btn" style="font-size: 36px; padding: 0px; font-weight: bolder;"
-                        onclick="return reloadImage();">&#8634;</button>
-                </div>
-                <div style="width: 240px;">
-                    <input type="text" class="form-control" name="user_code" id="user_code" />
+                <div class="row">
+                    <div class="col-md-6 mb-2">
+                        <input type="text" class="form-control" name="user_code" id="user_code" />
+                    </div>
+                    <div class="col-md-6">
+                        <img src="/showImage" alt="user code image" id="user_code_img"
+                            style="border-radius: 8px; cursor: pointer;" onclick="return reloadImage();" />
+                    </div>
                 </div>
             </div>
             <div class="mb-3">
-                <input class="btn btn-info" type="submit" value="Send Message" onclick="return formValidation();" />
+                <input class="form-control btn btn-info" type="submit" value="Send Message"
+                    onclick="return formValidation();" />
             </div>
         </form>
-        
+
     </div>
     <div th:replace="~{layout::mainFooter}"></div>
 

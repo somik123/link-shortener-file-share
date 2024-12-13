@@ -2,7 +2,6 @@ package com.kfels.shorturl.controller;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
-import java.util.Random;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
