@@ -1,5 +1,5 @@
 # Build application
-FROM somik123/ubuntu:22-jdk21-mvn396 as builder
+FROM somik123/ubuntu:22-jdk21-mvn as builder
 
 # Finally start building spring boot app
 WORKDIR /app
@@ -12,7 +12,7 @@ RUN mvn -f ./pom.xml clean package -Dmaven.test.skip=true
 
 # Run application
 # FROM somik123/ubuntu:22-jdk21
-FROM eclipse-temurin:21.0.2_13-jre-alpine
+FROM eclipse-temurin:21-jre-alpine
 
 WORKDIR /usr/app
 
