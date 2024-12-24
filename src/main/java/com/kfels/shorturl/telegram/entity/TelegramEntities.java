@@ -34,10 +34,6 @@ public class TelegramEntities {
 
     @Override
     public String toString() {
-        return "{" +
-            " offset='" + getOffset() + "'" +
-            ", length='" + getLength() + "'" +
-            ", type='" + getType() + "'" +
-            "}";
+        return String.format("{ offset='%d', length='%d', type='%s'}", getOffset(), getLength(), getType());
     }
 }

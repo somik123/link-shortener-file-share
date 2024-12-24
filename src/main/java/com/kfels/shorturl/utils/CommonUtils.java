@@ -56,7 +56,7 @@ public class CommonUtils {
 
     public static String formatSize(long v) {
         if (v < 1024)
-            return v + " B";
+            return String.format("%d B", v);
         int z = (63 - Long.numberOfLeadingZeros(v)) / 10;
         return String.format("%.1f %sB", (double) v / (1L << (z * 10)), " KMGTPE".charAt(z));
     }
@@ -113,11 +113,11 @@ public class CommonUtils {
 
     public static boolean isValidURL(String url) {
         try {
-            log.info("Trying confirm this is a url: " + url);
+            log.info(String.format("Trying confirm this is a url: %s", url));
             new URI(url).toURL();
             return true;
         } catch (Exception e) {
-            log.warning("Invalid url: " + url);
+            log.warning(String.format("Invalid url: %s", url));
             return false;
         }
     }

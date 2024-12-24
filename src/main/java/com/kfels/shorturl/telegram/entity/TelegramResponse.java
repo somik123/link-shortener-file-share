@@ -26,10 +26,7 @@ public class TelegramResponse {
 
     @Override
     public String toString() {
-        return "{" +
-                " ok='" + isOk() + "'" +
-                ", result='" + getResult() + "'" +
-                "}";
+        return String.format("{ ok='%s', result='%s'}", isOk(), getResult());
     }
 
 }

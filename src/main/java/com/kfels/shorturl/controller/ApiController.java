@@ -15,6 +15,7 @@ import com.kfels.shorturl.dto.ShorturlDTO;
 import com.kfels.shorturl.entity.Shorturl;
 import com.kfels.shorturl.service.ShorturlService;
 import com.kfels.shorturl.utils.CommonUtils;
+import com.kfels.shorturl.utils.DnsBlockList;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -25,7 +26,7 @@ public class ApiController {
     @Autowired
     ShorturlService surlSvc;
 
-    private static Logger LOG = Logger.getLogger(ApiController.class.getName());
+    private static final Logger LOG = Logger.getLogger(ApiController.class.getName());
 
     @PostMapping("/shorten")
     public ResponseDTO shortenUrl(@RequestBody RequestDTO requestDTO, HttpServletRequest request) {
@@ -35,6 +36,7 @@ public class ApiController {
             longUrl = requestDTO.getUrl();
         if (longUrl == null)
             return new ResponseDTO("FAIL", "", "Invalid url provided");
+
         // Check if the long url is already using a short url
         ShorturlDTO surlDto;
         Shorturl shorturl = surlSvc.getShorturlByLongurl(longUrl);
@@ -42,6 +44,12 @@ public class ApiController {
             surlDto = new ShorturlDTO(shorturl.getSurl(), shorturl.getIsEnabled());
             return new ResponseDTO("FAIL", surlDto, "Longurl already exists.");
         }
+
+        // Ensure long url domain is not in block list
+        if(DnsBlockList.checkBlockList(longUrl)){
+            return new ResponseDTO("FAIL", "", "Domain is blocked. Contact site owner for assistance.");
+        }
+
         // Generate a new short url
         String creatorIp = CommonUtils.getClientIpAddress(request);
         shorturl = surlSvc.generateShorturl(longUrl, creatorIp, requestDTO.getSurl());
@@ -52,11 +60,9 @@ public class ApiController {
                     shorturl.getIsEnabled());
 
             // Notify admin
-            String url = System.getenv("SITE_FULL_URL") + shorturl.getSurl();
-            String deleteUrl = "/deleteSURL_" + shorturl.getSurl() + "_" + shorturl.getDeleteKey();
-            String msg = "New Short url: " + url + "\n"
-                    + "Long url: " + longUrl + "\n"
-                    + "Delete: " + deleteUrl;
+            String url = String.format("%s%s", System.getenv("SITE_FULL_URL"), shorturl.getSurl());
+            String deleteUrl = String.format("/deleteSURL_%s_%s", shorturl.getSurl(), shorturl.getDeleteKey());
+            String msg = String.format("New Short url: %s\nLong url: %s\nDelete: %s", url, longUrl, deleteUrl);
             CommonUtils.asynSendTelegramMessage(msg);
 
             LOG.info(msg);

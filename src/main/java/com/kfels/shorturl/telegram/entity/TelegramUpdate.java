@@ -34,10 +34,7 @@ public class TelegramUpdate {
 
     @Override
     public String toString() {
-        return "{" +
-                " update_id='" + getUpdate_id() + "'" +
-                ", message='" + getMessage() + "'" +
-                ", edited_message='" + getEdited_message() + "'" +
-                "}";
+        return String.format("{ update_id='%s', message='%s', edited_message='%s'}", getUpdate_id(), getMessage(),
+                getEdited_message());
     }
 }

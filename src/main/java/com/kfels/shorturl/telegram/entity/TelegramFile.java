@@ -106,19 +106,10 @@ public class TelegramFile {
 
     @Override
     public String toString() {
-        return "{" +
-                " file_name='" + getFile_name() + "'" +
-                ", mime_type='" + getMime_type() + "'" +
-                ", file_id='" + getFile_id() + "'" +
-                ", file_unique_id='" + getFile_unique_id() + "'" +
-                ", file_size='" + getFile_size() + "'" +
-                ", file_path='" + getFile_path() + "'" +
-                ", duration='" + getDuration() + "'" +
-                ", width='" + getWidth() + "'" +
-                ", height='" + getHeight() + "'" +
-                ", thumbnail='" + getThumbnail() + "'" +
-                ", thumb='" + getThumb() + "'" +
-                "}";
+        return String.format(
+                "{ file_name='%s', mime_type='%s', file_id='%s', file_unique_id='%s', file_size='%d', file_path='%s', duration='%d', width='%d', height='%d', thumbnail='%s', thumb='%s'}",
+                getFile_name(), getMime_type(), getFile_id(), getFile_unique_id(), getFile_size(), getFile_path(),
+                getDuration(), getWidth(), getHeight(), getThumbnail(), getThumb());
     }
 
 }

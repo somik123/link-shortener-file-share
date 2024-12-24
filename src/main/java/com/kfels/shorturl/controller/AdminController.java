@@ -28,7 +28,7 @@ public class AdminController {
     @Autowired
     UploadedFileService storageService;
 
-    private static Logger LOG = Logger.getLogger(AdminController.class.getName());
+    private static final Logger LOG = Logger.getLogger(AdminController.class.getName());
 
     @GetMapping("/")
     public String adminHome(Model model) {
@@ -54,7 +54,7 @@ public class AdminController {
             model.addAttribute("name", shorturl.getSurl());
             model.addAttribute("logs", datalogs);
             model.addAttribute("max", datalogs.size() - 1);
-            LOG.info("Found info for: " + shorturl.getSurl());
+            LOG.info(String.format("Found info for: %s", shorturl.getSurl()));
         }
         return "showLogs";
     }
@@ -67,7 +67,7 @@ public class AdminController {
             model.addAttribute("name", file.getName());
             model.addAttribute("logs", datalogs);
             model.addAttribute("max", datalogs.size() - 1);
-            LOG.info("Found info for: " + file.getName());
+            LOG.info(String.format("Found info for: %s", file.getName()));
         }
         return "showLogs";
     }

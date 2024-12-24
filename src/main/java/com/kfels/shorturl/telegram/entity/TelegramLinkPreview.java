@@ -13,8 +13,6 @@ public class TelegramLinkPreview {
 
     @Override
     public String toString() {
-        return "{" +
-                " url='" + getUrl() + "'" +
-                "}";
+        return String.format("{ url='%s'}", getUrl());
     }
 }

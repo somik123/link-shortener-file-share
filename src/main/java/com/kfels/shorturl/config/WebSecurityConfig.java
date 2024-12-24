@@ -1,4 +1,4 @@
-package com.kfels.shorturl.security;
+package com.kfels.shorturl.config;
 
 import java.util.logging.Logger;
 
@@ -17,7 +17,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
-    private static Logger LOG = Logger.getLogger(WebSecurityConfig.class.getName());
+    private static final Logger LOG = Logger.getLogger(WebSecurityConfig.class.getName());
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -35,29 +35,29 @@ public class WebSecurityConfig {
     @Bean
     public UserDetailsService userDetailsService() {
 
-        String bucketUser = System.getenv("SHORTURL_USER");
-        if (bucketUser == null || bucketUser.isEmpty())
-            bucketUser = "user";
-        String bucketPass = System.getenv("SHORTURL_PASS");
-        if (bucketPass == null || bucketPass.isEmpty()) {
-            bucketPass = "password";
+        String shortUrlUser = System.getenv("SHORTURL_USER");
+        if (shortUrlUser == null || shortUrlUser.isEmpty())
+        shortUrlUser = "user";
+        String shortUrlPass = System.getenv("SHORTURL_PASS");
+        if (shortUrlPass == null || shortUrlPass.isEmpty()) {
+            shortUrlPass = "password";
         }
 
-        String encodedPassword = passwordEncoder().encode(bucketPass);
+        String encodedPassword = passwordEncoder().encode(shortUrlPass);
 
         UserDetails user = User.builder()
-                .username(bucketUser)
+                .username(shortUrlUser)
                 .password(encodedPassword)
                 .roles("USER")
                 .build();
 
         String hidePass = System.getenv("SHORTURL_PASS_HIDE");
         if (hidePass == null || hidePass.isEmpty() || hidePass.toLowerCase().equals("no")
-                || bucketUser.equals("user")) {
+                || shortUrlUser.equals("user")) {
             LOG.info("\n");
-            LOG.info("Admin username set to: " + bucketUser);
-            LOG.info("Admin password set to: " + bucketPass);
-            LOG.info("Encrypted password to: " + encodedPassword);
+            LOG.info(String.format("Admin username set to: %s", shortUrlUser));
+            LOG.info(String.format("Admin password set to: %s", shortUrlPass));
+            LOG.info(String.format("Encrypted password to: %s", encodedPassword));
             LOG.info("\n");
         } else {
             LOG.info("\n");

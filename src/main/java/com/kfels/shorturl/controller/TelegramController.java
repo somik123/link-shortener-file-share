@@ -26,7 +26,7 @@ public class TelegramController {
     @Autowired
     UploadedFileService storageService;
 
-    private static Logger LOG = Logger.getLogger(TelegramController.class.getName());
+    private static final Logger LOG = Logger.getLogger(TelegramController.class.getName());
 
     @PostMapping("/callback")
     public String receiveWebHook(@RequestBody String entity,
@@ -35,7 +35,7 @@ public class TelegramController {
 
         Telegram telegram = new Telegram(entity);
 
-        if (token != null && token.length() > 0 && !telegram.isValidToken(token)){
+        if (token != null && token.length() > 0 && !telegram.isValidToken(token)) {
             LOG.warning("Invalid telegarm token. Restart app to reset token.");
             return "";
         }
@@ -60,41 +60,40 @@ public class TelegramController {
                 String[] parts = message.split("_");
                 UploadedFile file = storageService.getUploadFileFromDownloadKey(parts[1]);
                 if (file != null) {
-                    String longUrl = System.getenv("SITE_FULL_URL") + "file/" + file.getDownloadKey() + "/"
-                            + file.getName();
+                    String longUrl = String.format("%sfile/%s/%s", System.getenv("SITE_FULL_URL"),
+                            file.getDownloadKey(), file.getName());
                     generateShorturlAndNotify(longUrl, telegram);
                 }
             } else {
-                replyToUser = "List of available commands:\n"
-                        + "/url - Reply with the url to the main website\n"
-                        + "/deleteSURL_{shortUrlId}_{deleteKey} - Delete shorturl.\n"
-                        + "/deleteFile_{fileId}_{deleteKey} - Delete file.\n"
-                        + "/shorten_{fileId} - Generate a shorturl for uploaded file.\n"
-                        + "/help - Shows the list of commands.\n";
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.append("List of available commands:\n");
+                stringBuilder.append("/url - Reply with the url to the main website\n");
+                stringBuilder.append("/deleteSURL_{shortUrlId}_{deleteKey} - Delete shorturl.\n");
+                stringBuilder.append("/deleteFile_{fileId}_{deleteKey} - Delete file.\n");
+                stringBuilder.append("/shorten_{fileId} - Generate a shorturl for uploaded file.\n");
+                stringBuilder.append("/help - Shows the list of commands.\n");
+                replyToUser = stringBuilder.toString();
             }
             telegram.sendMessage(chatId, replyToUser);
         } else if (telegram.getFileType() != null) {
-            String filePath = "tmp_uploads/" + CommonUtils.randString(7, 3);
+            String filePath = String.format("tmp_uploads/%s", CommonUtils.randString(7, 3));
             filePath = telegram.downloadFile(filePath);
             if (filePath != null) {
                 UploadedFile uploadedFile = storageService.saveFromTelegram(filePath, 1);
                 if (uploadedFile != null) {
-                    String url = System.getenv("SITE_FULL_URL") + "file/" + uploadedFile.getDownloadKey() + "/"
-                            + uploadedFile.getName();
-                    String deleteUrl = "/deleteFile_" + uploadedFile.getDownloadKey() + "_"
-                            + uploadedFile.getDeleteKey();
+                    String url = String.format("%sfile/%s/%s", System.getenv("SITE_FULL_URL"),
+                            uploadedFile.getDownloadKey(), uploadedFile.getName());
+                    String deleteUrl = String.format("/deleteFile_%s_%s", uploadedFile.getDownloadKey(),
+                            uploadedFile.getDeleteKey());
 
                     // Notify admin
                     if (chatId != adminId) {
-                        String msg = "New File uploaded: " + url + "\n" +
-                                "Delete: " + deleteUrl;
+                        String msg = String.format("New File uploaded: %s\nDelete: %s", url, deleteUrl);
                         CommonUtils.asynSendTelegramMessage(msg);
                     }
                     // Reply to user
-                    replyToUser = "Download: " + url + "\n"
-                            + "Expiry: 1 hour\n"
-                            + "Delete: " + deleteUrl + "\n"
-                            + "Shorten: /shorten_" + uploadedFile.getDownloadKey();
+                    replyToUser = String.format("Download: %s\nExpiry: 1 hour\nDelete: %s\nShorten: /shorten_%s", url,
+                            deleteUrl, uploadedFile.getDownloadKey());
                 } else {
                     replyToUser = "File upload failed";
                 }
@@ -115,26 +114,23 @@ public class TelegramController {
 
         Shorturl shorturl = surlSvc.getShorturlByLongurl(longUrl);
         if (shorturl != null) {
-            replyToUser = "ShortURL: " + System.getenv("SITE_FULL_URL") + shorturl.getSurl() + "\n"
-                    + "Enabled: " + shorturl.getIsEnabled() + "\n"
-                    + "Delete: (hidden)";
+            replyToUser = String.format("ShortURL: %s%s\nEnabled: %s\nDelete: (hidden)", System.getenv("SITE_FULL_URL"),
+                    shorturl.getSurl(), shorturl.getIsEnabled());
         } else {
             shorturl = surlSvc.generateShorturl(longUrl, "Telegram");
 
             if (shorturl != null) {
-                String url = System.getenv("SITE_FULL_URL") + shorturl.getSurl();
-                String deleteUrl = "/deleteSURL_" + shorturl.getSurl() + "_" + shorturl.getDeleteKey();
+                String url = String.format("%s%s", System.getenv("SITE_FULL_URL"), shorturl.getSurl());
+                String deleteUrl = String.format("/deleteSURL_%s_%s", shorturl.getSurl(), shorturl.getDeleteKey());
 
                 // Notify admin
                 if (chatId != adminId) {
-                    String msg = "New Short url: " + url + "\n"
-                            + "Delete: " + deleteUrl;
+                    String msg = String.format("New Short url: %s\nDelete: %s", url, deleteUrl);
                     CommonUtils.asynSendTelegramMessage(msg);
                 }
                 // Reply to user
-                replyToUser = "ShortURL: " + url + "\n"
-                        + "Enabled: " + shorturl.getIsEnabled() + "\n"
-                        + "Delete: " + deleteUrl;
+                replyToUser = String.format("ShortURL: %s\nEnabled: %s\nDelete: %s", url, shorturl.getIsEnabled(),
+                        deleteUrl);
             } else {
                 replyToUser = "ShortURL generation failed";
             }

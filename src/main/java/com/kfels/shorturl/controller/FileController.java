@@ -37,7 +37,7 @@ public class FileController {
     @Autowired
     UploadedFileService storageService;
 
-    private static Logger LOG = Logger.getLogger(FileController.class.getName());
+    private static final Logger LOG = Logger.getLogger(FileController.class.getName());
 
     @PostMapping(value = "/upload")
     public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file,
@@ -49,14 +49,11 @@ public class FileController {
             return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO("FAIL", null, message));
         } else {
             // Notify admin
-            String url = System.getenv("SITE_FULL_URL") + fileDTO.getUrl().substring(1);
-            String deleteUrl = "/deleteFile_" + fileDTO.getDownloadKey() + "_"
-                    + fileDTO.getDeleteKey();
-            String msg = "New File uploaded: " + url + "\n"
-                    + "Name: " + file.getOriginalFilename() + "\n"
-                    + "Size: " + CommonUtils.formatSize(file.getSize()) + "\n"
-                    + "Type: " + file.getContentType() + "\n"
-                    + "Delete: " + deleteUrl;
+            String url = String.format("%s%s", System.getenv("SITE_FULL_URL"), fileDTO.getUrl().substring(1));
+            String deleteUrl = String.format("/deleteFile_%s_%s", fileDTO.getDownloadKey(), fileDTO.getDeleteKey());
+            String msg = String.format("New File uploaded: %s\nName: %s\nSize: %s\nType: %s\nDelete: %s", url,
+                    file.getOriginalFilename(), CommonUtils.formatSize(file.getSize()), file.getContentType(),
+                    deleteUrl);
             CommonUtils.asynSendTelegramMessage(msg);
 
             return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO("OK", fileDTO, null));
@@ -67,7 +64,7 @@ public class FileController {
     @GetMapping("/{downloadKey}/{fileName}")
     public ResponseEntity<?> downloadFile(@PathVariable String downloadKey,
             @PathParam("fileName") String fileName, HttpServletRequest request) {
-        LOG.info("Download key: " + downloadKey);
+        LOG.info(String.format("Download key: %s", downloadKey));
         return downloadFile(downloadKey, request);
     }
 
@@ -95,7 +92,7 @@ public class FileController {
             LOG.info(mediaType.toString());
 
             return ResponseEntity.ok().contentType(mediaType)
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + file.getName() + "\"")
+                    .header(HttpHeaders.CONTENT_DISPOSITION, String.format("inline; filename=\"%s\"", file.getName()))
                     .body(new InputStreamResource(in));
 
         } catch (IOException e) {

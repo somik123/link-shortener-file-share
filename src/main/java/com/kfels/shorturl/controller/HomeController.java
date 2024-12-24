@@ -33,7 +33,7 @@ public class HomeController {
     @Autowired
     UploadedFileService storagService;
 
-    private static Logger LOG = Logger.getLogger(HomeController.class.getName());
+    private static final Logger LOG = Logger.getLogger(HomeController.class.getName());
 
     @GetMapping("/")
     // Display home page with url shortener
@@ -66,15 +66,15 @@ public class HomeController {
     // Display captcha code and set captcha in session
     @GetMapping("/showImage")
     public ResponseEntity<?> generateCaptcha(HttpSession session) {
-        //int codeNum = new Random().nextInt(11111, 99999);
-        //String code = String.valueOf(codeNum);
+        // int codeNum = new Random().nextInt(11111, 99999);
+        // String code = String.valueOf(codeNum);
         String code = CommonUtils.randString(6, 3);
 
         session.setAttribute("captchaCode", code);
 
         byte[] captchaImage = Text2Image.generate(code);
         MediaType mediaType = MediaType.parseMediaType("image/png");
-        LOG.info("Generated captcha code: " + code);
+        LOG.info(String.format("Generated captcha code: %s", code));
         return ResponseEntity.ok().contentType(mediaType)
                 .body(captchaImage);
     }
@@ -130,8 +130,8 @@ public class HomeController {
 
         String status = "no";
         String captchaCode = session.getAttribute("captchaCode").toString();
-        LOG.info("Session captcha code: " + captchaCode);
-        LOG.info("User captcha code: " + user_code);
+        LOG.info(String.format("Session captcha code: %s", captchaCode));
+        LOG.info(String.format("User captcha code: %s", user_code));
 
         // Reset session captcha
         session.setAttribute("captchaCode", "");
@@ -145,12 +145,9 @@ public class HomeController {
                     message != null && message.length() > 0) {
 
                 // Send message via telegram
-                String msg = "New message received via contact form.\n\n";
-                msg += "Name: " + name + "\n";
-                msg += "Email: " + email + "\n";
-                msg += "Link: " + link_id + "\n";
-                msg += "Reason: " + reason + "\n\n";
-                msg += "Message: " + message + "\n";
+                String msg = String.format(
+                        "New message received via contact form.\n\nName: %s\nEmail: %s\nLink: %s\nReason: %s\n\nMessage: %s\n",
+                        name, email, link_id, reason, message);
                 status = new Telegram().sendMessage(msg) ? "yes" : "no";
             }
         }
@@ -166,7 +163,7 @@ public class HomeController {
         String browserHeaders = request.getHeader("User-Agent");
         String url = surlSvc.accessShorturl(surl, creatorIp, browserHeaders);
         if (url != null && url.length() > 0) {
-            LOG.info("Redirecting [" + surl + "] to:" + url);
+            LOG.info(String.format("Redirecting [%s] to:%s", surl, url));
             return new RedirectView(url);
         } else {
             return new RedirectView("/");

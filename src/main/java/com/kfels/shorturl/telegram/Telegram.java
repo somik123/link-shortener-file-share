@@ -12,7 +12,7 @@ import com.kfels.shorturl.telegram.entity.TelegramUpdate;
 import com.kfels.shorturl.utils.CommonUtils;
 
 public class Telegram {
-    private static Logger LOG = Logger.getLogger(Telegram.class.getName());
+    private static final Logger LOG = Logger.getLogger(Telegram.class.getName());
     private String apiKey;
     private int adminId;
     private TelegramUpdate update;
@@ -45,7 +45,7 @@ public class Telegram {
             if (apiKey.substring(0, 3).equals("bot"))
                 this.apiKey = apiKey;
             else
-                this.apiKey = "bot" + apiKey;
+                this.apiKey = String.format("bot%s", apiKey);
             this.adminId = Integer.parseInt(adminId);
             this.siteUrl = siteUrl;
             this.authKey = authKey;
@@ -121,7 +121,7 @@ public class Telegram {
             if (authKey != null && authKey.length() > 0)
                 telegramApiUrl += String.format("&secret_token=%s", authKey);
 
-            LOG.info("Setting webhook to: " + webhookUrl);
+            LOG.info(String.format("Setting webhook to: %s", webhookUrl));
 
             String reply = ApiRequestHandler.getRequest(telegramApiUrl);
             LOG.info(reply);
@@ -271,7 +271,7 @@ public class Telegram {
         if (this.apiKey != null && this.apiKey.length() > 20)
             return true;
         else {
-            LOG.info("Invalid api key: " + apiKey);
+            LOG.info(String.format("Invalid api key: %s", apiKey));
             return false;
         }
     }

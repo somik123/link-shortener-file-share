@@ -126,21 +126,10 @@ public class TelegramMessage {
 
     @Override
     public String toString() {
-        return "{" +
-                " message_id='" + getMessage_id() + "'" +
-                ", from='" + getFrom() + "'" +
-                ", chat='" + getChat() + "'" +
-                ", date='" + getDate() + "'" +
-                ", edit_date='" + getEdit_date() + "'" +
-                ", media_group_id='" + getMedia_group_id() + "'" +
-                ", text='" + getText() + "'" +
-                ", entities='" + getEntities() + "'" +
-                ", photo='" + getPhoto() + "'" +
-                ", document='" + getDocument() + "'" +
-                ", audio='" + getAudio() + "'" +
-                ", video='" + getVideo() + "'" +
-                ", link_preview_options='" + getLink_preview_options() + "'" +
-                "}";
+        return String.format(
+                "{ message_id='%d', from='%s', chat='%s', date='%d', edit_date='%d', media_group_id='%s', text='%s', entities='%s', photo='%s', document='%s', audio='%s', video='%s', link_preview_options='%s'}",
+                getMessage_id(), getFrom(), getChat(), getDate(), getEdit_date(), getMedia_group_id(), getText(),
+                getEntities(), getPhoto(), getDocument(), getAudio(), getVideo(), getLink_preview_options());
     }
 
 }

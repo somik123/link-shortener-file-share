@@ -74,15 +74,9 @@ public class TelegramChat {
 
     @Override
     public String toString() {
-        return "{" +
-            " id='" + getId() + "'" +
-            ", is_bot='" + isIs_bot() + "'" +
-            ", first_name='" + getFirst_name() + "'" +
-            ", last_name='" + getLast_name() + "'" +
-            ", username='" + getUsername() + "'" +
-            ", language_code='" + getLanguage_code() + "'" +
-            ", type='" + getType() + "'" +
-            "}";
+        return String.format(
+                "{ id='%d', is_bot='%s', first_name='%s', last_name='%s', username='%s', language_code='%s', type='%s'}",
+                getId(), isIs_bot(), getFirst_name(), getLast_name(), getUsername(), getLanguage_code(), getType());
     }
 
 }

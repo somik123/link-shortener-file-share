@@ -37,7 +37,7 @@ public class UploadedFileServiceImpl implements UploadedFileService {
 
     private final Path storagePath = Paths.get("uploads/");
 
-    private static Logger LOG = Logger.getLogger(UploadedFileServiceImpl.class.getName());
+    private static final Logger LOG = Logger.getLogger(UploadedFileServiceImpl.class.getName());
 
     @Override
     public FileDTO save(MultipartFile file, String creatorIp, int expiryHours) {
@@ -51,7 +51,7 @@ public class UploadedFileServiceImpl implements UploadedFileService {
                 maxSize = Float.parseFloat(maxSizeStr);
             }
             if (maxSize > 0 && size > maxSize) {
-                LOG.warning("File size of [" + size + " MB] is greater then max size of [" + maxSize + " MB]");
+                LOG.warning(String.format("File size of [%f MB] is greater then max size of [%f MB]", size, maxSize));
                 return null;
             }
 
@@ -69,14 +69,15 @@ public class UploadedFileServiceImpl implements UploadedFileService {
             UploadedFile uploadedFile = new UploadedFile(name, creatorIp, mimeType, expiryTime);
             String fileName = uploadedFile.getFileName();
 
-            LOG.info("Uploaded file: " + name);
-            LOG.info("Saved as: " + fileName);
+            LOG.info(String.format("Uploaded file: %s", name));
+            LOG.info(String.format("Saved as: %s", fileName));
             Files.copy(file.getInputStream(), storagePath.resolve(fileName), StandardCopyOption.REPLACE_EXISTING);
 
             fileRepo.save(uploadedFile);
 
-            String url = "/file/" + uploadedFile.getDownloadKey() + "/" + name;
-            String deleteUrl = "/deleteFile/" + uploadedFile.getDownloadKey() + "/" + uploadedFile.getDeleteKey();
+            String url = String.format("/file/%s/%s", uploadedFile.getDownloadKey(), name);
+            String deleteUrl = String.format("/deleteFile/%s/%s", uploadedFile.getDownloadKey(),
+                    uploadedFile.getDeleteKey());
             return new FileDTO(name, "File uploaded successfully.", url, deleteUrl,
                     uploadedFile.getDownloadKey(), uploadedFile.getDeleteKey());
         } catch (Exception e) {
@@ -98,7 +99,8 @@ public class UploadedFileServiceImpl implements UploadedFileService {
                     maxSize = Float.parseFloat(maxSizeStr);
                 }
                 if (maxSize > 0 && size > maxSize) {
-                    LOG.warning("File size of [" + size + " MB] is greater then max size of [" + maxSize + " MB]");
+                    LOG.warning(
+                            String.format("File size of [%f MB] is greater then max size of [%f MB]", size, maxSize));
                     return null;
                 }
                 int i = filePath.lastIndexOf("/");
@@ -116,8 +118,8 @@ public class UploadedFileServiceImpl implements UploadedFileService {
                 UploadedFile uploadedFile = new UploadedFile(name, "Telegram", mimeType, expiryTime);
                 String fileName = uploadedFile.getFileName();
 
-                LOG.info("Uploaded file: " + name);
-                LOG.info("Saved as: " + fileName);
+                LOG.info(String.format("Uploaded file: %s", name));
+                LOG.info(String.format("Saved as: %s", fileName));
                 Files.copy(Files.newInputStream(file), storagePath.resolve(fileName),
                         StandardCopyOption.REPLACE_EXISTING);
                 fileRepo.save(uploadedFile);
@@ -141,7 +143,7 @@ public class UploadedFileServiceImpl implements UploadedFileService {
             Path filePath = storagePath.resolve(file.accessFile(ip, browserHeaders));
             URI uri = filePath.toUri();
             if (uri == null) {
-                LOG.warning("Could not read the file: " + filePath.toString());
+                LOG.warning(String.format("Could not read the file: %s", filePath.toString()));
                 return null;
             }
             Resource resource = new UrlResource(uri);
@@ -149,11 +151,11 @@ public class UploadedFileServiceImpl implements UploadedFileService {
                 fileRepo.save(file);
                 return new FileLoadDTO(file, resource);
             } else {
-                LOG.warning("Could not read the file: " + file.toString());
+                LOG.warning(String.format("Could not read the file: %s", file.toString()));
                 return null;
             }
         } catch (Exception e) {
-            LOG.warning("Could not retrieve the file with key: " + downloadKey);
+            LOG.warning(String.format("Could not retrieve the file with key: %s", downloadKey));
             CommonUtils.logErrors(LOG, e);
             return null;
         }
@@ -175,8 +177,8 @@ public class UploadedFileServiceImpl implements UploadedFileService {
                         status = true;
                 }
             } catch (IOException e) {
-                LOG.warning("Could not delete file with download key [" + downloadKey
-                        + "] and deleteKey [" + deleteKey + "]");
+                LOG.warning(String.format("Could not delete file with download key [%s] and deleteKey [%s]",
+                        downloadKey, deleteKey));
                 CommonUtils.logErrors(LOG, e);
             }
             fileRepo.delete(uploadedFile);
@@ -207,7 +209,7 @@ public class UploadedFileServiceImpl implements UploadedFileService {
             if (uploadedFile.isActive())
                 return uploadedFile;
             else {
-                LOG.warning("UploadedFile with id [" + uploadedFile.getId() + "] is not active.");
+                LOG.warning(String.format("UploadedFile with id [%d] is not active.", uploadedFile.getId()));
                 return null;
             }
         } else
@@ -231,10 +233,10 @@ public class UploadedFileServiceImpl implements UploadedFileService {
                 fileDto.setHits(file.getHits());
 
                 String filename = file.getFileName();
-                String url = "/file/" + file.getDownloadKey() + "/" + file.getName();
-                String deleteUrl = "/deleteFile/" + file.getDownloadKey() + "/" + file.getDeleteKey();
+                String url = String.format("/file/%s/%s", file.getDownloadKey(), file.getName());
+                String deleteUrl = String.format("/deleteFile/%s/%s", file.getDownloadKey(), file.getDeleteKey());
 
-                fileDto.setFileName(filename.substring(0, 18) + " " + filename.substring(18));
+                fileDto.setFileName(String.format("%s %s", filename.substring(0, 18), filename.substring(18)));
                 fileDto.setUrl(url);
                 fileDto.setDeleteUrl(deleteUrl);
 
@@ -246,7 +248,7 @@ public class UploadedFileServiceImpl implements UploadedFileService {
                         fileDto.setModified(attr.lastModifiedTime().toString());
                     }
                 } catch (IOException e) {
-                    LOG.warning("Could not retrieve file details for: " + file.getFileName());
+                    LOG.warning(String.format("Could not retrieve file details for: %s", file.getFileName()));
                     CommonUtils.logErrors(LOG, e);
                     return null;
                 }
@@ -267,13 +269,15 @@ public class UploadedFileServiceImpl implements UploadedFileService {
         if (fileList != null && fileList.size() > 0) {
             for (UploadedFile file : fileList) {
                 if (now.isAfter(file.getExpiryTime())) {
-                    String message = "Deleted: " + file.getName() + " [" + file.getFileName() + "]";
+                    String message = String.format("Deleted: %s [%s]", file.getName(), file.getFileName());
                     String status = delete(file.getDownloadKey(), file.getDeleteKey()) ? "OK" : "FAIL";
                     ResponseDTO response = new ResponseDTO(status, message);
                     responseList.add(response);
                 }
             }
         }
-        return new ResponseDTO("OK", responseList, "Cron ran at:" + now.toString());
+        String msg = String.format("Cron ran at: %s and removed %d objects.", now.toString(), responseList.size());
+        LOG.info(msg);
+        return new ResponseDTO("OK", responseList, msg);
     }
 }
