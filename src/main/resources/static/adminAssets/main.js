@@ -24,3 +24,34 @@ function admin_get_file_logs(downloadKey) {
     divBox.classList.remove('closed');
     return false;
 }
+
+function admin_get_history() {
+    var divBox = document.getElementById('historyTable');
+
+    var parts = location.href.split("/");
+    var tableType = "urlsTable";
+    if(parts[parts.length -1] == "file")
+        tableType = "filesTable";
+
+    var http = new XMLHttpRequest();
+    http.open("GET", "/admin/" + tableType, true);
+    http.send();
+    http.onload = function () {
+        divBox.innerHTML = http.responseText;
+    }
+    divBox.classList.remove('closed');
+    return false;
+}
+
+function admin_delete(deleteUrl) {
+    var http = new XMLHttpRequest();
+    http.open("GET", "/api" + deleteUrl, true);
+    http.send();
+    http.onload = function () {
+        var api_reply = JSON.parse(http.responseText);
+        if (api_reply['status'] == "OK")
+            admin_get_history();
+        else
+            alert("Failed to delete.");
+    }
+}

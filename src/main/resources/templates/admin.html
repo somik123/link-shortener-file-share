@@ -3,56 +3,14 @@
 
 <head th:replace="~{layout::header(pageTitle='Short Link Admin')}"></head>
 
-<body>
+<body onload="admin_get_history();">
     <div class="contents contents-2">
         <!-- Logo and Title -->
-        <div th:replace="~{layout::logoAndTitleAdmin(headerTitle='Admin - Short Link History')}"></div>
+        <div th:replace="~{layout::logoAndTitle(headerTitle='Admin - Short Link History')}"></div>
 
         <!-- History Table -->
-        <div class="table-responsive">
-            <table class="table table-striped" style="width: 100%;">
-                <thead>
-                    <tr class="table-dark">
-                        <th scope="col" class="table-header-left">#</th>
-                        <th scope="col">Original URL</th>
-                        <th scope="col">ShortURL</th>
-                        <th scope="col">CreatorIp</th>
-                        <th scope="col">Created</th>
-                        <th scope="col">Clicks</th>
-                        <th scope="col">Follow</th>
-                        <th scope="col" class="table-header-right">Remove</th>
-                    </tr>
-                </thead>
-                <tbody th:if="${max >= 0}">
-                    <tr th:each="i : ${#numbers.sequence(0, max)}">
-                        <th scope="row" th:text="${i+1}">1</th>
-                        <td>
-                            <textarea class="form-control longurltxtbox" readonly onfocus="this.style.overflow='auto';"
-                                onblur="this.style.overflow='hidden';" th:text="${surlList.get(i).longUrl}"></textarea>
-                        </td>
-                        <td>
-                            <a th:href="'/' + ${surlList.get(i).surl}" target="_blank" class="shorturltxt"
-                                th:text="${surlList.get(i).surl}"></a>
-                        </td>
-                        <td th:text="${surlList.get(i).creatorIp}">123.45.67.89</td>
-                        <td class="text-center" th:text="${#strings.replace(surlList.get(i).created, 'T',' ')}">
-                            2024-02-16
-                            05:57:26 PM</td>
-                        <td th:text="${surlList.get(i).hits}">4</td>
-                        <td>
-                            <a href="#" th:data-surl="${surlList.get(i).surl}"
-                                onclick="return admin_get_logs(this.getAttribute('data-surl'));">
-                                <img src="/assets/img/link.png" width="40" />
-                            </a>
-                        </td>
-                        <td>
-                            <a th:href="'/delete/' + ${surlList.get(i).surl }+ '/' + ${surlList.get(i).deleteKey}"
-                                target="_blank"><img src="/assets/img/trash.png" width="40" /></a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        <div id="historyTable"></div>
+
         <!-- Pagination Navigation (Disabled) -->
         <div class="dropdown" style="display: none;">
             <button class="btn btn-secondary dropdown-toggle" type="button" id="PageSelectButton"

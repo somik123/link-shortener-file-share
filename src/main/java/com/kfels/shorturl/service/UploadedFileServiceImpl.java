@@ -35,8 +35,7 @@ public class UploadedFileServiceImpl implements UploadedFileService {
     @Autowired
     UploadedFileRepo fileRepo;
 
-    private final Path storagePath = Paths.get("uploads/");
-
+    private static final Path storagePath = Paths.get("./data/uploads");
     private static final Logger LOG = Logger.getLogger(UploadedFileServiceImpl.class.getName());
 
     @Override
@@ -224,7 +223,7 @@ public class UploadedFileServiceImpl implements UploadedFileService {
         if (fileList != null && fileList.size() > 0) {
             for (UploadedFile file : fileList) {
                 FileDetailsDTO fileDto = new FileDetailsDTO();
-                fileDto.setName(file.getName());
+                fileDto.setName(CommonUtils.urlDecode(file.getName()));
                 fileDto.setMimeType(file.getMimeType());
                 fileDto.setCreatorIp(file.getCreatorIp());
                 fileDto.setCreated(file.getCreated());
@@ -236,7 +235,7 @@ public class UploadedFileServiceImpl implements UploadedFileService {
                 String url = String.format("/file/%s/%s", file.getDownloadKey(), file.getName());
                 String deleteUrl = String.format("/deleteFile/%s/%s", file.getDownloadKey(), file.getDeleteKey());
 
-                fileDto.setFileName(String.format("%s %s", filename.substring(0, 18), filename.substring(18)));
+                fileDto.setFileName(filename);
                 fileDto.setUrl(url);
                 fileDto.setDeleteUrl(deleteUrl);
 

@@ -19,7 +19,7 @@ public class DnsBlockList {
     private static final Logger LOG = Logger.getLogger(DnsBlockList.class.getName());
 
     private static final String url = "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/domains/pro.txt";
-    private static final String file = "./db/block.list";
+    private static final String file = "./data/db/block.list";
 
     public static void updateBlockList() {
         String tmpFile = String.format("%s.tmp", file);

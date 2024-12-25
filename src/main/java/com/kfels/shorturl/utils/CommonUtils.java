@@ -3,8 +3,10 @@ package com.kfels.shorturl.utils;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.net.URI;
+import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -180,5 +182,15 @@ public class CommonUtils {
         String sStackTrace = sw.toString();
         System.out.println(sStackTrace);
         LOG.warning(sStackTrace);
+    }
+
+    public static String urlDecode(String encodedString){
+        try{
+            return URLDecoder.decode(encodedString, "UTF-8");
+        }
+        catch(UnsupportedEncodingException e){
+            logErrors(log, e);
+            return "";
+        }
     }
 }

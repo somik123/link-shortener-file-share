@@ -26,31 +26,27 @@
 </head>
 
 <body>
-    <!-- Logo and Title Public -->
+
+    <!-- Logo and Title -->
     <div th:fragment="logoAndTitle(headerTitle)">
         <div class="header-box">
-            <div id="nav-box">
+            <div th:if="${user == ''}" id="nav-box">
                 <a href="/">ShortLink</a>
                 <a href="/fileHome">FileShare</a>
             </div>
-            <div id="login-icon">
-                <a href="/admin/"><img src="/assets/img/login.png" style="width: 40px;" alt="Login" /></a>
-            </div>
-            <h2 class="text-header"><a href="/" th:text="${headerTitle}">Short Link Generator</a></h2>
-        </div>
-    </div>
-
-    <!-- Logo and Title Admin -->
-    <div th:fragment="logoAndTitleAdmin(headerTitle)">
-        <div class="header-box">
-            <div id="nav-box">
-                <a href="/admin/">ShortLink</a>
-                <a href="/admin/file">FileShare</a>
+            <div th:if="${user != ''}" id="nav-box" style="width: 485px;">
+                <a href="/">ShortLink</a>
+                <a href="/fileHome">FileShare</a>
+                <a href="/admin/">ShortLink Admin</a>
+                <a href="/admin/file">FileShare Admin</a>
             </div>
             <div id="login-icon">
-                <a href="/admin/"><img src="/assets/img/login.png" style="width: 40px;" alt="Login" /></a>
+                <a th:if="${user == ''}" href="/admin/"><img src="/assets/img/login.png" style="width: 40px;"
+                        alt="Login" /></a>
+                <a th:if="${user != ''}" href="/logout"><img src="/assets/img/login.png" style="width: 40px;"
+                        alt="Logout" /></a>
             </div>
-            <h2 class="text-header"><a href="/" th:text="${headerTitle}">Short Link Generator</a></h2>
+            <h2 class="text-header"><a href="" th:text="${headerTitle}">Short Link Generator</a></h2>
         </div>
     </div>
 

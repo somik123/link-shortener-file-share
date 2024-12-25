@@ -1,5 +1,6 @@
 package com.kfels.shorturl;
 
+import java.io.File;
 import java.util.logging.Logger;
 
 import org.springframework.boot.SpringApplication;
@@ -16,6 +17,8 @@ public class ShorturlApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ShorturlApplication.class, args);
 
+		initializeDirectories();
+
 		// Setup telegram webhook
 		Telegram telegram = new Telegram();
 		String webhook = String.format("%stelegram/callback", telegram.getSiteUrl());
@@ -23,9 +26,30 @@ public class ShorturlApplication {
 			LOG.info("Webhook set successfully.");
 		else
 			LOG.info("Webhook was not set.");
-		
+
 		// Update DNS blocklist domains
 		DnsBlockList.updateBlockList();
+	}
+
+	private static void initializeDirectories() {
+		createDirectory("./data/db");
+		createDirectory("./data/logs");
+		createDirectory("./data/tmp_uploads");
+		createDirectory("./data/uploads");
+	}
+
+	private static boolean createDirectory(String dir) {
+		File file = new File(dir);
+		if (file.exists()) {
+			if (file.isDirectory())
+				return true;
+			else
+				file.delete();
+		}
+		if (file.mkdirs())
+			return true;
+		else
+			return false;
 	}
 
 }

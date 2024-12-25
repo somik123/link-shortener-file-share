@@ -1,12 +1,6 @@
 volumes:
-  shorturl_fileshare_db:
-    name: shorturl_fileshare_db
-  shorturl_fileshare_logs:
-    name: shorturl_fileshare_logs
-  shorturl_fileshare_uploads:
-    name: shorturl_fileshare_uploads
-  shorturl_fileshare_temp:
-    name: shorturl_fileshare_temp
+  shorturl_fileshare_data:
+    name: shorturl_fileshare_data
 
 services:
   backend_java:
@@ -14,10 +8,7 @@ services:
     container_name: shorturl_fileshare_java
     restart: unless-stopped
     volumes:
-      - shorturl_fileshare_uploads:/usr/app/uploads
-      - shorturl_fileshare_temp:/usr/app/tmp_uploads
-      - shorturl_fileshare_logs:/usr/app/logs
-      - shorturl_fileshare_db:/usr/app/db
+      - shorturl_fileshare_data:/usr/app/data
     environment:
       SHORTURL_USER: admin
       SHORTURL_PASS: zR6CzF9bZp3@HTPzaaY%2Fzv

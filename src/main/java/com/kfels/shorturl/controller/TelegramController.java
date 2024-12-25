@@ -26,6 +26,7 @@ public class TelegramController {
     @Autowired
     UploadedFileService storageService;
 
+    private static String tmpDirPath = "./data/tmp_uploads";
     private static final Logger LOG = Logger.getLogger(TelegramController.class.getName());
 
     @PostMapping("/callback")
@@ -76,7 +77,7 @@ public class TelegramController {
             }
             telegram.sendMessage(chatId, replyToUser);
         } else if (telegram.getFileType() != null) {
-            String filePath = String.format("tmp_uploads/%s", CommonUtils.randString(7, 3));
+            String filePath = String.format("%s/%s", tmpDirPath, CommonUtils.randString(7, 3));
             filePath = telegram.downloadFile(filePath);
             if (filePath != null) {
                 UploadedFile uploadedFile = storageService.saveFromTelegram(filePath, 1);

@@ -7,6 +7,8 @@ import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,19 +33,21 @@ public class HomeController {
     ShorturlService surlSvc;
 
     @Autowired
-    UploadedFileService storagService;
+    UploadedFileService storageService;
 
     private static final Logger LOG = Logger.getLogger(HomeController.class.getName());
 
     @GetMapping("/")
     // Display home page with url shortener
-    public String siteHome() {
+    public String siteHome(Model model, @AuthenticationPrincipal User user) {
+        model.addAttribute("user", (user != null) ? user.getUsername() : "");
         return "home";
     }
 
     @GetMapping("/fileHome")
     // Display home page with file share
-    public String fileHome(Model model) {
+    public String fileHome(Model model, @AuthenticationPrincipal User user) {
+        model.addAttribute("user", (user != null) ? user.getUsername() : "");
         String maxSize = System.getenv("UPLOADFILE_MAX_SIZE");
         if (maxSize != null && maxSize.length() > 0) {
             model.addAttribute("maxSize", maxSize);
@@ -53,7 +57,8 @@ public class HomeController {
 
     @GetMapping("/login")
     // Admin login page
-    public String adminLogin() {
+    public String adminLogin(Model model, @AuthenticationPrincipal User user) {
+        model.addAttribute("user", (user != null) ? user.getUsername() : "");
         return "login";
     }
 
@@ -110,7 +115,7 @@ public class HomeController {
     // Delete file with downloadKey & deleteKey
     @GetMapping("/deleteFile/{downloadKey}/{deleteKey}")
     public String deleteUploadedFile(Model model, @PathVariable String downloadKey, @PathVariable String deleteKey) {
-        String status = storagService.delete(downloadKey, deleteKey) ? "yes" : "no";
+        String status = storageService.delete(downloadKey, deleteKey) ? "yes" : "no";
         model.addAttribute("deleteAlert", "show");
         model.addAttribute("status", status);
         return "fileHome";
@@ -118,7 +123,8 @@ public class HomeController {
 
     // Display contact form
     @GetMapping("/reach-out")
-    public String showContactForm() {
+    public String showContactForm(Model model, @AuthenticationPrincipal User user) {
+        model.addAttribute("user", (user != null) ? user.getUsername() : "");
         return "contactForm";
     }
 
@@ -126,7 +132,8 @@ public class HomeController {
     @PostMapping("/reach-out")
     public String submitContactForm(@RequestParam String name, @RequestParam String email, @RequestParam String link_id,
             @RequestParam String reason, @RequestParam String user_code, @RequestParam String message,
-            Model model, HttpSession session) {
+            Model model, HttpSession session, @AuthenticationPrincipal User user) {
+        model.addAttribute("user", (user != null) ? user.getUsername() : "");
 
         String status = "no";
         String captchaCode = session.getAttribute("captchaCode").toString();
