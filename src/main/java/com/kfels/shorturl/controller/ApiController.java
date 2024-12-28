@@ -4,6 +4,7 @@ import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,6 +36,7 @@ public class ApiController {
     private static final Logger LOG = Logger.getLogger(ApiController.class.getName());
 
     @PostMapping("/shorten")
+    @CrossOrigin(origins = "*")
     public ResponseDTO shortenUrl(@RequestBody RequestDTO requestDTO, HttpServletRequest request) {
         // Ensure long url is valid
         String longUrl = null;
@@ -78,6 +80,7 @@ public class ApiController {
 
     // Delete file with downloadKey & deleteKey
     @GetMapping("/deleteFile/{downloadKey}/{deleteKey}")
+    @CrossOrigin(origins = "*")
     public ResponseDTO deleteUploadedFileApi(@PathVariable String downloadKey, @PathVariable String deleteKey) {
         String status = storageService.delete(downloadKey, deleteKey) ? "OK" : "FAIL";
         return new ResponseDTO(status);
@@ -85,6 +88,7 @@ public class ApiController {
 
     // Delete surl with surl & deleteKey
     @GetMapping("/delete/{surl}/{deleteKey}")
+    @CrossOrigin(origins = "*")
     public ResponseDTO deleteShorturlApi(@PathVariable String surl, @PathVariable String deleteKey) {
         String status = surlSvc.deleteShorturl(surl, deleteKey) ? "OK" : "FAIL";
         return new ResponseDTO(status);
