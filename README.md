@@ -11,28 +11,22 @@ curl -o docker-compose.yml https://raw.githubusercontent.com/somik123/link-short
 
 Edit the file with your favorit editor to set all the environment variables in the docker-compose file, including the admin username/password:
 
-
-`SHORTURL_DB_NAME` - Database name. Database will be saved to ./db folder. Tables will be autocreated on boot (if not exist)
-`SHORTURL_DB_USER` - Database usernme
-`SHORTURL_DB_PASS` - Database password
-
-`SHORTURL_LENGTH` - Length of generated shorturls (if auto-generted)
-`FILEURL_LENGTH`  - Length of generated file urls (if auto-generted)
-
-`TELEGRAM_APIKEY`  - Telegram API key that will be used to send notifications to admin
-`TELEGRAM_ADMINID`  - Admin's chat id. This can be a group id as well. See: https://docs.tracardi.com/qa/how_can_i_get_telegram_bot/
-`TELEGRAM_AUTHKEY` - (Optional) Authorization key to be used by telegram and this app to validate requests are coming from telegram.
-`SITE_FULL_URL`    - Full url to the home page of the site with trailing slash, like: https://www.example.com/
-
-
-`SHORTURL_USER`      - Admin username to manage all shorturls and uploaded files
-`SHORTURL_PASS`      - Admin password to manage all shorturls and uploaded files
-`SHORTURL_PASS_HIDE` - Set this to "yes" to disable printing the password to logs when starting up the app
-
-`UPLOADFILE_MAX_SIZE` - Max allowed size for uploaded file (in MB)
-
-
-~~`SHORTURL_DB_HOST` - MySQL database host, usually localhost~~ (Depricated)
+| Env Var | Description |
+|---|---|
+| `SHORTURL_DB_NAME` | Database name. Database will be saved to ./db folder. Tables will be autocreated on boot (if not exist) |
+| `SHORTURL_DB_USER` | Database usernme |
+| `SHORTURL_DB_PASS` | Database password |
+| `SHORTURL_LENGTH` | Length of generated shorturls (if auto-generted) |
+| `FILEURL_LENGTH`  | Length of generated file urls (if auto-generted) |
+`TELEGRAM_APIKEY`  | Telegram API key that will be used to send notifications to admin |
+| `TELEGRAM_ADMINID`  | Admin's chat id. This can be a group id as well. See: https://docs.tracardi.com/qa/how_can_i_get_telegram_bot/ |
+| `TELEGRAM_AUTHKEY` | (Optional) Authorization key to be used by telegram and this app to validate requests are coming from telegram. |
+| `SITE_FULL_URL`    | Full url to the home page of the site with trailing slash, like: https://www.example.com/ |
+| `SHORTURL_USER`      | Admin username to manage all shorturls and uploaded files |
+| `SHORTURL_PASS`      | Admin password to manage all shorturls and uploaded files |
+| `SHORTURL_PASS_HIDE` | Set this to "yes" to disable printing the password to logs when starting up the app |
+| `UPLOADFILE_MAX_SIZE` | Max allowed size for uploaded file (in MB) |
+| ~~`SHORTURL_DB_HOST`~~ | ~~MySQL database host, usually localhost~~ (Depricated) |
 
 Once done, save the file and run the following command from the same folder as your `docker-compose.yml` file.
 ```
