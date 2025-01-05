@@ -12,6 +12,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -263,20 +264,22 @@ public class UploadedFileServiceImpl implements UploadedFileService {
     public ResponseDTO cronJobs() {
         List<UploadedFile> fileList = fileRepo.findAllCustom();
         LocalDateTime now = LocalDateTime.now();
-        List<ResponseDTO> responseList = new ArrayList<>();
 
-        if (fileList != null && fileList.size() > 0) {
-            for (UploadedFile file : fileList) {
-                if (now.isAfter(file.getExpiryTime())) {
-                    String message = String.format("Deleted: %s [%s]", file.getName(), file.getFileName());
-                    String status = delete(file.getDownloadKey(), file.getDeleteKey()) ? "OK" : "FAIL";
-                    ResponseDTO response = new ResponseDTO(status, message);
-                    responseList.add(response);
-                }
+        if (fileList == null || fileList.size() == 0)
+            return new ResponseDTO("OK");
+
+        int count = 0;
+        Iterator<UploadedFile> fileIterator = fileList.iterator();
+        while (fileIterator.hasNext()) {
+            UploadedFile file = fileIterator.next();
+            if (now.isAfter(file.getExpiryTime())) {
+                fileIterator.remove();
+                count++;
             }
         }
-        String msg = String.format("Cron ran at: %s and removed %d objects.", now.toString(), responseList.size());
+
+        String msg = String.format("Cron ran at: %s and removed %d objects.", now.toString(), count);
         LOG.info(msg);
-        return new ResponseDTO("OK", responseList, msg);
+        return new ResponseDTO("OK", null, msg);
     }
 }
