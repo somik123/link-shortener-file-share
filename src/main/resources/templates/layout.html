@@ -130,19 +130,20 @@
                     <div class="col-md-7">
                         <form action="#" id="upload_form" method="post" enctype="multipart/form-data">
                             <input class="form-control" type="file" id="file" name="file">
-                            <input class="form-control" type="hidden" id="file_expiry" name="expiry_hour">
+                            <input class="form-control" type="hidden" id="file_expiry" name="file_expiry">
                         </form>
                     </div>
                     <div class="col-md-3">
                         <select class="form-select" aria-label="Default select example" id="expiry_sel">
-                            <option value="1">1 Hour</option>
-                            <option value="24">1 Day</option>
-                            <option value="48">2 Days</option>
-                            <option value="168">1 Week</option>
-                            <option selected value="720">1 Month</option>
-                            <option value="2160">3 Months</option>
-                            <option value="8760">1 Year</option>
-                            <option value="87600">10 Years</option>
+                            <option value="5">5 mins</option>
+                            <option value="60">1 hour</option>
+                            <option value="1440">1 Day</option>
+                            <option value="1440">2 Days</option>
+                            <option value="10080">1 Week</option>
+                            <option selected value="43200">1 Month</option>
+                            <option value="129600">3 Months</option>
+                            <option value="525960">1 Year</option>
+                            <option value="5259600">10 Years</option>
                         </select>
                     </div>
                     <div class="col-md-2">

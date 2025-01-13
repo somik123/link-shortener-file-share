@@ -7,7 +7,7 @@ function generate_shorturl() {
     var longURL = document.getElementById("long-url").value;
     var shortUrl = document.getElementById("short-url").value;
 
-    submit_btn.innerHTML = "Processing...";
+    submit_btn.innerHTML = "wait...";
 
     var http = new XMLHttpRequest();
     http.open("POST", "/api/shorten", true);
@@ -91,7 +91,7 @@ function upload_file() {
         (fileTotal < 1024) ? fileSize = fileTotal + " KB" : fileSize = (loaded / (1024 * 1024)).toFixed(2) + " MB";
         percent.innerHTML = fileLoaded + "%";
         if (loaded == total) {
-            percent.innerHTML = "Processing...";
+            percent.innerHTML = "wait...";
         }
     });
 

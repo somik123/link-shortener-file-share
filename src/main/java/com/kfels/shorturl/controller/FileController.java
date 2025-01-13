@@ -43,9 +43,9 @@ public class FileController {
     @PostMapping(value = "/upload")
     @CrossOrigin(origins = "*")
     public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file,
-            @RequestParam("expiry_hour") int expiryHours, HttpServletRequest request) {
+            @RequestParam("file_expiry") int expiry, HttpServletRequest request) {
         String creatorIp = CommonUtils.getClientIpAddress(request);
-        FileDTO fileDTO = storageService.save(file, creatorIp, expiryHours);
+        FileDTO fileDTO = storageService.save(file, creatorIp, expiry);
         if (fileDTO == null) {
             String message = "Upload failed.";
             return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO("FAIL", null, message));

@@ -8,18 +8,24 @@
             <thead>
                 <tr class="table-dark">
                     <th scope="col" class="table-header-left">#</th>
+                    <th scope="col">Remove</th>
                     <th scope="col">Original URL</th>
                     <th scope="col">ShortURL</th>
                     <th scope="col">CreatorIp</th>
                     <th scope="col">Created</th>
                     <th scope="col">Clicks</th>
-                    <th scope="col">Follow</th>
-                    <th scope="col" class="table-header-right">Remove</th>
+                    <th scope="col" class="table-header-right">Logs</th>
+
                 </tr>
             </thead>
             <tbody th:if="${max >= 0}">
                 <tr th:each="i : ${#numbers.sequence(0, max)}">
                     <th scope="row" th:text="${i+1}">1</th>
+                    <td>
+                        <img src="/assets/img/trash.png" width="40"
+                            th:data-deleteUrl="'/delete/' + ${surlList.get(i).surl }+ '/' + ${surlList.get(i).deleteKey}"
+                            onclick="return admin_delete(this.getAttribute('data-deleteUrl'));" class="link-button" />
+                    </td>
                     <td>
                         <textarea class="form-control longurltxtbox" readonly onfocus="this.style.overflow='auto';"
                             onblur="this.style.overflow='hidden';" th:text="${surlList.get(i).longUrl}"></textarea>
@@ -30,18 +36,14 @@
                     </td>
                     <td th:text="${surlList.get(i).creatorIp}">123.45.67.89</td>
                     <td class="text-center" th:text="${#strings.replace(surlList.get(i).created, 'T',' ')}">
-                        2024-02-16
-                        05:57:26 PM</td>
+                        2024-02-16 05:57:26 PM
+                    </td>
                     <td th:text="${surlList.get(i).hits}">4</td>
                     <td>
                         <img src="/assets/img/link.png" width="40" th:data-surl="${surlList.get(i).surl}"
                             onclick="return admin_get_logs(this.getAttribute('data-surl'));" class="link-button" />
                     </td>
-                    <td>
-                        <img src="/assets/img/trash.png" width="40"
-                            th:data-deleteUrl="'/delete/' + ${surlList.get(i).surl }+ '/' + ${surlList.get(i).deleteKey}"
-                            onclick="return admin_delete(this.getAttribute('data-deleteUrl'));" class="link-button" />
-                    </td>
+
                 </tr>
             </tbody>
         </table>

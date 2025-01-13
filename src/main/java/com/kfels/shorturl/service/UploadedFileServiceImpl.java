@@ -40,7 +40,7 @@ public class UploadedFileServiceImpl implements UploadedFileService {
     private static final Logger LOG = Logger.getLogger(UploadedFileServiceImpl.class.getName());
 
     @Override
-    public FileDTO save(MultipartFile file, String creatorIp, int expiryHours) {
+    public FileDTO save(MultipartFile file, String creatorIp, int expiry) {
         try {
             String name = file.getOriginalFilename();
             String mimeType = file.getContentType();
@@ -65,7 +65,10 @@ public class UploadedFileServiceImpl implements UploadedFileService {
                 return null;
             }
 
-            LocalDateTime expiryTime = LocalDateTime.now().plus(expiryHours, ChronoUnit.HOURS);
+            if (expiry < 0 || expiry > 5259600) {
+                expiry = 43200;
+            }
+            LocalDateTime expiryTime = LocalDateTime.now().plus(expiry, ChronoUnit.MINUTES);
             UploadedFile uploadedFile = new UploadedFile(name, creatorIp, mimeType, expiryTime);
             String fileName = uploadedFile.getFileName();
 
