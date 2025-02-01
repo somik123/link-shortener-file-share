@@ -177,4 +177,9 @@ public class HomeController {
         }
     }
 
+    @GetMapping("/favicon.ico")
+    public String favicon() {
+        return "forward:/assets/favicon/favicon.ico";
+    }
+
 }
