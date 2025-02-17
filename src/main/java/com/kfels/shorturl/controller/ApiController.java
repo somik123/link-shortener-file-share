@@ -94,4 +94,10 @@ public class ApiController {
         return new ResponseDTO(status);
     }
 
+    // Call cron jobs through API
+    @GetMapping("/cron")
+    public ResponseDTO scheduledCronJobs() {
+        return storageService.cronJobs();
+    }
+
 }
