@@ -277,6 +277,7 @@ public class UploadedFileServiceImpl implements UploadedFileService {
             UploadedFile file = fileIterator.next();
             if (now.isAfter(file.getExpiryTime())) {
                 fileIterator.remove();
+                delete(file.getDownloadKey(), file.getDeleteKey());
                 count++;
             }
         }
