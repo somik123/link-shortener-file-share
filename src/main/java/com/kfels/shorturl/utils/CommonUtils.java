@@ -64,30 +64,28 @@ public class CommonUtils {
     }
 
     public static String generateStringForShorturl(String surl) {
-        int len = 0;
-        String lengthString = System.getenv("SHORTURL_LENGTH");
-        if (lengthString != null && lengthString.length() > 0) {
-            len = Integer.parseInt(lengthString);
-        }
+        int len = getLengthFromString("SHORTURL_LENGTH", 5);
         if (surl != null && surl.length() >= len) {
             return surl;
-        }
-        if (len <= 2) {
-            len = 5;
         }
         return randString(len, 3);
     }
 
     public static String generateStringForFileurl() {
+        int len = getLengthFromString("FILEURL_LENGTH", 10);
+        return randString(len, 3);
+    }
+
+    public static int getLengthFromString(String envVarString, int defaultLen) {
         int len = 0;
-        String lengthString = System.getenv("FILEURL_LENGTH");
+        String lengthString = System.getenv(envVarString);
         if (lengthString != null && lengthString.length() > 0) {
             len = Integer.parseInt(lengthString);
         }
         if (len <= 2) {
-            len = 5;
+            len = defaultLen;
         }
-        return randString(len, 3);
+        return len;
     }
 
     public static String randString(int len, int mix) {
@@ -109,7 +107,6 @@ public class CommonUtils {
             int x = rand.nextInt(max);
             pieces += keyspace.charAt(x);
         }
-
         return pieces;
     }
 

@@ -29,7 +29,7 @@ function generate_shorturl() {
             }
             let link = location.href + api_reply['content']['surl'];
             document.getElementById("success-alert").innerHTML = "Short URL generated.";
-            document.getElementById("short_url").value = link
+            document.getElementById("short_url").value = link;
             document.getElementById("delete_link").value = location.href + "delete/" + api_reply['content']['surl'] + "/" + api_reply['content']['deleteKey'];
             document.getElementById("qr-code").src = "/qr/" + btoa(link);
             document.getElementById("result-box").style.display = "";
@@ -43,7 +43,7 @@ function generate_shorturl() {
             if (api_reply['content']['surl'] != undefined) {
                 let link = location.href + api_reply['content']['surl'];
                 document.getElementById("success-alert").style.display = "none";
-                document.getElementById("short_url").value = link
+                document.getElementById("short_url").value = link;
                 document.getElementById("delete_link").value = "(only visible to creator)";
                 document.getElementById("qr-code").src = "/qr/" + btoa(link);
                 document.getElementById("result-box").style.display = "";
@@ -67,6 +67,7 @@ function generate_shorturl_mini() {
             let link = location.href.replace("fileHome", "") + api_reply['content']['surl'];
             document.getElementById("file_url").value = link;
             document.getElementById("success-alert").innerHTML = "File URL shortened.";
+            document.getElementById("qr-code").src = "/qr/" + btoa(link);
         }
     }
     return false;
@@ -105,7 +106,7 @@ function upload_file() {
                 document.getElementById("result-error").style.display = "none";
                 let link = location.href.replace("/fileHome", api_reply['content']['url']);
                 document.getElementById("success-alert").innerHTML = api_reply['content']['message'];
-                document.getElementById("file_url").value = link
+                document.getElementById("file_url").value = link;
                 document.getElementById("file_delete_link").value = location.href.replace("/fileHome", api_reply['content']['deleteUrl']);
                 document.getElementById("qr-code").src = "/qr/" + btoa(link);
                 document.getElementById("result-box").style.display = "";
@@ -197,14 +198,14 @@ function reloadImage() {
 function formValidation() {
     let inputList = ["name", "email", "reason", "message", "user_code"];
     let valid = true;
-    for(let i=0; i<inputList.length; i++){
+    for (let i = 0; i < inputList.length; i++) {
         let el = document.getElementById(inputList[i]);
         if (el.value.length == 0) {
             el.classList.add("border-danger");
             valid = false;
         }
         else if (el.classList.contains("border-danger")) {
-            el.classList.remove("border-danger")
+            el.classList.remove("border-danger");
         }
     };
     return valid;

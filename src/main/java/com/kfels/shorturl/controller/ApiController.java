@@ -63,6 +63,9 @@ public class ApiController {
         shorturl = surlSvc.generateShorturl(longUrl, creatorIp, requestDTO.getSurl());
         if (shorturl == null) {
             return new ResponseDTO("FAIL", "", "Shorturl genertion failed.");
+        }
+        if (shorturl.getSurl() == null || shorturl.getSurl().isEmpty()) {
+            return new ResponseDTO("FAIL", "", "Shorturl invalid.");
         } else {
             surlDto = new ShorturlDTO(shorturl.getSurl(), shorturl.getLongUrl(), shorturl.getDeleteKey(),
                     shorturl.getIsEnabled());
@@ -71,7 +74,15 @@ public class ApiController {
             String url = String.format("%s%s", System.getenv("SITE_FULL_URL"), shorturl.getSurl());
             String deleteUrl = String.format("/deleteSURL_%s_%s", shorturl.getSurl(), shorturl.getDeleteKey());
             String msg = String.format("New Short url: %s\nLong url: %s\nDelete: %s", url, longUrl, deleteUrl);
-            CommonUtils.asynSendTelegramMessage(msg);
+
+            // Don't notify for shorturls generated for file uploads
+            String siteUrl =  System.getenv("SITE_FULL_URL");
+            if (!siteUrl.substring(siteUrl.length() - 1).equals("/")) {
+                siteUrl = siteUrl + "/";
+            }
+            if (!longUrl.startsWith( String.format("%s%s", siteUrl, "file/"))) {
+                CommonUtils.asynSendTelegramMessage(msg);
+            }
 
             LOG.info(msg);
             return new ResponseDTO("OK", surlDto, "");
