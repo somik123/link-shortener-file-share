@@ -104,11 +104,16 @@ function upload_file() {
             console.log(api_reply);
             if (api_reply['status'] == "OK") {
                 document.getElementById("result-error").style.display = "none";
+
                 let link = location.href.replace("/fileHome", api_reply['content']['url']);
+                let url_parts = api_reply['content']['url'].split("/");
+                let short_link = location.href.replace("/fileHome", "/" + url_parts[2]);
+
                 document.getElementById("success-alert").innerHTML = api_reply['content']['message'];
+                document.getElementById("short_file_url").value = short_link;
                 document.getElementById("file_url").value = link;
                 document.getElementById("file_delete_link").value = location.href.replace("/fileHome", api_reply['content']['deleteUrl']);
-                document.getElementById("qr-code").src = "/qr/" + btoa(link);
+                document.getElementById("qr-code").src = "/qr/" + btoa(short_link);
                 document.getElementById("result-box").style.display = "";
 
                 document.getElementById('slider').classList.remove('closed');

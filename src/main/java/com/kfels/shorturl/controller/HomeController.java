@@ -40,7 +40,12 @@ public class HomeController {
     @GetMapping("/")
     // Display home page with url shortener
     public String siteHome(Model model, @AuthenticationPrincipal User user) {
+        int shorturl_len = CommonUtils.getShortUrlLength();
+        int fileurl_len = CommonUtils.getFileUrlLength();
+
         model.addAttribute("user", (user != null) ? user.getUsername() : "");
+        model.addAttribute("shorturl_len", (shorturl_len - 1));
+        model.addAttribute("fileurl_len", fileurl_len);
         return "home";
     }
 
@@ -160,12 +165,19 @@ public class HomeController {
         }
         model.addAttribute("status", status);
         return "contactForm";
-
     }
 
     // Redirect user by processing surl
     @GetMapping("/{surl}")
     public RedirectView redirectToShortUrl(@PathVariable String surl, HttpServletRequest request) {
+        int shorturl_len = CommonUtils.getShortUrlLength();
+        int fileurl_len = CommonUtils.getFileUrlLength();
+        if (shorturl_len != fileurl_len) {
+            if (surl.length() == fileurl_len) {
+                // If the length of the surl matches fileurl length, redirect to file download
+                return new RedirectView("/file/" + surl);
+            }
+        }
         String creatorIp = request.getRemoteAddr();
         String browserHeaders = request.getHeader("User-Agent");
         String url = surlSvc.accessShorturl(surl, creatorIp, browserHeaders);

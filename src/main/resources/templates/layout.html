@@ -16,7 +16,7 @@
     <!-- Main JS file -->
     <script src="/assets/js/main.js"></script>
     <!-- IE -->
-    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="manifest" href="/site.webmanifest" />
 </head>
 
@@ -58,7 +58,7 @@
                             id="long-url">
                     </div>
                     <div class="col-md-3">
-                        <input type="text" class="form-control" placeholder="Short url" aria-label="Preffered short url"
+                        <input type="text" class="form-control" aria-label="Preffered short url" placeholder="Short url"
                             id="short-url">
                     </div>
                     <div class="col-md-2">
@@ -67,6 +67,10 @@
                             Shorten
                         </button>
                     </div>
+                </div>
+                <div class="spacer"></div>
+                <div style="text-align: center;"><span
+                        th:text="'Short url should be greater then ' + ${shorturl_len} + ' chars and cannot be exactly ' + ${fileurl_len} + ' chars.'"></span>
                 </div>
 
                 <!-- Spacer -->
@@ -148,6 +152,9 @@
                         </button>
                     </div>
                 </div>
+                <div class="spacer"></div>
+                <div th:if="${maxSize != null}" style="text-align: center;">Max allowed file size: <span
+                        th:text="${maxSize} + ' MB'"></span></div>
 
 
                 <!-- Spacer -->
@@ -176,6 +183,11 @@
                             <div class="col-md-8">
                                 <div class="spacer"></div>
                                 <div class="input-group mb-3">
+                                    <span class="input-group-text">ShortLink:</span>
+                                    <input type="text" class="form-control" id="short_file_url"
+                                        aria-label="Short File URL" onclick="return copy_link(this);">
+                                </div>
+                                <div class="input-group mb-3">
                                     <span class="input-group-text">Link:</span>
                                     <input type="text" class="form-control" id="file_url" aria-label="File URL"
                                         onclick="return copy_link(this);">
@@ -194,10 +206,7 @@
                         </div>
                     </div>
                 </div>
-
             </div>
-            <div th:if="${maxSize != null}" style="text-align: center;">Max allowed file size: <span
-                    th:text="${maxSize} + ' MB'"></span></div>
         </div>
     </div>
 

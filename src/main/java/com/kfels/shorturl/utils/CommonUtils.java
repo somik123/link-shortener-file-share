@@ -63,16 +63,30 @@ public class CommonUtils {
         return String.format("%.1f %sB", (double) v / (1L << (z * 10)), " KMGTPE".charAt(z));
     }
 
+    public static int getShortUrlLength() {
+        return getLengthFromString("SHORTURL_LENGTH", 5);
+    }
+
+    public static int getFileUrlLength() {
+        return getLengthFromString("FILEURL_LENGTH", 10);
+    }
+
     public static String generateStringForShorturl(String surl) {
-        int len = getLengthFromString("SHORTURL_LENGTH", 5);
-        if (surl != null && surl.length() >= len) {
+        int len = getShortUrlLength();
+        int fileurl_len = getFileUrlLength();
+        int surl_len = surl.length();
+        if (surl != null && surl_len >= len && surl_len != fileurl_len) {
             return surl;
         }
         return randString(len, 3);
     }
 
     public static String generateStringForFileurl() {
-        int len = getLengthFromString("FILEURL_LENGTH", 10);
+        int len = getFileUrlLength();
+        int shorturl_len = getShortUrlLength();
+        if (len == shorturl_len) {
+            len++; // Make sure fileurl is longer than shorturl
+        }
         return randString(len, 3);
     }
 
@@ -181,11 +195,10 @@ public class CommonUtils {
         LOG.warning(sStackTrace);
     }
 
-    public static String urlDecode(String encodedString){
-        try{
+    public static String urlDecode(String encodedString) {
+        try {
             return URLDecoder.decode(encodedString, "UTF-8");
-        }
-        catch(UnsupportedEncodingException e){
+        } catch (UnsupportedEncodingException e) {
             logErrors(log, e);
             return "";
         }
