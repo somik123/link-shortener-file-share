@@ -51,7 +51,7 @@ public class FileController {
             return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO("FAIL", null, message));
         } else {
             // Notify admin
-            String url = String.format("%s%s", System.getenv("SITE_FULL_URL"), fileDTO.getUrl().substring(1));
+            String url = String.format("%s%s", System.getenv("SITE_FULL_URL"), fileDTO.getDownloadKey());
             String deleteUrl = String.format("/deleteFile_%s_%s", fileDTO.getDownloadKey(), fileDTO.getDeleteKey());
             String msg = String.format("New File uploaded: %s\nName: %s\nSize: %s\nType: %s\nDelete: %s", url,
                     file.getOriginalFilename(), CommonUtils.formatSize(file.getSize()), file.getContentType(),
