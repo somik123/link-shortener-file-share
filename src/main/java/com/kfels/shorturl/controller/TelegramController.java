@@ -82,8 +82,7 @@ public class TelegramController {
             if (filePath != null) {
                 UploadedFile uploadedFile = storageService.saveFromTelegram(filePath, 1);
                 if (uploadedFile != null) {
-                    String url = String.format("%sfile/%s/%s", System.getenv("SITE_FULL_URL"),
-                            uploadedFile.getDownloadKey(), uploadedFile.getName());
+                    String url = String.format("%s%s", System.getenv("SITE_FULL_URL"), uploadedFile.getDownloadKey());
                     String deleteUrl = String.format("/deleteFile_%s_%s", uploadedFile.getDownloadKey(),
                             uploadedFile.getDeleteKey());
 
@@ -93,7 +92,7 @@ public class TelegramController {
                         CommonUtils.asynSendTelegramMessage(msg);
                     }
                     // Reply to user
-                    replyToUser = String.format("Download: %s\nExpiry: 1 hour\nDelete: %s\nShorten: /shorten_%s", url,
+                    replyToUser = String.format("Download: %s\nExpiry: 1 hour\nDelete: %s", url,
                             deleteUrl, uploadedFile.getDownloadKey());
                 } else {
                     replyToUser = "File upload failed";
