@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.view.RedirectView;
 
+import com.kfels.shorturl.entity.UploadedFile;
 import com.kfels.shorturl.service.ShorturlService;
 import com.kfels.shorturl.service.UploadedFileService;
 import com.kfels.shorturl.telegram.Telegram;
@@ -175,7 +176,14 @@ public class HomeController {
         if (shorturl_len != fileurl_len) {
             if (surl.length() == fileurl_len) {
                 // If the length of the surl matches fileurl length, redirect to file download
-                return new RedirectView("/file/" + surl);
+                UploadedFile file = storageService.getUploadFileFromDownloadKey(surl);
+                if (file == null) {
+                    return new RedirectView("/");
+                } else {
+                    LOG.info(String.format("File name: %s", file.getName()));
+                    String url = String.format("%sfile/%s/%s", System.getenv("SITE_FULL_URL"), surl, file.getName());
+                    return new RedirectView(url);
+                }
             }
         }
         String creatorIp = request.getRemoteAddr();
