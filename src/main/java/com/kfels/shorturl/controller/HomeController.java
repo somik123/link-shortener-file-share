@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.view.RedirectView;
 
+import com.kfels.shorturl.entity.UploadedFile;
 import com.kfels.shorturl.service.ShorturlService;
 import com.kfels.shorturl.service.UploadedFileService;
 import com.kfels.shorturl.telegram.Telegram;
@@ -44,6 +45,7 @@ public class HomeController {
         int fileurl_len = CommonUtils.getFileUrlLength();
 
         model.addAttribute("user", (user != null) ? user.getUsername() : "");
+        model.addAttribute("isFile", false);
         model.addAttribute("shorturl_len", (shorturl_len - 1));
         model.addAttribute("fileurl_len", fileurl_len);
         return "home";
@@ -53,6 +55,7 @@ public class HomeController {
     // Display home page with file share
     public String fileHome(Model model, @AuthenticationPrincipal User user) {
         model.addAttribute("user", (user != null) ? user.getUsername() : "");
+        model.addAttribute("isFile", true);
         String maxSize = System.getenv("UPLOADFILE_MAX_SIZE");
         if (maxSize != null && maxSize.length() > 0) {
             model.addAttribute("maxSize", maxSize);
@@ -64,6 +67,7 @@ public class HomeController {
     // Admin login page
     public String adminLogin(Model model, @AuthenticationPrincipal User user) {
         model.addAttribute("user", (user != null) ? user.getUsername() : "");
+        model.addAttribute("isFile", false);
         return "login";
     }
 
@@ -130,6 +134,7 @@ public class HomeController {
     @GetMapping("/reach-out")
     public String showContactForm(Model model, @AuthenticationPrincipal User user) {
         model.addAttribute("user", (user != null) ? user.getUsername() : "");
+        model.addAttribute("isFile", false);
         return "contactForm";
     }
 
@@ -139,6 +144,7 @@ public class HomeController {
             @RequestParam String reason, @RequestParam String user_code, @RequestParam String message,
             Model model, HttpSession session, @AuthenticationPrincipal User user) {
         model.addAttribute("user", (user != null) ? user.getUsername() : "");
+        model.addAttribute("isFile", false);
 
         String status = "no";
         String captchaCode = session.getAttribute("captchaCode").toString();
@@ -175,7 +181,14 @@ public class HomeController {
         if (shorturl_len != fileurl_len) {
             if (surl.length() == fileurl_len) {
                 // If the length of the surl matches fileurl length, redirect to file download
-                return new RedirectView("/file/" + surl);
+                UploadedFile file = storageService.getUploadFileFromDownloadKey(surl);
+                if (file == null) {
+                    return new RedirectView("/");
+                } else {
+                    LOG.info(String.format("File name: %s", file.getName()));
+                    String url = String.format("%sfile/%s/%s", System.getenv("SITE_FULL_URL"), surl, file.getName());
+                    return new RedirectView(url);
+                }
             }
         }
         String creatorIp = request.getRemoteAddr();

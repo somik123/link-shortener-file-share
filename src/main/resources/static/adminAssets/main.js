@@ -30,7 +30,7 @@ function admin_get_history() {
 
     var parts = location.href.split("/");
     var tableType = "urlsTable";
-    if(parts[parts.length -1] == "file")
+    if(parts[parts.length -1].startsWith("file"))
         tableType = "filesTable";
 
     var http = new XMLHttpRequest();

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.view.RedirectView;
 
 import com.kfels.shorturl.dto.FileDTO;
 import com.kfels.shorturl.dto.FileLoadDTO;
@@ -66,12 +67,6 @@ public class FileController {
     @GetMapping("/{downloadKey}/{fileName}")
     public ResponseEntity<?> downloadFile(@PathVariable String downloadKey,
             @PathParam("fileName") String fileName, HttpServletRequest request) {
-        LOG.info(String.format("Download key: %s", downloadKey));
-        return downloadFile(downloadKey, request);
-    }
-
-    @GetMapping("/{downloadKey}")
-    public ResponseEntity<?> downloadFile(@PathVariable String downloadKey, HttpServletRequest request) {
         String message;
         try {
             String creatorIp = CommonUtils.getClientIpAddress(request);
@@ -94,7 +89,8 @@ public class FileController {
             LOG.info(mediaType.toString());
 
             return ResponseEntity.ok().contentType(mediaType)
-                    .header(HttpHeaders.CONTENT_DISPOSITION, String.format("inline; filename=\"%s\"", file.getName()))
+                    .header(HttpHeaders.CONTENT_DISPOSITION,
+                            String.format("inline; filename=\"%s\"", file.getName()))
                     .body(new InputStreamResource(in));
 
         } catch (IOException e) {
@@ -106,6 +102,20 @@ public class FileController {
         } catch (Exception e) {
             message = "Error while processing file.";
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseDTO("FAIL", null, message));
+        }
+    }
+
+    @GetMapping("/{downloadKey}")
+    public RedirectView downloadFile(@PathVariable String downloadKey, HttpServletRequest request) {
+        LOG.info(String.format("Download key: %s", downloadKey));
+
+        UploadedFile file = storageService.getUploadFileFromDownloadKey(downloadKey);
+        if (file == null) {
+            return new RedirectView("/");
+        } else {
+            LOG.info(String.format("File name: %s", file.getName()));
+            String url = String.format("%s/%s", downloadKey, file.getName());
+            return new RedirectView(url);
         }
     }
 

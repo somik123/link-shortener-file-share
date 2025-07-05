@@ -36,8 +36,8 @@
                 <a href="/admin/file">FileShare Admin</a>
             </div>
             <div id="login-icon">
-                <a th:if="${user == ''}" href="/admin/"><img src="/assets/img/login.png" style="width: 40px;"
-                        alt="Login" /></a>
+                <a th:if="${user == ''}" th:href="${isFile ? '/admin/file' : '/admin/'}">
+                    <img src="/assets/img/login.png" style="width: 40px;" alt="Login" /></a>
                 <a th:if="${user != ''}" href="/logout"><img src="/assets/img/login.png" style="width: 40px;"
                         alt="Logout" /></a>
             </div>
@@ -191,10 +191,6 @@
                                     <span class="input-group-text">Link:</span>
                                     <input type="text" class="form-control" id="file_url" aria-label="File URL"
                                         onclick="return copy_link(this);">
-                                    <button class="btn btn-outline-secondary" type="button" style="padding: 3px 5px;"
-                                        onclick="return generate_shorturl_mini()">
-                                        <img src="/assets/img/shorten.png" width="24" />
-                                    </button>
                                 </div>
                                 <div class="input-group mb-3">
                                     <span class="input-group-text">Delete:</span>
