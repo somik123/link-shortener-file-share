@@ -1,5 +1,8 @@
 package com.kfels.shorturl.dto;
 
+import lombok.Data;
+
+@Data
 public class ResponseDTO {
     private String status;
     private Object content;
@@ -18,29 +21,5 @@ public class ResponseDTO {
 
     public ResponseDTO(String status) {
         this(status, "", "");
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public Object getContent() {
-        return content;
-    }
-
-    public void setContent(Object content) {
-        this.content = content;
-    }
-
-    public String getError() {
-        return error;
-    }
-
-    public void setError(String error) {
-        this.error = error;
     }
 }

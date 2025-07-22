@@ -1,8 +1,12 @@
 package com.kfels.shorturl.dto;
 
 import com.kfels.shorturl.entity.UploadedFile;
+
+import lombok.Data;
+
 import org.springframework.core.io.Resource;
 
+@Data
 public class FileLoadDTO {
     UploadedFile file;
     Resource resource;
@@ -14,21 +18,4 @@ public class FileLoadDTO {
         this.file = file;
         this.resource = resource;
     }
-
-    public UploadedFile getFile() {
-        return this.file;
-    }
-
-    public void setFile(UploadedFile file) {
-        this.file = file;
-    }
-
-    public Resource getResource() {
-        return this.resource;
-    }
-
-    public void setResource(Resource resource) {
-        this.resource = resource;
-    }
-
 }

@@ -20,11 +20,11 @@ function generate_shorturl() {
         var api_reply = JSON.parse(http.responseText);
         console.log(api_reply);
         if (api_reply['status'] == "OK") {
-            if (api_reply['content']['isEnabled']) {
+            if (api_reply['content']['enabled']) {
                 document.getElementById("result-error").style.display = "none";
             }
             else {
-                document.getElementById("result-error").innerHTML = '<div class="alert alert-warning" role="alert"><strong>Notice:</strong>ShortURL has been generated, however pending admin review.</div>';
+                document.getElementById("result-error").innerHTML = '<div class="alert alert-warning" role="alert"><strong>Notice: </strong>ShortURL has been generated, however pending admin review.</div>';
                 document.getElementById("result-error").style.display = "";
             }
             let link = location.href + api_reply['content']['surl'];

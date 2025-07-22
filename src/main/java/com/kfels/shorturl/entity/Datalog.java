@@ -6,7 +6,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import lombok.Data;
 
+@Data
 @Entity
 public class Datalog {
 
@@ -27,37 +29,4 @@ public class Datalog {
         this.hitTime = LocalDateTime.now();
         this.browserHeaders = browserHeaders;
     }
-
-    public int getId() {
-        return this.id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getHitIp() {
-        return this.hitIp;
-    }
-
-    public void setHitIp(String hitIp) {
-        this.hitIp = hitIp;
-    }
-
-    public LocalDateTime getHitTime() {
-        return this.hitTime;
-    }
-
-    public void setHitTime(LocalDateTime hitTime) {
-        this.hitTime = hitTime;
-    }
-
-    public String getBrowserHeaders() {
-        return this.browserHeaders;
-    }
-
-    public void setBrowserHeaders(String browserHeaders) {
-        this.browserHeaders = browserHeaders;
-    }
-
 }

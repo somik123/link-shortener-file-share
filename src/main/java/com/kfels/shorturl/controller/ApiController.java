@@ -16,6 +16,7 @@ import com.kfels.shorturl.dto.RequestDTO;
 import com.kfels.shorturl.dto.ResponseDTO;
 import com.kfels.shorturl.dto.ShorturlDTO;
 import com.kfels.shorturl.entity.Shorturl;
+import com.kfels.shorturl.ip2country.Ip2Country;
 import com.kfels.shorturl.service.ShorturlService;
 import com.kfels.shorturl.service.UploadedFileService;
 import com.kfels.shorturl.utils.CommonUtils;
@@ -49,7 +50,7 @@ public class ApiController {
         ShorturlDTO surlDto;
         Shorturl shorturl = surlSvc.getShorturlByLongurl(longUrl);
         if (shorturl != null) {
-            surlDto = new ShorturlDTO(shorturl.getSurl(), shorturl.getIsEnabled());
+            surlDto = new ShorturlDTO(shorturl.getSurl(), shorturl.isEnabled());
             return new ResponseDTO("FAIL", surlDto, "Longurl already exists.");
         }
 
@@ -60,6 +61,13 @@ public class ApiController {
 
         // Generate a new short url
         String creatorIp = CommonUtils.getClientIpAddress(request);
+
+        if (Ip2Country.isAccessAllowed(creatorIp) == false) {
+            String message = "Access denied for your country.";
+            LOG.warning(message);
+            return new ResponseDTO("FAIL", null, message);
+        }
+
         shorturl = surlSvc.generateShorturl(longUrl, creatorIp, requestDTO.getSurl());
         if (shorturl == null) {
             return new ResponseDTO("FAIL", "", "Shorturl genertion failed.");
@@ -68,7 +76,7 @@ public class ApiController {
             return new ResponseDTO("FAIL", "", "Shorturl invalid.");
         } else {
             surlDto = new ShorturlDTO(shorturl.getSurl(), shorturl.getLongUrl(), shorturl.getDeleteKey(),
-                    shorturl.getIsEnabled());
+                    shorturl.isEnabled());
 
             // Notify admin
             String url = String.format("%s%s", System.getenv("SITE_FULL_URL"), shorturl.getSurl());
@@ -76,11 +84,11 @@ public class ApiController {
             String msg = String.format("New Short url: %s\nLong url: %s\nDelete: %s", url, longUrl, deleteUrl);
 
             // Don't notify for shorturls generated for file uploads
-            String siteUrl =  System.getenv("SITE_FULL_URL");
+            String siteUrl = System.getenv("SITE_FULL_URL");
             if (!siteUrl.substring(siteUrl.length() - 1).equals("/")) {
                 siteUrl = siteUrl + "/";
             }
-            if (!longUrl.startsWith( String.format("%s%s", siteUrl, "file/"))) {
+            if (!longUrl.startsWith(String.format("%s%s", siteUrl, "file/"))) {
                 CommonUtils.asynSendTelegramMessage(msg);
             }
 

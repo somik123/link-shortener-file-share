@@ -115,7 +115,7 @@ public class TelegramController {
         Shorturl shorturl = surlSvc.getShorturlByLongurl(longUrl);
         if (shorturl != null) {
             replyToUser = String.format("ShortURL: %s%s\nEnabled: %s\nDelete: (hidden)", System.getenv("SITE_FULL_URL"),
-                    shorturl.getSurl(), shorturl.getIsEnabled());
+                    shorturl.getSurl(), shorturl.isEnabled());
         } else {
             shorturl = surlSvc.generateShorturl(longUrl, "Telegram");
 
@@ -129,7 +129,7 @@ public class TelegramController {
                     CommonUtils.asynSendTelegramMessage(msg);
                 }
                 // Reply to user
-                replyToUser = String.format("ShortURL: %s\nEnabled: %s\nDelete: %s", url, shorturl.getIsEnabled(),
+                replyToUser = String.format("ShortURL: %s\nEnabled: %s\nDelete: %s", url, shorturl.isEnabled(),
                         deleteUrl);
             } else {
                 replyToUser = "ShortURL generation failed";

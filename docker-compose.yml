@@ -23,7 +23,9 @@ services:
       TELEGRAM_APIKEY: 1234567890:ABcd7EFghIJk3lMN_ABc5dEF6ghIJklMNop
       TELEGRAM_AUTHKEY: SADBniacAVEY9PQvaV7mhnMG
       TELEGRAM_ADMINID: 123456789
-      SITE_FULL_URL: "https://www.example.com/"
+      SITE_FULL_URL: https://www.example.com/
+      IP2C_URL: https://ip2country.example.com/?ip=
+      ALLOWED_COUNTRIES: all
       TZ: Asia/Singapore
     ports:
       - 6080:8080

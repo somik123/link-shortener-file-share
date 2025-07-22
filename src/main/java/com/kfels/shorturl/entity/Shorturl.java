@@ -16,7 +16,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
+import lombok.Data;
 
+@Data
 @Entity
 public class Shorturl {
     @Id
@@ -66,106 +68,6 @@ public class Shorturl {
         this.lastHit = null;
         this.isEnabled = true;
         this.logs = new ArrayList<>();
-    }
-
-    public int getId() {
-        return this.id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getSurl() {
-        return this.surl;
-    }
-
-    public void setSurl(String surl) {
-        this.surl = surl;
-    }
-
-    public String getLongUrl() {
-        return this.longUrl;
-    }
-
-    public void setLongUrl(String longUrl) {
-        this.longUrl = longUrl;
-    }
-
-    public String getDeleteKey() {
-        return this.deleteKey;
-    }
-
-    public void setDeleteKey(String deleteKey) {
-        this.deleteKey = deleteKey;
-    }
-
-    public String getCreatorIp() {
-        return this.creatorIp;
-    }
-
-    public void setCreatorIp(String creatorIp) {
-        this.creatorIp = creatorIp;
-    }
-
-    public int getHits() {
-        return this.hits;
-    }
-
-    public void setHits(int hits) {
-        this.hits = hits;
-    }
-
-    public LocalDateTime getCreated() {
-        return this.created;
-    }
-
-    public void setCreated(LocalDateTime created) {
-        this.created = created;
-    }
-
-    public LocalDateTime getLastHit() {
-        return this.lastHit;
-    }
-
-    public void setLastHit(LocalDateTime lastHit) {
-        this.lastHit = lastHit;
-    }
-
-    public boolean isIsEnabled() {
-        return this.isEnabled;
-    }
-
-    public boolean getIsEnabled() {
-        return this.isEnabled;
-    }
-
-    public void setIsEnabled(boolean isEnabled) {
-        this.isEnabled = isEnabled;
-    }
-
-    public List<Datalog> getLogs() {
-        return this.logs;
-    }
-
-    public void setLogs(List<Datalog> logs) {
-        this.logs = logs;
-    }
-
-    public String getSurlHash() {
-        return this.surlHash;
-    }
-
-    public void setSurlHash(String surlHash) {
-        this.surlHash = surlHash;
-    }
-
-    public String getLongUrlHash() {
-        return this.longUrlHash;
-    }
-
-    public void setLongUrlHash(String longUrlHash) {
-        this.longUrlHash = longUrlHash;
     }
 
     // Custom function to update variables when a short url is accessed

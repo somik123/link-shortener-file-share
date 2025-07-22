@@ -80,7 +80,7 @@ public class ShorturlServiceImpl implements ShorturlService {
     public boolean enableShorturl(String surl) {
         Shorturl shorturl = getShorturlDetails(surl);
         if (shorturl != null) {
-            shorturl.setIsEnabled(true);
+            shorturl.setEnabled(true);
             shorturlRepo.save(shorturl);
             return true;
         } else
@@ -91,7 +91,7 @@ public class ShorturlServiceImpl implements ShorturlService {
     public boolean disableShorturl(String surl) {
         Shorturl shorturl = getShorturlDetails(surl);
         if (shorturl != null) {
-            shorturl.setIsEnabled(false);
+            shorturl.setEnabled(false);
             shorturlRepo.save(shorturl);
             return true;
         } else

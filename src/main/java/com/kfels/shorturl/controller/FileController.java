@@ -25,6 +25,7 @@ import com.kfels.shorturl.dto.FileDTO;
 import com.kfels.shorturl.dto.FileLoadDTO;
 import com.kfels.shorturl.dto.ResponseDTO;
 import com.kfels.shorturl.entity.UploadedFile;
+import com.kfels.shorturl.ip2country.Ip2Country;
 import com.kfels.shorturl.service.UploadedFileService;
 import com.kfels.shorturl.utils.CommonUtils;
 
@@ -46,6 +47,13 @@ public class FileController {
     public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file,
             @RequestParam("file_expiry") int expiry, HttpServletRequest request) {
         String creatorIp = CommonUtils.getClientIpAddress(request);
+
+        if(Ip2Country.isAccessAllowed(creatorIp) == false) {
+            String message = "Access denied for your country.";
+            LOG.warning(message);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDTO("FAIL", null, message));
+        }
+
         FileDTO fileDTO = storageService.save(file, creatorIp, expiry);
         if (fileDTO == null) {
             String message = "Upload failed.";
