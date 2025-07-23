@@ -1,6 +1,8 @@
 volumes:
   shorturl_fileshare_data:
     name: shorturl_fileshare_data
+  ip2country_db:
+      name: ip2country_db
 
 services:
   backend_java:
@@ -24,8 +26,18 @@ services:
       TELEGRAM_AUTHKEY: SADBniacAVEY9PQvaV7mhnMG
       TELEGRAM_ADMINID: 123456789
       SITE_FULL_URL: https://www.example.com/
-      IP2C_URL: https://ip2country.example.com/?ip=
-      ALLOWED_COUNTRIES: all
+      IP2C_URL: http://ip2c/api/v2/
+      ALLOWED_COUNTRIES: US,CA,SG,MY,AU
       TZ: Asia/Singapore
     ports:
       - 6080:8080
+
+  ip2c:
+    container_name: ip2country
+    image: somik123/ip2country
+    restart: unless-stopped
+    volumes:
+      - ip2country_db:/var/www/html/db/
+    # Uncomment the next 2 lines to enable port mapping for ip2country
+    # ports:
+    #   - 6088:80

@@ -26,7 +26,7 @@ Edit the file with your favorit editor to set all the environment variables in t
 | `SHORTURL_PASS`      | Admin password to manage all shorturls and uploaded files |
 | `SHORTURL_PASS_HIDE` | Set this to "yes" to disable printing the password to logs when starting up the app |
 | `UPLOADFILE_MAX_SIZE` | Max allowed size for uploaded file (in MB) |
-| `IP2C_URL`           | URL to https://github.com/somik123/ip2country deployment, in the format `https://example.com/?ip=` |
+| `IP2C_URL`           | URL to https://github.com/somik123/ip2country deployment, in the format `https://example.com/api/v2/` |
 | `ALLOWED_COUNTRIES`  | Set to empty or `all` to allow all countries. Otherwise comma seperated coutry short names, like `US,CA,SG,MY,AU` |
 | ~~`SHORTURL_DB_HOST`~~ | ~~MySQL database host, usually localhost~~ (Depricated) |
 
