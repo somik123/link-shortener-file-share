@@ -48,7 +48,7 @@ public class FileController {
             @RequestParam("file_expiry") int expiry, HttpServletRequest request) {
         String creatorIp = CommonUtils.getClientIpAddress(request);
 
-        if(Ip2Country.isAccessAllowed(creatorIp) == false) {
+        if (Ip2Country.isAccessAllowed(creatorIp) == false) {
             String message = "Access denied for your country.";
             LOG.warning(message);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDTO("FAIL", null, message));

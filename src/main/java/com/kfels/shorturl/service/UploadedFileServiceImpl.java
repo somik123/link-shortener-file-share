@@ -260,6 +260,9 @@ public class UploadedFileServiceImpl implements UploadedFileService {
         } else {
             LOG.info("Uploaded file list is empty for admin view.");
         }
+
+        // Sort by created date, latest first
+        fileDtoList.sort((f1, f2) -> f2.getCreated().compareTo(f1.getCreated()));
         return fileDtoList;
     }
 

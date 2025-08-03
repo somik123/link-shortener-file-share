@@ -61,7 +61,11 @@ public class ShorturlServiceImpl implements ShorturlService {
 
     @Override
     public List<Shorturl> getAllShorturls() {
-        return shorturlRepo.findAllCustom();
+        // Fetch all shorturls from the repository
+        List<Shorturl> shorturls = shorturlRepo.findAllCustom();
+        // Reverse the list to show the latest first
+        shorturls.sort((s1, s2) -> s2.getCreated().compareTo(s1.getCreated()));
+        return shorturls;
     }
 
     @Override

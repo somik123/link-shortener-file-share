@@ -42,12 +42,34 @@ public class AdminController {
         return "admin";
     }
 
+    @GetMapping("/urlsTable/{page}")
+    public String adminUrlTable(Model model, @PathVariable int page) {
+        int pageSize = CommonUtils.getPaginationSize();
+
+        List<Shorturl> surlList = surlSvc.getAllShorturls();
+        int maxPage = (int) Math.ceil((double) surlList.size() / pageSize);
+
+        int startIndex = page * pageSize;
+        int endIndex = startIndex + pageSize;
+        if (startIndex < 0) {
+            startIndex = 0;
+        }
+        if (endIndex > surlList.size()) {
+            endIndex = surlList.size();
+        }
+        List<Shorturl> paginatedSurlList = surlList.subList(startIndex, endIndex);
+
+        model.addAttribute("surlList", paginatedSurlList);
+        model.addAttribute("startIndex", startIndex);
+        model.addAttribute("page", page);
+        model.addAttribute("maxPage", maxPage);
+        model.addAttribute("max", paginatedSurlList.size() - 1);
+        return "adminUrlTable";
+    }
+
     @GetMapping("/urlsTable")
     public String adminUrlTable(Model model) {
-        List<Shorturl> surlList = surlSvc.getAllShorturls();
-        model.addAttribute("surlList", surlList);
-        model.addAttribute("max", surlList.size() - 1);
-        return "adminUrlTable";
+        return adminUrlTable(model, 0);
     }
 
     @GetMapping("/file")
@@ -56,12 +78,35 @@ public class AdminController {
         return "adminFile";
     }
 
+    @GetMapping("/filesTable/{page}")
+    public String adminFileTable(Model model, @PathVariable int page) {
+        int pageSize = CommonUtils.getPaginationSize();
+
+        List<FileDetailsDTO> fileList = storageService.getAllFileDetails();
+        int maxPage = (int) Math.ceil((double) fileList.size() / pageSize);
+
+        int startIndex = page * pageSize;
+        int endIndex = startIndex + pageSize;
+        if (startIndex < 0) {
+            startIndex = 0;
+        }
+        if (endIndex > fileList.size()) {
+            endIndex = fileList.size();
+        }
+
+        List<FileDetailsDTO> paginatedFileList = fileList.subList(startIndex, endIndex);
+
+        model.addAttribute("fileList", paginatedFileList);
+        model.addAttribute("startIndex", startIndex);
+        model.addAttribute("page", page);
+        model.addAttribute("maxPage", maxPage);
+        model.addAttribute("max", paginatedFileList.size() - 1);
+        return "adminFileTable";
+    }
+
     @GetMapping("/filesTable")
     public String adminFileTable(Model model) {
-        List<FileDetailsDTO> fileList = storageService.getAllFileDetails();
-        model.addAttribute("fileList", fileList);
-        model.addAttribute("max", fileList.size() - 1);
-        return "adminFileTable";
+        return adminFileTable(model, 0);
     }
 
     @GetMapping("/logs/{surl}")

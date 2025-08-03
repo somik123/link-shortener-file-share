@@ -2,6 +2,20 @@
 <html xmlns:th="https://www.thymeleaf.org" lang="en">
 
 <body>
+    <!-- Pagination Navigation -->
+    <div class="mb-3">
+        <button class="btn btn-secondary" type="button" th:data-page="0"
+            onclick="admin_get_history(this.getAttribute('data-page'))">First</button>
+        <button class="btn btn-secondary" type="button" th:disabled="${(page - 1) < 0}" th:data-page="${page - 1}"
+            onclick="admin_get_history(this.getAttribute('data-page'))">Prev</button>
+        <span class="mx-2 fw-bold">Page <span th:text="${page + 1}">1</span> of <span
+                th:text="${maxPage}">10</span></span>
+        <button class="btn btn-secondary" type="button" th:disabled="${(page + 1) >= maxPage}"
+            th:data-page="${page + 1}" onclick="admin_get_history(this.getAttribute('data-page'))">Next</button>
+        <button class="btn btn-secondary" type="button" th:data-page="${maxPage - 1}"
+            onclick="admin_get_history(this.getAttribute('data-page'))">Last</button>
+    </div>
+
     <!-- History Table -->
     <div class="table-responsive">
         <table class="table table-striped" style="width: 100%;">
@@ -23,7 +37,7 @@
             </thead>
             <tbody th:if="${max >= 0}">
                 <tr th:each="i : ${#numbers.sequence(0, max)}">
-                    <th scope="row" th:text="${i+1}">1</th>
+                    <th scope="row" th:text="${startIndex+i+1}">1</th>
                     <td>
                         <img src="/assets/img/trash.png" width="40" th:data-deleteUrl="${fileList.get(i).deleteUrl}"
                             onclick="return admin_delete(this.getAttribute('data-deleteUrl'));" class="link-button" />
@@ -54,6 +68,20 @@
                 </tr>
             </tbody>
         </table>
+    </div>
+
+    <!-- Pagination Navigation -->
+    <div>
+        <button class="btn btn-secondary" type="button" th:data-page="0"
+            onclick="admin_get_history(this.getAttribute('data-page'))">First</button>
+        <button class="btn btn-secondary" type="button" th:disabled="${(page - 1) < 0}" th:data-page="${page - 1}"
+            onclick="admin_get_history(this.getAttribute('data-page'))">Prev</button>
+        <span class="mx-2 fw-bold">Page <span th:text="${page + 1}">1</span> of <span
+                th:text="${maxPage}">10</span></span>
+        <button class="btn btn-secondary" type="button" th:disabled="${(page + 1) >= maxPage}"
+            th:data-page="${page + 1}" onclick="admin_get_history(this.getAttribute('data-page'))">Next</button>
+        <button class="btn btn-secondary" type="button" th:data-page="${maxPage - 1}"
+            onclick="admin_get_history(this.getAttribute('data-page'))">Last</button>
     </div>
 </body>
 

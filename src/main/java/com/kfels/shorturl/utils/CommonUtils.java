@@ -71,6 +71,10 @@ public class CommonUtils {
         return getLengthFromString("FILEURL_LENGTH", 10);
     }
 
+    public static int getPaginationSize(){
+        return getLengthFromString("PAGINATION_SIZE", 10);
+    }
+
     public static String generateStringForShorturl(String surl) {
         int len = getShortUrlLength();
         int fileurl_len = getFileUrlLength();

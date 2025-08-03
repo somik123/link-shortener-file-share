@@ -25,16 +25,20 @@ function admin_get_file_logs(downloadKey) {
     return false;
 }
 
-function admin_get_history() {
+function admin_get_history(page) {
     var divBox = document.getElementById('historyTable');
 
     var parts = location.href.split("/");
     var tableType = "urlsTable";
-    if(parts[parts.length -1].startsWith("file"))
+    if (parts[parts.length - 1].startsWith("file"))
         tableType = "filesTable";
 
+    let pageReq = "";
+    if (page) {
+        pageReq = "/" + page;
+    }
     var http = new XMLHttpRequest();
-    http.open("GET", "/admin/" + tableType, true);
+    http.open("GET", "/admin/" + tableType + pageReq, true);
     http.send();
     http.onload = function () {
         divBox.innerHTML = http.responseText;
