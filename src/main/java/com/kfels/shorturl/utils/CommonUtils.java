@@ -71,7 +71,7 @@ public class CommonUtils {
         return getLengthFromString("FILEURL_LENGTH", 10);
     }
 
-    public static int getPaginationSize(){
+    public static int getPaginationSize() {
         return getLengthFromString("PAGINATION_SIZE", 10);
     }
 

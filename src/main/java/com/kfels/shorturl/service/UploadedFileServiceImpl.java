@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.kfels.shorturl.dto.FileDTO;
@@ -42,7 +43,7 @@ public class UploadedFileServiceImpl implements UploadedFileService {
     @Override
     public FileDTO save(MultipartFile file, String creatorIp, int expiry) {
         try {
-            String name = file.getOriginalFilename();
+
             String mimeType = file.getContentType();
             float size = file.getSize() / (1024 * 1024);
             float maxSize = 0;
@@ -55,6 +56,7 @@ public class UploadedFileServiceImpl implements UploadedFileService {
                 return null;
             }
 
+            String name = file.getOriginalFilename();
             name = CommonUtils.cleanFileName(name);
             name = URLEncoder.encode(name, StandardCharsets.UTF_8);
             if (name == null || name.length() < 2) {
@@ -78,11 +80,15 @@ public class UploadedFileServiceImpl implements UploadedFileService {
 
             fileRepo.save(uploadedFile);
 
-            String url = String.format("/file/%s/%s", uploadedFile.getDownloadKey(), name);
-            String deleteUrl = String.format("/deleteFile/%s/%s", uploadedFile.getDownloadKey(),
-                    uploadedFile.getDeleteKey());
+            // Create download URL
+            String downloadKey = uploadedFile.getDownloadKey();
+            String fileExt = StringUtils.getFilenameExtension(name);
+            String url = String.format("/file/%s/%s.%s", downloadKey, downloadKey, fileExt);
+
+            // Create delete URL
+            String deleteUrl = String.format("/deleteFile/%s/%s", downloadKey, uploadedFile.getDeleteKey());
             return new FileDTO(name, "File uploaded successfully.", url, deleteUrl,
-                    uploadedFile.getDownloadKey(), uploadedFile.getDeleteKey());
+                    downloadKey, uploadedFile.getDeleteKey());
         } catch (Exception e) {
             CommonUtils.logErrors(LOG, e);
             return null;
@@ -236,8 +242,13 @@ public class UploadedFileServiceImpl implements UploadedFileService {
                 fileDto.setHits(file.getHits());
 
                 String filename = file.getFileName();
-                String url = String.format("/file/%s/%s", file.getDownloadKey(), file.getName());
-                String deleteUrl = String.format("/deleteFile/%s/%s", file.getDownloadKey(), file.getDeleteKey());
+
+                // Create download URL
+                String downloadKey = file.getDownloadKey();
+                String fileExt = StringUtils.getFilenameExtension(CommonUtils.urlDecode(file.getName()));
+                String url = String.format("/file/%s/%s.%s", downloadKey, downloadKey, fileExt);
+
+                String deleteUrl = String.format("/deleteFile/%s/%s", downloadKey, file.getDeleteKey());
 
                 fileDto.setFileName(filename);
                 fileDto.setUrl(url);
