@@ -37,7 +37,7 @@ public class WebSecurityConfig {
 
         String shortUrlUser = System.getenv("SHORTURL_USER");
         if (shortUrlUser == null || shortUrlUser.isEmpty())
-        shortUrlUser = "user";
+            shortUrlUser = "user";
         String shortUrlPass = System.getenv("SHORTURL_PASS");
         if (shortUrlPass == null || shortUrlPass.isEmpty()) {
             shortUrlPass = "password";

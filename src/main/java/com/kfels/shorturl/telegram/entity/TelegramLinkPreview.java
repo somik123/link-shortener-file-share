@@ -1,15 +1,10 @@
 package com.kfels.shorturl.telegram.entity;
 
+import lombok.Data;
+
+@Data
 public class TelegramLinkPreview {
     private String url;
-
-    public String getUrl() {
-        return this.url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
 
     @Override
     public String toString() {

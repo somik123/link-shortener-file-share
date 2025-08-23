@@ -25,7 +25,7 @@ body {
 
 /* Main white box 2 */
 .contents-2 {
-    max-width: 1100px;
+    max-width: 1400px;
     text-align: center;
     margin-bottom: 0px;
     padding-bottom: 40px;
@@ -33,7 +33,7 @@ body {
 
 /* Footer black box */
 .footer {
-    max-width: 1100px;
+    max-width: 1400px;
     background-color: #0e0e0e;
     margin-top: 0px;
     margin-bottom: 30px;

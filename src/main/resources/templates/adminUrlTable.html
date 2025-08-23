@@ -3,17 +3,17 @@
 
 <body>
     <!-- Pagination Navigation -->
-    <div>
+    <div class="mb-3">
         <button class="btn btn-secondary" type="button" th:data-page="0"
-            onclick="admin_get_history(this.getAttribute('data-page'))">First</button>
+            onclick="admin_get_history(this.getAttribute('data-page'))">&laquo;</button>
         <button class="btn btn-secondary" type="button" th:disabled="${(page - 1) < 0}" th:data-page="${page - 1}"
-            onclick="admin_get_history(this.getAttribute('data-page'))">Prev</button>
+            onclick="admin_get_history(this.getAttribute('data-page'))">&lsaquo;</button>
         <span class="mx-2 fw-bold">Page <span th:text="${page + 1}">1</span> of <span
                 th:text="${maxPage}">10</span></span>
         <button class="btn btn-secondary" type="button" th:disabled="${(page + 1) >= maxPage}"
-            th:data-page="${page + 1}" onclick="admin_get_history(this.getAttribute('data-page'))">Next</button>
+            th:data-page="${page + 1}" onclick="admin_get_history(this.getAttribute('data-page'))">&rsaquo;</button>
         <button class="btn btn-secondary" type="button" th:data-page="${maxPage - 1}"
-            onclick="admin_get_history(this.getAttribute('data-page'))">Last</button>
+            onclick="admin_get_history(this.getAttribute('data-page'))">&raquo;</button>
     </div>
 
     <!-- History Table -->
@@ -66,15 +66,15 @@
     <!-- Pagination Navigation -->
     <div>
         <button class="btn btn-secondary" type="button" th:data-page="0"
-            onclick="admin_get_history(this.getAttribute('data-page'))">First</button>
+            onclick="admin_get_history(this.getAttribute('data-page'))">&laquo;</button>
         <button class="btn btn-secondary" type="button" th:disabled="${(page - 1) < 0}" th:data-page="${page - 1}"
-            onclick="admin_get_history(this.getAttribute('data-page'))">Prev</button>
+            onclick="admin_get_history(this.getAttribute('data-page'))">&lsaquo;</button>
         <span class="mx-2 fw-bold">Page <span th:text="${page + 1}">1</span> of <span
                 th:text="${maxPage}">10</span></span>
         <button class="btn btn-secondary" type="button" th:disabled="${(page + 1) >= maxPage}"
-            th:data-page="${page + 1}" onclick="admin_get_history(this.getAttribute('data-page'))">Next</button>
+            th:data-page="${page + 1}" onclick="admin_get_history(this.getAttribute('data-page'))">&rsaquo;</button>
         <button class="btn btn-secondary" type="button" th:data-page="${maxPage - 1}"
-            onclick="admin_get_history(this.getAttribute('data-page'))">Last</button>
+            onclick="admin_get_history(this.getAttribute('data-page'))">&raquo;</button>
     </div>
 </body>
 
