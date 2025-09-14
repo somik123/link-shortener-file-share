@@ -32,7 +32,7 @@ public class CommonUtils {
     private static final int[] ILLEGAL_CHARACTERS = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
             19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 34, 42, 47, 58, 60, 62, 63, 92, 124 };
 
-    static Logger log = Logger.getLogger(CommonUtils.class.getName());
+    private static Logger log = Logger.getLogger(CommonUtils.class.getName());
 
     public static Boolean isNameValid(String name) {
         for (char c : name.toCharArray()) {
@@ -172,16 +172,16 @@ public class CommonUtils {
     }
 
     public static String getClientIpAddress(HttpServletRequest request) {
-        String xForwardedForHeader = request.getHeader("X-Forwarded-For");
-        if (xForwardedForHeader == null) {
-            return request.getRemoteAddr();
-        } else {
-            // As of https://en.wikipedia.org/wiki/X-Forwarded-For
-            // The general format of the field is: X-Forwarded-For: client, proxy1, proxy2
-            // ...
-            // we only want the client
-            return new StringTokenizer(xForwardedForHeader, ",").nextToken().trim();
+        String ip = request.getHeader("X-Forwarded-For");
+        if (ip != null && ip.length() != 0 && !"unknown".equalsIgnoreCase(ip)) {
+            // X-Forwarded-For may contain multiple IPs: client, proxy1, proxy2...
+            return ip.split(",")[0].trim();
         }
+        ip = request.getHeader("X-Real-IP");
+        if (ip != null && ip.length() != 0 && !"unknown".equalsIgnoreCase(ip)) {
+            return ip;
+        }
+        return request.getRemoteAddr();
     }
 
     // Send telegram message, but asynchronously

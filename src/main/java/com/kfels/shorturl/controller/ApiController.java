@@ -119,4 +119,9 @@ public class ApiController {
         return storageService.cronJobs();
     }
 
+    @GetMapping(path = "/ip", produces = MediaType.TEXT_PLAIN_VALUE)
+    public String returnClientIp(HttpServletRequest request) {
+        return CommonUtils.getClientIpAddress(request);
+    }
+
 }
