@@ -5,8 +5,10 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.net.InetAddress;
 import java.net.URI;
 import java.net.URLDecoder;
+import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -14,7 +16,6 @@ import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Random;
-import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
 import com.google.zxing.BarcodeFormat;
@@ -171,7 +172,7 @@ public class CommonUtils {
 
     }
 
-    public static String getClientIpAddress(HttpServletRequest request) {
+    public static String getClientIpAddressOld(HttpServletRequest request) {
         String ip = request.getHeader("X-Forwarded-For");
         if (ip != null && ip.length() != 0 && !"unknown".equalsIgnoreCase(ip)) {
             // X-Forwarded-For may contain multiple IPs: client, proxy1, proxy2...
@@ -182,6 +183,56 @@ public class CommonUtils {
             return ip;
         }
         return request.getRemoteAddr();
+    }
+
+    public static String getClientIpAddress(HttpServletRequest request) {
+        String ip = request.getHeader("X-Forwarded-For");
+        if (ip != null && ip.length() != 0 && !"unknown".equalsIgnoreCase(ip)) {
+            // X-Forwarded-For may contain multiple IPs
+            ip = ip.split(",")[0].trim();
+            ip = normalizeIp(ip);
+            if (isPublicIp(ip))
+                return ip;
+        }
+
+        ip = request.getHeader("X-Real-IP");
+        if (ip != null && ip.length() != 0 && !"unknown".equalsIgnoreCase(ip)) {
+            ip = normalizeIp(ip);
+            if (isPublicIp(ip))
+                return ip;
+        }
+
+        // Fallback
+        ip = normalizeIp(request.getRemoteAddr());
+        return ip;
+    }
+
+    private static String normalizeIp(String ip) {
+        if (ip == null)
+            return null;
+        ip = ip.trim();
+
+        // Strip [ ] around IPv6 if present
+        if (ip.startsWith("[") && ip.endsWith("]")) {
+            ip = ip.substring(1, ip.length() - 1);
+        }
+        return ip;
+    }
+
+    private static boolean isPublicIp(String ip) {
+        try {
+            InetAddress inetAddress = InetAddress.getByName(ip);
+
+            if (inetAddress.isAnyLocalAddress() || // 0.0.0.0 or ::
+                    inetAddress.isLoopbackAddress() || // 127.0.0.1 or ::1
+                    inetAddress.isLinkLocalAddress() || // 169.254.x.x or fe80::/10
+                    inetAddress.isSiteLocalAddress()) { // Private ranges: 10.x, 192.168.x, fc00::/7
+                return false;
+            }
+            return true;
+        } catch (UnknownHostException e) {
+            return false;
+        }
     }
 
     // Send telegram message, but asynchronously
