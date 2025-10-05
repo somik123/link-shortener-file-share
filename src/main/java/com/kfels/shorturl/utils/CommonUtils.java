@@ -172,20 +172,36 @@ public class CommonUtils {
 
     }
 
-    public static String getClientIpAddressOld(HttpServletRequest request) {
-        String ip = request.getHeader("X-Forwarded-For");
-        if (ip != null && ip.length() != 0 && !"unknown".equalsIgnoreCase(ip)) {
-            // X-Forwarded-For may contain multiple IPs: client, proxy1, proxy2...
-            return ip.split(",")[0].trim();
+    public static String getClientIpAddress(HttpServletRequest request) {
+        String[] headers = {
+                "X-Forwarded-For",
+                "Proxy-Client-IP",
+                "WL-Proxy-Client-IP",
+                "HTTP_CLIENT_IP",
+                "HTTP_X_FORWARDED_FOR",
+                "X-Real-IP",
+                "CF-Connecting-IP" // Cloudflare
+        };
+
+        for (String header : headers) {
+            String ipList = request.getHeader(header);
+            if (ipList != null && !ipList.isEmpty() && !"unknown".equalsIgnoreCase(ipList)) {
+                // Sometimes X-Forwarded-For contains multiple IPs
+                String[] ips = ipList.split(",");
+                for (String ip : ips) {
+                    ip = ip.trim();
+                    if (isPublicIp(ip)) {
+                        return ip;
+                    }
+                }
+            }
         }
-        ip = request.getHeader("X-Real-IP");
-        if (ip != null && ip.length() != 0 && !"unknown".equalsIgnoreCase(ip)) {
-            return ip;
-        }
+
+        // fallback to request.getRemoteAddr()
         return request.getRemoteAddr();
     }
 
-    public static String getClientIpAddress(HttpServletRequest request) {
+    public static String getClientIpAddressOld(HttpServletRequest request) {
         String ip = request.getHeader("X-Forwarded-For");
         if (ip != null && ip.length() != 0 && !"unknown".equalsIgnoreCase(ip)) {
             // X-Forwarded-For may contain multiple IPs
