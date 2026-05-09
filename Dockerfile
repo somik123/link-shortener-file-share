@@ -6,7 +6,7 @@ WORKDIR /app
 COPY src src
 COPY pom.xml .
 
-RUN mvn -f ./pom.xml clean package -Dmaven.test.skip=true
+RUN mvn -f ./pom.xml clean package # -Dmaven.test.skip=true
 # End build
 
 
