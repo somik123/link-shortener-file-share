@@ -215,3 +215,53 @@ function formValidation() {
     };
     return valid;
 }
+
+
+
+
+
+// Theme toggle
+(function () {
+    const html = document.documentElement;
+    const el = document.getElementById("theme-toggle");
+    const icon = document.getElementById("theme-icon");
+
+    function setTheme(theme) {
+        html.setAttribute("data-bs-theme", theme);
+
+        if (theme === "dark") {
+            icon.className = "bi bi-sun-fill";
+            el.setAttribute("aria-label", "Switch to light mode");
+            el.setAttribute("title", "Switch to light mode");
+        } else {
+            icon.className = "bi bi-moon-fill";
+            el.setAttribute("aria-label", "Switch to dark mode");
+            el.setAttribute("title", "Switch to dark mode");
+        }
+
+        localStorage.setItem("theme", theme);
+    }
+
+    // Load saved theme
+    const savedTheme = localStorage.getItem("theme");
+
+    if (savedTheme) {
+        setTheme(savedTheme);
+    } else {
+        // Follow the user's operating-system preference
+        const prefersDark = window.matchMedia(
+            "(prefers-color-scheme: dark)"
+        ).matches;
+
+        setTheme(prefersDark ? "dark" : "light");
+    }
+
+    // Toggle theme
+    el.addEventListener("click", function () {
+        const currentTheme = html.getAttribute("data-bs-theme");
+        const newTheme = currentTheme === "dark" ? "light" : "dark";
+
+        setTheme(newTheme);
+        return false;
+    });
+})();

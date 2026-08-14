@@ -1,48 +1,81 @@
 /*
 Author: Somik Khan
+Bootstrap 5.3 theme-aware stylesheet
 */
+
+/* =========================================================
+   BODY
+   ========================================================= */
+
 body {
-    background-color: #535353;
-    background: url("/assets/img/bg.jpg") top right no-repeat;
+    background-color: var(--bs-body-bg);
+    color: var(--bs-body-color);
+
+    background-image: url("/assets/img/bg.jpg");
+    background-position: top right;
+    background-repeat: no-repeat;
     background-attachment: fixed;
     background-size: cover;
 }
 
-/* Main white box 1 */
+
+/* =========================================================
+   MAIN CONTENT BOX
+   ========================================================= */
+
 .contents {
     max-width: 700px;
     min-height: 100px;
-    margin: 0 auto;
-    margin-top: 90px;
-    border: 2px solid #ffffff;
-    box-shadow: 0px 0px 1px 1px #ffffff;
-    -webkit-box-shadow: 0px 0px 1px 1px #ffffff;
+
+    margin: 90px auto 0 auto;
+
+    border: 2px solid var(--bs-border-color);
+    box-shadow: 0 0 1px 1px var(--bs-border-color);
+    -webkit-box-shadow: 0 0 1px 1px var(--bs-border-color);
+
     border-top-right-radius: 20px;
-    padding: 0px 20px 20px 20px;
-    background-color: #f5f5f5;
-    color: #33b2ce;
+
+    padding: 0 20px 20px 20px;
+
+    background-color: var(--bs-body-bg);
+    color: var(--bs-info);
 }
 
-/* Main white box 2 */
+
+/* =========================================================
+   MAIN CONTENT BOX 2
+   ========================================================= */
+
 .contents-2 {
     max-width: 1400px;
     text-align: center;
-    margin-bottom: 0px;
+
+    margin-bottom: 0;
     padding-bottom: 40px;
 }
 
-/* Footer black box */
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
 .footer {
     max-width: 1400px;
-    background-color: #0e0e0e;
-    margin-top: 0px;
+
+    background-color: var(--bs-dark);
+    color: var(--bs-light);
+
+    margin-top: 0;
     margin-bottom: 30px;
-    border-top-right-radius: 0px;
+
+    border-top-right-radius: 0;
     border-bottom-left-radius: 20px;
     border-bottom-right-radius: 20px;
+
     padding: 10px 20px;
+
     min-height: 50px;
-    color: #ffffff;
+
     text-align: center;
     font-weight: bold;
 }
@@ -52,91 +85,166 @@ body {
 }
 
 
+/* Footer links */
+
 .footer a,
 .footer a:visited {
-    color: #ffffff;
+    color: var(--bs-light);
     text-decoration: underline;
 }
 
 .footer a:hover {
-    color: #33b2ce;
+    color: var(--bs-info);
 }
 
 
-/* Logo and title box */
+/* =========================================================
+   LOGO / HEADER
+   ========================================================= */
+
 .header-box {
     text-align: center;
     margin-top: -60px;
 }
 
-/* title style */
+
+/* =========================================================
+   TITLE
+   ========================================================= */
+
 .text-header {
-    padding: 65px 0px 0px 40px;
+    padding: 65px 0 0 40px;
+
     font-weight: bolder;
-    text-shadow: 0 0 2px #000000;
     font-size: 32pt;
-    color: #3DD0F2;
+
+    color: var(--bs-info);
+
+    text-shadow: 0 0 2px var(--bs-black);
 }
 
 .text-header a,
 .text-header a:visited {
-    color: #3DD0F2;
+    color: var(--bs-info);
     text-decoration: none;
 }
 
 .text-header a:hover {
-    color: #33b2ce;
+    color: var(--bs-primary);
 }
 
-/* Links */
+
+/* =========================================================
+   LINKS
+   ========================================================= */
+
 a,
 a:visited {
-    color: #3DD0F2;
+    color: var(--bs-info);
     text-decoration: underline;
 }
 
 a:hover {
-    color: #33b2ce;
+    color: var(--bs-primary);
 }
 
-/* Input text field */
+
+/* =========================================================
+   FORM CONTROLS
+   ========================================================= */
+
 input {
     min-width: 100px;
 }
 
-/* Link input form */
+
+/* Bootstrap 5.3 automatically changes these variables
+   when data-bs-theme="dark" is present. */
+
+input,
+textarea,
+select {
+    background-color: var(--bs-body-bg);
+    color: var(--bs-body-color);
+    border-color: var(--bs-border-color);
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: var(--bs-secondary-color);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    background-color: var(--bs-body-bg);
+    color: var(--bs-body-color);
+    border-color: var(--bs-primary);
+}
+
+
+/* =========================================================
+   LINK INPUT FORM
+   ========================================================= */
+
 .shortlink-form,
 .file-upload-form {
     text-align: center;
+
     max-width: 600px;
+
     margin: 0 auto;
-    padding: 20px 20px;
+
+    padding: 20px;
 }
 
-/* Short link output text */
+
+/* =========================================================
+   SHORT LINK OUTPUT
+   ========================================================= */
+
 .short-url-txt {
     font-weight: bold;
     font-size: 16pt;
     vertical-align: middle;
 }
 
+
+/* =========================================================
+   QR CODE
+   ========================================================= */
+
 #qr-code {
     width: 150px;
+
     margin: 0 auto;
-    padding: 10px 10px;
+
+    padding: 10px;
 }
+
+
+/* =========================================================
+   LINK BUTTON
+   ========================================================= */
 
 .link-button {
     cursor: pointer;
 }
 
-/* Short link output box slider */
+
+/* =========================================================
+   SLIDER
+   ========================================================= */
+
 .slider {
     overflow-y: hidden;
+
     max-height: 500px;
+
     /* approximate max height */
     transition-property: all;
     transition-duration: 2s;
+
     padding-bottom: 10px;
 }
 
@@ -145,18 +253,26 @@ input {
 }
 
 
-/* Button text */
+/* =========================================================
+   BUTTON TEXT
+   ========================================================= */
+
 .btn-txt-bold {
     font-weight: bold;
 }
 
 
-/* Table styling */
+/* =========================================================
+   TABLE
+   ========================================================= */
+
 td,
 th {
     max-width: 400px;
+
     word-wrap: break-word;
     vertical-align: middle;
+
     margin: 0 auto;
 }
 
@@ -168,54 +284,204 @@ th {
     border-top-right-radius: 10px;
 }
 
+
+/* =========================================================
+   LONG URL
+   ========================================================= */
+
 .longurltxtbox {
     width: 390px;
     overflow: hidden;
 }
 
+
+/* =========================================================
+   SHORT URL TEXT
+   ========================================================= */
+
 .shorturltxt {
     text-decoration: none;
-    color: #33b2ce;
+    color: var(--bs-info);
 }
 
-/* Spacer */
+
+/* =========================================================
+   SPACER
+   ========================================================= */
+
 .spacer {
     margin-bottom: 10px;
 }
+
+
+/* =========================================================
+   LOGIN ICON
+   ========================================================= */
 
 #login-icon {
     float: right;
     margin-top: 76px;
 }
 
+
+/* =========================================================
+   NAVIGATION BOX
+   ========================================================= */
+
 #nav-box {
     float: left;
+
     margin-top: 34px;
     margin-left: -35px;
-    width: 200px;
+
+    width: 233px;
+
     font-weight: bolder;
-    color: #f48c6c;
+
+    color: var(--bs-warning);
 }
+
+
+/* Navigation links */
 
 #nav-box a,
 #nav-box a:visited {
-    color: #f48c6c;
-    text-decoration: none;
-    padding: 0px 5px;
+    color: var(--bs-dark);
 
-    border: 2px solid #ffffff;
-    box-shadow: 0px 0px 1px 1px #ffffff;
-    -webkit-box-shadow: 0px 0px 1px 1px #ffffff;
+    text-decoration: none;
+
+    padding: 0 5px;
+
+    border: 2px solid var(--bs-border-color);
+
+    box-shadow: 0 0 1px 1px var(--bs-border-color);
+    -webkit-box-shadow: 0 0 1px 1px var(--bs-border-color);
+
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
-    background-color: #f5f5f5;
+
+    background-color: var(--bs-body-bg);
+
+    cursor: pointer;
 }
 
 #nav-box a:hover {
-    color: #c87359;
+    color: var(--bs-orange);
 }
 
-/* Mobile view */
+
+/* =========================================================
+   DARK THEME
+   =========================================================
+
+   Bootstrap 5.3 changes most of the variables automatically
+   when:
+
+   <html data-bs-theme="dark">
+
+   The variables below customize the Bootstrap dark palette
+   specifically for this application.
+   ========================================================= */
+
+[data-bs-theme="dark"] {
+    --bs-body-bg: #212529;
+    --bs-body-color: #dee2e6;
+
+    --bs-border-color: #495057;
+
+    --bs-primary: #6ea8fe;
+    --bs-secondary: #adb5bd;
+
+    --bs-success: #75b798;
+    --bs-info: #66d9ef;
+    --bs-warning: #ffda6a;
+    --bs-danger: #ea868f;
+
+    --bs-light: #f8f9fa;
+    --bs-dark: #111315;
+
+    --bs-link-color: #66d9ef;
+    --bs-link-hover-color: #8ee8f5;
+
+    --bs-secondary-color: #adb5bd;
+    --bs-tertiary-color: #6c757d;
+}
+
+
+/* =========================================================
+   DARK THEME BACKGROUND
+   ========================================================= */
+
+/*
+   Darken the existing background image instead of requiring
+   a separate dark-mode image.
+*/
+
+[data-bs-theme="dark"] body {
+    background-image:
+        linear-gradient(
+            rgba(0, 0, 0, 0.8),
+            rgba(0, 0, 0, 0.8)
+        ),
+        url("/assets/img/bg.jpg");
+}
+
+
+/* =========================================================
+   DARK THEME CONTENT BOX
+   ========================================================= */
+
+[data-bs-theme="dark"] .contents {
+    background-color: #212529;
+}
+
+
+/* =========================================================
+   DARK THEME FOOTER
+   ========================================================= */
+
+[data-bs-theme="dark"] .footer {
+    background-color: #111315;
+}
+
+
+/* =========================================================
+   DARK THEME FORM CONTROLS
+   ========================================================= */
+
+[data-bs-theme="dark"] input,
+[data-bs-theme="dark"] textarea,
+[data-bs-theme="dark"] select {
+    background-color: #212529;
+    color: #dee2e6;
+}
+
+
+/* =========================================================
+   DARK THEME NAVIGATION BOX
+   ========================================================= */
+
+[data-bs-theme="dark"] #nav-box a,
+[data-bs-theme="dark"] #nav-box a:visited {
+    color: var(--bs-warning);
+}
+
+
+/* =========================================================
+   DARK THEME TABLE
+   ========================================================= */
+
+[data-bs-theme="dark"] .table {
+    --bs-table-color: var(--bs-body-color);
+    --bs-table-bg: transparent;
+    --bs-table-border-color: var(--bs-border-color);
+}
+
+
+/* =========================================================
+   MOBILE VIEW
+   ========================================================= */
+
 @media screen and (max-width: 600px) {
     #qr-code-box {
         display: none;
