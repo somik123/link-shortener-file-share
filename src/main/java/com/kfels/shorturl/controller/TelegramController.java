@@ -60,11 +60,21 @@ public class TelegramController {
                 String[] parts = message.split("_");
                 replyToUser = storageService.delete(parts[1], parts[2]) ? "Success" : "Fail";
             } else if (message.startsWith("/enableSURL_")) {
-                // To be implemented
-
-            } else if (message.startsWith("/enableSURL_")) {
-                // To be implemented
-
+                String[] parts = message.split("_");
+                Shorturl shorturl = surlSvc.getShorturlDetails(parts[1]);
+                if (shorturl != null) {
+                    shorturl.setEnabled(true);
+                    surlSvc.save(shorturl);
+                    replyToUser = String.format("Shorturl %s enabled.", shorturl.getId());
+                }
+            } else if (message.startsWith("/enableFile_")) {
+                String[] parts = message.split("_");
+                UploadedFile file = storageService.getUploadFileFromDownloadKey(parts[1]);
+                if (file != null) {
+                    file.setActive(true);
+                    storageService.save(file);
+                    replyToUser = String.format("File %s is enabled for download.", file.getId());
+                }
             } else if (message.startsWith("/shorten_")) {
                 String[] parts = message.split("_");
                 UploadedFile file = storageService.getUploadFileFromDownloadKey(parts[1]);
