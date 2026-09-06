@@ -30,8 +30,8 @@ body {
     margin: 90px auto 0 auto;
 
     border: 2px solid var(--bs-border-color);
-    box-shadow: 0 0 1px 1px var(--bs-border-color);
-    -webkit-box-shadow: 0 0 1px 1px var(--bs-border-color);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+    -webkit-box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
 
     border-top-right-radius: 20px;
 
@@ -39,6 +39,8 @@ body {
 
     background-color: var(--bs-body-bg);
     color: var(--bs-info);
+
+    transition: box-shadow 0.3s ease, background-color 0.3s ease, color 0.3s ease;
 }
 
 
@@ -259,6 +261,13 @@ select:focus {
 
 .btn-txt-bold {
     font-weight: bold;
+    border-radius: 8px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn-txt-bold:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
 }
 
 
@@ -363,10 +372,13 @@ th {
     background-color: var(--bs-body-bg);
 
     cursor: pointer;
+
+    transition: color 0.2s ease, transform 0.15s ease;
 }
 
 #nav-box a:hover {
     color: var(--bs-orange);
+    transform: translateY(-2px);
 }
 
 

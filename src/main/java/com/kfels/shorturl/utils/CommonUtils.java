@@ -282,6 +282,15 @@ public class CommonUtils {
         LOG.warning(sStackTrace);
     }
 
+    // Constant-time comparison of secret keys (delete keys, tokens, etc.) to
+    // avoid leaking information via timing side-channels.
+    public static boolean secureEquals(String a, String b) {
+        if (a == null || b == null) {
+            return false;
+        }
+        return MessageDigest.isEqual(a.getBytes(StandardCharsets.UTF_8), b.getBytes(StandardCharsets.UTF_8));
+    }
+
     public static String urlDecode(String encodedString) {
         try {
             return URLDecoder.decode(encodedString, "UTF-8");
