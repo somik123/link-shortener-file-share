@@ -65,7 +65,8 @@ public class TelegramController {
                 if (shorturl != null) {
                     shorturl.setEnabled(true);
                     surlSvc.save(shorturl);
-                    replyToUser = String.format("Shorturl %s enabled.", shorturl.getId());
+                    replyToUser = String.format("Shorturl %s enabled for:\n%s", shorturl.getSurl(),
+                            shorturl.getLongUrl());
                 }
             } else if (message.startsWith("/enableFile_")) {
                 String[] parts = message.split("_");
