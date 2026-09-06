@@ -54,7 +54,7 @@ public class ShorturlServiceImpl implements ShorturlService {
         Shorturl shorturl = getShorturlDetails(surl);
         if (shorturl == null || deleteKey == null || deleteKey.length() == 0)
             return false;
-        else if (shorturl.getDeleteKey().equals(deleteKey)) {
+        else if (CommonUtils.secureEquals(shorturl.getDeleteKey(), deleteKey)) {
             shorturlRepo.delete(shorturl);
             return true;
         } else

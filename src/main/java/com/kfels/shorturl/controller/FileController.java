@@ -81,6 +81,21 @@ public class FileController {
         }
     }
 
+    // MIME types safe to render inline in a browser. Anything else (notably
+    // text/html, image/svg+xml, application/javascript, etc.) is forced to
+    // download as an attachment to prevent stored XSS via uploaded files being
+    // rendered under this application's origin.
+    private static boolean isInlineSafe(String mimeType) {
+        if (mimeType == null) {
+            return false;
+        }
+        String type = mimeType.toLowerCase();
+        return type.equals("application/pdf")
+                || type.startsWith("audio/")
+                || type.startsWith("video/")
+                || (type.startsWith("image/") && !type.equals("image/svg+xml"));
+    }
+
     // Allow to download with just downloadKey or downloadKey with filename
     @GetMapping("/{downloadKey}/{fileName}")
     public ResponseEntity<?> downloadFile(@PathVariable String downloadKey,
@@ -106,9 +121,12 @@ public class FileController {
             LOG.info(resource.toString());
             LOG.info(mediaType.toString());
 
+            String disposition = isInlineSafe(mimeType) ? "inline" : "attachment";
+
             return ResponseEntity.ok().contentType(mediaType)
                     .header(HttpHeaders.CONTENT_DISPOSITION,
-                            String.format("inline; filename=\"%s\"", file.getName()))
+                            String.format("%s; filename=\"%s\"", disposition, file.getName()))
+                    .header("X-Content-Type-Options", "nosniff")
                     .body(new InputStreamResource(in));
 
         } catch (IOException e) {

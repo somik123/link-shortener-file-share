@@ -179,7 +179,7 @@ public class UploadedFileServiceImpl implements UploadedFileService {
         if (uploadedFile == null)
             return false;
 
-        if (uploadedFile.getDeleteKey().equals(deleteKey)) {
+        if (CommonUtils.secureEquals(uploadedFile.getDeleteKey(), deleteKey)) {
             try {
                 Path file = storagePath.resolve(uploadedFile.getFileName());
                 if (Files.exists(file) && Files.isWritable(file)) {
