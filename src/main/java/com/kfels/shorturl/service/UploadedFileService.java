@@ -11,7 +11,7 @@ import com.kfels.shorturl.dto.ResponseDTO;
 import com.kfels.shorturl.entity.UploadedFile;
 
 public interface UploadedFileService {
-    FileDTO save(MultipartFile file, String creatorIp, int expiryHours);
+    FileDTO saveUploadedFile(MultipartFile file, String creatorIp, int expiryHours);
 
     UploadedFile saveFromTelegram(String file, int expiryHours);
 
@@ -23,7 +23,11 @@ public interface UploadedFileService {
 
     UploadedFile getUploadFileFromDownloadKey(String downloadKey);
 
+    UploadedFile getUploadFileFromDownloadKey(String downloadKey, boolean adminOverride);
+
     List<FileDetailsDTO> getAllFileDetails();
 
     ResponseDTO cronJobs();
+
+    UploadedFile save(UploadedFile file);
 }

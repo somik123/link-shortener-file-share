@@ -51,7 +51,7 @@ public class UploadedFile {
         this.deleteKey = CommonUtils.randString(32, 3);
         this.created = LocalDateTime.now();
         this.expiryTime = expiryTime;
-        this.active = true;
+        this.active = CommonUtils.isFileUrlAutoApprove();
         this.creatorIp = creatorIp;
     }
 

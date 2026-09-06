@@ -16,7 +16,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -34,14 +33,17 @@ import com.kfels.shorturl.utils.CommonUtils;
 @Service
 public class UploadedFileServiceImpl implements UploadedFileService {
 
-    @Autowired
-    UploadedFileRepo fileRepo;
+    private final UploadedFileRepo fileRepo;
+
+    public UploadedFileServiceImpl(UploadedFileRepo fileRepo) {
+        this.fileRepo = fileRepo;
+    }
 
     private static final Path storagePath = Paths.get("./data/uploads");
     private static final Logger LOG = Logger.getLogger(UploadedFileServiceImpl.class.getName());
 
     @Override
-    public FileDTO save(MultipartFile file, String creatorIp, int expiry) {
+    public FileDTO saveUploadedFile(MultipartFile file, String creatorIp, int expiry) {
         try {
 
             String mimeType = file.getContentType();
@@ -88,7 +90,7 @@ public class UploadedFileServiceImpl implements UploadedFileService {
             // Create delete URL
             String deleteUrl = String.format("/deleteFile/%s/%s", downloadKey, uploadedFile.getDeleteKey());
             return new FileDTO(name, "File uploaded successfully.", url, deleteUrl,
-                    downloadKey, uploadedFile.getDeleteKey());
+                    downloadKey, uploadedFile.getDeleteKey(), uploadedFile.isActive());
         } catch (Exception e) {
             CommonUtils.logErrors(LOG, e);
             return null;
@@ -206,7 +208,7 @@ public class UploadedFileServiceImpl implements UploadedFileService {
     }
 
     @Override
-    public UploadedFile getUploadFileFromDownloadKey(String downloadKey) {
+    public UploadedFile getUploadFileFromDownloadKey(String downloadKey, boolean adminOverride) {
         if (downloadKey == null || downloadKey.length() < 3) {
             LOG.warning("Missing download key.");
             return null;
@@ -215,7 +217,7 @@ public class UploadedFileServiceImpl implements UploadedFileService {
         List<UploadedFile> fileList = fileRepo.findByDownloadKeyHash(downloadKeyHash);
         if (fileList != null && fileList.size() > 0) {
             UploadedFile uploadedFile = fileList.get(0);
-            if (uploadedFile.isActive())
+            if (uploadedFile.isActive() || adminOverride)
                 return uploadedFile;
             else {
                 LOG.warning(String.format("UploadedFile with id [%d] is not active.", uploadedFile.getId()));
@@ -223,6 +225,11 @@ public class UploadedFileServiceImpl implements UploadedFileService {
             }
         } else
             return null;
+    }
+
+    @Override
+    public UploadedFile getUploadFileFromDownloadKey(String downloadKey) {
+        return getUploadFileFromDownloadKey(downloadKey, false);
     }
 
     @Override
@@ -240,6 +247,7 @@ public class UploadedFileServiceImpl implements UploadedFileService {
                 fileDto.setExpiryTime(file.getExpiryTime());
                 fileDto.setDownloadKey(file.getDownloadKey());
                 fileDto.setHits(file.getHits());
+                fileDto.setActive(file.isActive());
 
                 String filename = file.getFileName();
 
@@ -299,5 +307,14 @@ public class UploadedFileServiceImpl implements UploadedFileService {
         String msg = String.format("Cron ran at: %s and removed %d objects.", now.toString(), count);
         LOG.info(msg);
         return new ResponseDTO("OK", null, msg);
+    }
+
+    @Override
+    public UploadedFile save(UploadedFile file) {
+        if (file != null) {
+            fileRepo.save(file);
+            return file;
+        } else
+            return null;
     }
 }

@@ -3,7 +3,6 @@ package com.kfels.shorturl.controller;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
@@ -25,13 +24,15 @@ import com.kfels.shorturl.utils.CommonUtils;
 @RequestMapping(value = "/admin", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AdminController {
 
-    @Autowired
-    ShorturlService surlSvc;
-
-    @Autowired
-    UploadedFileService storageService;
+    private final ShorturlService surlSvc;
+    private final UploadedFileService storageService;
 
     private static final Logger LOG = Logger.getLogger(AdminController.class.getName());
+
+    public AdminController(ShorturlService surlSvc, UploadedFileService storageService) {
+        this.surlSvc = surlSvc;
+        this.storageService = storageService;
+    }
 
     @GetMapping("/")
     public String adminHome(Model model, @AuthenticationPrincipal User user) {
@@ -134,4 +135,29 @@ public class AdminController {
         }
         return "adminAllLogs";
     }
+
+    @GetMapping("/enableDisable/surl/{surl}")
+    public String enableDisableShorturl(@PathVariable String surl) {
+        Shorturl shorturl = surlSvc.getShorturlDetails(surl);
+        if (shorturl != null) {
+            shorturl.setEnabled(!shorturl.isEnabled());
+            surlSvc.save(shorturl);
+            LOG.info(String.format("Toggled enabled status for: %s", shorturl.getSurl()));
+        }
+        return "redirect:/admin/";
+    }
+
+    @GetMapping("/enableDisable/file/{downloadKey}")
+    public String enableDisableUploadedFile(@PathVariable String downloadKey) {
+        UploadedFile file = storageService.getUploadFileFromDownloadKey(downloadKey, true);
+        if (file != null) {
+            file.setActive(!file.isActive());
+            storageService.save(file);
+            LOG.info(String.format("Toggled enabled status for: %s", file.getName()));
+        } else {
+            LOG.warning(String.format("No file found for downloadKey: %s", downloadKey));
+        }
+        return "redirect:/admin/file";
+    }
+
 }

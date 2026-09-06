@@ -17,7 +17,9 @@ Edit the file with your favorit editor to set all the environment variables in t
 | `SHORTURL_DB_USER` | Database usernme |
 | `SHORTURL_DB_PASS` | Database password |
 | `SHORTURL_LENGTH` | Length of generated shorturls (if auto-generted) |
+| `SHORTURL_AUTO_APPROVE` | Set to "yes" to auto-approve all shorturls |
 | `FILEURL_LENGTH`  | Length of generated file urls (if auto-generted) |
+| `FILEURL_AUTO_APPROVE` | Set to "yes" to auto-approve all file urls |
 | `TELEGRAM_APIKEY`  | Telegram API key that will be used to send notifications to admin |
 | `TELEGRAM_ADMINID`  | Admin's chat id. This can be a group id as well. See: https://docs.tracardi.com/qa/how_can_i_get_telegram_bot/ |
 | `TELEGRAM_AUTHKEY` | (Optional) Authorization key to be used by telegram and this app to validate requests are coming from telegram. |

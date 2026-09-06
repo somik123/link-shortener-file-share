@@ -2,7 +2,6 @@ package com.kfels.shorturl.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.kfels.shorturl.entity.Shorturl;
@@ -12,8 +11,11 @@ import com.kfels.shorturl.utils.CommonUtils;
 @Service
 public class ShorturlServiceImpl implements ShorturlService {
 
-    @Autowired
-    ShorturlRepo shorturlRepo;
+    private final ShorturlRepo shorturlRepo;
+
+    public ShorturlServiceImpl(ShorturlRepo shorturlRepo) {
+        this.shorturlRepo = shorturlRepo;
+    }
 
     @Override
     public Shorturl generateShorturl(String longUrl, String creatorIp, String surl) {
@@ -127,5 +129,14 @@ public class ShorturlServiceImpl implements ShorturlService {
     @Override
     public boolean isSurlUnique(String surl) {
         return (getShorturlDetails(surl) == null) ? true : false;
+    }
+
+    @Override
+    public Shorturl save(Shorturl shorturl) {
+        if (shorturl != null) {
+            shorturlRepo.save(shorturl);
+            return shorturl;
+        } else
+            return null;
     }
 }

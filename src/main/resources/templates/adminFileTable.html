@@ -25,14 +25,15 @@
                     <th scope="col">Remove</th>
                     <th scope="col">Name</th>
                     <th scope="col">Size</th>
+                    <th scope="col">Status</th>
                     <th scope="col">CreatorIp</th>
                     <th scope="col">Clicks</th>
                     <th scope="col">Created</th>
                     <th scope="col">Expiry</th>
                     <th scope="col">Logs</th>
-                    <th scope="col">Modified</th>
+                    <th scope="col" style="display: none;">Modified</th>
                     <th scope="col">Mime</th>
-                    <th scope="col" class="table-header-right">FileName</th>
+                    <th scope="col" style="display: none;" class="table-header-right">FileName</th>
                 </tr>
             </thead>
             <tbody th:if="${max >= 0}">
@@ -47,6 +48,10 @@
                             th:text="${fileList.get(i).name}"></a>
                     </td>
                     <td th:text="${fileList.get(i).size}">123 KB</td>
+                    <td>
+                        <a th:href="'/admin/enableDisable/file/' + ${fileList.get(i).downloadKey}"
+                            th:text="${fileList.get(i).active} ? 'Disable' : 'Enable'"></a>
+                    </td>
                     <td th:text="${fileList.get(i).creatorIp}">123.45.67.89</td>
                     <td th:text="${fileList.get(i).hits}">x</td>
                     <td class="text-center" th:text="${#strings.replace(fileList.get(i).created, 'T',' ')}">
@@ -60,11 +65,12 @@
                             onclick="return admin_get_file_logs(this.getAttribute('data-downloadKey'));"
                             class="link-button" />
                     </td>
-                    <td class="text-center" th:text="${#strings.replace(fileList.get(i).modified, 'T',' ')}">
+                    <td class="text-center" th:text="${#strings.replace(fileList.get(i).modified, 'T',' ')}"
+                        style="display: none;">
                         2024-02-16 05:57:26 PM
                     </td>
                     <td th:text="${fileList.get(i).mimeType}">image/jpeg</td>
-                    <td th:text="${fileList.get(i).fileName}">filename</td>
+                    <td th:text="${fileList.get(i).fileName}" style="display: none;">filename</td>
                 </tr>
             </tbody>
         </table>

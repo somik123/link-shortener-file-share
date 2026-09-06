@@ -76,6 +76,22 @@ public class CommonUtils {
         return getLengthFromString("PAGINATION_SIZE", 10);
     }
 
+    public static boolean isTelegramEnabled() {
+        String apiKey = System.getenv("TELEGRAM_APIKEY");
+        String adminId = System.getenv("TELEGRAM_ADMINID");
+        return apiKey != null && apiKey.length() > 20 && adminId != null && adminId.length() > 0;
+    }
+
+    public static boolean isShortUrlAutoApprove() {
+        String autoApprove = System.getenv("SHORTURL_AUTO_APPROVE");
+        return autoApprove != null && autoApprove.equalsIgnoreCase("yes") && isTelegramEnabled();
+    }
+
+    public static boolean isFileUrlAutoApprove() {
+        String autoApprove = System.getenv("FILEURL_AUTO_APPROVE");
+        return autoApprove != null && autoApprove.equalsIgnoreCase("yes") && isTelegramEnabled();
+    }
+
     public static String generateStringForShorturl(String surl) {
         int len = getShortUrlLength();
         int fileurl_len = getFileUrlLength();

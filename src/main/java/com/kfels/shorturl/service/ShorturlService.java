@@ -29,4 +29,6 @@ public interface ShorturlService {
     boolean isSurlUnique(String surl);
 
     Shorturl getShorturlByLongurl(String longUrl);
+
+    Shorturl save(Shorturl shorturl);
 }

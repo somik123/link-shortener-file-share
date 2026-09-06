@@ -4,7 +4,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.logging.Logger;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -30,11 +29,14 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 public class HomeController {
 
-    @Autowired
-    ShorturlService surlSvc;
+    private final ShorturlService surlSvc;
 
-    @Autowired
-    UploadedFileService storageService;
+    private final UploadedFileService storageService;
+
+    public HomeController(ShorturlService surlSvc, UploadedFileService storageService) {
+        this.surlSvc = surlSvc;
+        this.storageService = storageService;
+    }
 
     private static final Logger LOG = Logger.getLogger(HomeController.class.getName());
 

@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Logger;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -37,8 +36,11 @@ import jakarta.websocket.server.PathParam;
 
 public class FileController {
 
-    @Autowired
-    UploadedFileService storageService;
+    private final UploadedFileService storageService;
+
+    public FileController(UploadedFileService storageService) {
+        this.storageService = storageService;
+    }
 
     private static final Logger LOG = Logger.getLogger(FileController.class.getName());
 
@@ -54,7 +56,7 @@ public class FileController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDTO("FAIL", null, message));
         }
 
-        FileDTO fileDTO = storageService.save(file, creatorIp, expiry);
+        FileDTO fileDTO = storageService.saveUploadedFile(file, creatorIp, expiry);
         if (fileDTO == null) {
             String message = "Upload failed.";
             return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO("FAIL", null, message));
@@ -62,10 +64,18 @@ public class FileController {
             // Notify admin
             String url = String.format("%s%s", System.getenv("SITE_FULL_URL"), fileDTO.getDownloadKey());
             String deleteUrl = String.format("/deleteFile_%s_%s", fileDTO.getDownloadKey(), fileDTO.getDeleteKey());
-            String msg = String.format("New File uploaded: %s\nName: %s\nSize: %s\nType: %s\nDelete: %s", url,
+
+            StringBuilder msgBuilder = new StringBuilder();
+
+            msgBuilder.append(String.format("New File uploaded: %s\nName: %s\nSize: %s\nType: %s\nDelete: %s", url,
                     file.getOriginalFilename(), CommonUtils.formatSize(file.getSize()), file.getContentType(),
-                    deleteUrl);
-            CommonUtils.asynSendTelegramMessage(msg);
+                    deleteUrl));
+            if (!fileDTO.isEnabled()) {
+                msgBuilder.append(String.format("%s\n\nEnable: /enableFile_%s", msgBuilder.toString(),
+                        fileDTO.getDownloadKey()));
+            }
+
+            CommonUtils.asynSendTelegramMessage(msgBuilder.toString());
 
             return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO("OK", fileDTO, null));
         }

@@ -2,7 +2,6 @@ package com.kfels.shorturl.controller;
 
 import java.util.logging.Logger;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -21,10 +20,13 @@ import com.kfels.shorturl.utils.CommonUtils;
 
 public class TelegramController {
 
-    @Autowired
-    ShorturlService surlSvc;
-    @Autowired
-    UploadedFileService storageService;
+    private final ShorturlService surlSvc;
+    private final UploadedFileService storageService;
+
+    public TelegramController(ShorturlService surlSvc, UploadedFileService storageService) {
+        this.surlSvc = surlSvc;
+        this.storageService = storageService;
+    }
 
     private static String tmpDirPath = "./data/tmp_uploads";
     private static final Logger LOG = Logger.getLogger(TelegramController.class.getName());
@@ -57,6 +59,12 @@ public class TelegramController {
             } else if (message.startsWith("/deleteFile_")) {
                 String[] parts = message.split("_");
                 replyToUser = storageService.delete(parts[1], parts[2]) ? "Success" : "Fail";
+            } else if (message.startsWith("/enableSURL_")) {
+                // To be implemented
+
+            } else if (message.startsWith("/enableSURL_")) {
+                // To be implemented
+
             } else if (message.startsWith("/shorten_")) {
                 String[] parts = message.split("_");
                 UploadedFile file = storageService.getUploadFileFromDownloadKey(parts[1]);
@@ -69,7 +77,9 @@ public class TelegramController {
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.append("List of available commands:\n");
                 stringBuilder.append("/url - Reply with the url to the main website\n");
+                stringBuilder.append("/enableSURL_{shortUrlId} - Enable shorturl.\n");
                 stringBuilder.append("/deleteSURL_{shortUrlId}_{deleteKey} - Delete shorturl.\n");
+                stringBuilder.append("/enableFile_{fileId} - Allow downloading of uploaded file.\n");
                 stringBuilder.append("/deleteFile_{fileId}_{deleteKey} - Delete file.\n");
                 stringBuilder.append("/shorten_{fileId} - Generate a shorturl for uploaded file.\n");
                 stringBuilder.append("/help - Shows the list of commands.\n");

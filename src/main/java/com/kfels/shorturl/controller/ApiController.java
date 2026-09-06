@@ -2,7 +2,6 @@ package com.kfels.shorturl.controller;
 
 import java.util.logging.Logger;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,11 +27,13 @@ import jakarta.servlet.http.HttpServletRequest;
 @RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ApiController {
 
-    @Autowired
-    ShorturlService surlSvc;
+    private final ShorturlService surlSvc;
+    private final UploadedFileService storageService;
 
-    @Autowired
-    UploadedFileService storageService;
+    public ApiController(ShorturlService surlSvc, UploadedFileService storageService) {
+        this.surlSvc = surlSvc;
+        this.storageService = storageService;
+    }
 
     private static final Logger LOG = Logger.getLogger(ApiController.class.getName());
 
@@ -81,18 +82,29 @@ public class ApiController {
             // Notify admin
             String url = String.format("%s%s", System.getenv("SITE_FULL_URL"), shorturl.getSurl());
             String deleteUrl = String.format("/deleteSURL_%s_%s", shorturl.getSurl(), shorturl.getDeleteKey());
-            String msg = String.format("New Short url: %s\nLong url: %s\nDelete: %s", url, longUrl, deleteUrl);
+            StringBuilder msgBuilder = new StringBuilder();
+
+            msgBuilder.append(String.format("New Short url: %s\nLong url: %s\nDelete: %s", url, longUrl, deleteUrl));
+
+            if (!shorturl.isEnabled()) {
+                msgBuilder.append(
+                        String.format("%s\n\nEnable: /enableSURL_%s", msgBuilder.toString(), shorturl.getSurl()));
+            }
 
             // Don't notify for shorturls generated for file uploads
             String siteUrl = System.getenv("SITE_FULL_URL");
             if (!siteUrl.substring(siteUrl.length() - 1).equals("/")) {
                 siteUrl = siteUrl + "/";
             }
-            if (!longUrl.startsWith(String.format("%s%s", siteUrl, "file/"))) {
-                CommonUtils.asynSendTelegramMessage(msg);
+            if (longUrl.startsWith(String.format("%s%s", siteUrl, "file/"))) {
+                // Enable shorturl for file uploads
+                shorturl.setEnabled(true);
+                surlSvc.save(shorturl);
+            } else {
+                CommonUtils.asynSendTelegramMessage(msgBuilder.toString());
             }
 
-            LOG.info(msg);
+            LOG.info(msgBuilder.toString());
             return new ResponseDTO("OK", surlDto, "");
         }
     }

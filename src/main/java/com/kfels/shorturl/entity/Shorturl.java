@@ -66,7 +66,7 @@ public class Shorturl {
         this.hits = 0;
         this.created = LocalDateTime.now();
         this.lastHit = null;
-        this.isEnabled = true;
+        this.isEnabled = CommonUtils.isShortUrlAutoApprove();
         this.logs = new ArrayList<>();
     }
 

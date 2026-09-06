@@ -25,6 +25,7 @@
                     <th scope="col">Remove</th>
                     <th scope="col">Original URL</th>
                     <th scope="col">ShortURL</th>
+                    <th scope="col">Status</th>
                     <th scope="col">CreatorIp</th>
                     <th scope="col">Created</th>
                     <th scope="col">Clicks</th>
@@ -47,6 +48,10 @@
                     <td>
                         <a th:href="'/' + ${surlList.get(i).surl}" target="_blank" class="shorturltxt"
                             th:text="${surlList.get(i).surl}"></a>
+                    </td>
+                    <td>
+                        <a th:href="'/admin/enableDisable/surl/' + ${surlList.get(i).surl}"
+                            th:text="${surlList.get(i).isEnabled} ? 'Disable' : 'Enable'"></a>
                     </td>
                     <td th:text="${surlList.get(i).creatorIp}">123.45.67.89</td>
                     <td class="text-center" th:text="${#strings.replace(surlList.get(i).created, 'T',' ')}">
