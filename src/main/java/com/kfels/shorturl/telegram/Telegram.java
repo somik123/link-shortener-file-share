@@ -5,7 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import com.kfels.shorturl.telegram.entity.TelegramFile;
 import com.kfels.shorturl.telegram.entity.TelegramResponse;
 import com.kfels.shorturl.telegram.entity.TelegramUpdate;
@@ -91,7 +92,7 @@ public class Telegram {
                     LOG.info(reply);
 
                     if (reply.contains("\"ok\":true,")) {
-                        ObjectMapper mapper = new ObjectMapper();
+                        JsonMapper mapper = new JsonMapper();
                         TelegramResponse response = mapper.readValue(reply, TelegramResponse.class);
                         String telegramFilePath = response.getResult().getFile_path();
 

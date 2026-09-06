@@ -11,7 +11,7 @@ RUN mvn -f ./pom.xml clean package # -Dmaven.test.skip=true
 
 
 # Run application
-FROM eclipse-temurin:25-jre-alpine
+FROM eclipse-temurin:26-jre-alpine
 
 WORKDIR /usr/app
 
