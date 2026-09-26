@@ -1,8 +1,14 @@
 name: Docker Image Build
-on: push
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
 
 jobs:
-  build-and-push-image:
+  build-and-test:
     runs-on: ubuntu-latest
 
     steps:
@@ -23,6 +29,15 @@ jobs:
           SITE_FULL_URL: https://example.invalid/
           TELEGRAM_APIKEY: '000000000000000000000000'
           TELEGRAM_ADMINID: '42'
+
+  publish-image:
+    needs: build-and-test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout the code from github repo
+        uses: actions/checkout@v4
 
       - name: Login to Docker Hub
         uses: docker/login-action@v3
