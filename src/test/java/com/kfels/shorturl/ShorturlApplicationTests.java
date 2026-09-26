@@ -1,21 +1,21 @@
 package com.kfels.shorturl;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationContext;
 
 @SpringBootTest
-@AutoConfigureWebTestClient
 class ShorturlApplicationTests {
 
+	@Autowired
+	private ApplicationContext context;
+
 	@Test
-	void exampleTest() {
-		// This is a placeholder for an actual test.
-		// You can add your test logic here.
-		// For example, you might want to test if the application context loads
-		// correctly.
-		// Assertions can be added to verify expected outcomes.
-		System.out.println("Example test executed successfully.");
+	void applicationContextLoads() {
+		assertNotNull(context.getBean(ShorturlApplication.class));
 	}
 
 }

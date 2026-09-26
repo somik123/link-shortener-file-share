@@ -3,6 +3,15 @@
 # link-shortener-file-share
 A simple link shortener & time based file share service written in Java Spring Boot
 
+### Tests
+Run the full Java test suite with JDK 25 and Maven:
+
+```
+mvn clean test
+```
+
+The GitHub Actions workflow runs this suite before logging in to Docker Hub and building/pushing the image. Tests use an in-memory H2 database and synthetic Telegram/site settings in CI; no production credentials or external Telegram requests are needed. Without those settings, two environment-dependent tests are skipped locally.
+
 ### Installation
 Copy/download the `docker-compose.yml` file and run it. You do not require any of the other source files unless you want to build the image yourself.
 ```
@@ -135,4 +144,3 @@ It is available on port `6088` once it is up.
 - [x] Allow file url shortening via telegram messages after upload
 - [x] Allow files/shorturls deletion via telegram commands
 - [ ] Test for vulnerabilities.
-

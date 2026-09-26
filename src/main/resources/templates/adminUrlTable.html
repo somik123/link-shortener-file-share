@@ -1,86 +1,49 @@
 <!doctype html>
-<html xmlns:th="https://www.thymeleaf.org" lang="en" data-bs-theme="dark">
+<html xmlns:th="https://www.thymeleaf.org" lang="en">
 
 <body>
-    <!-- Pagination Navigation -->
-    <div class="mb-3">
-        <button class="btn btn-secondary" type="button" th:data-page="0"
-            onclick="admin_get_history(this.getAttribute('data-page'))">&laquo;</button>
-        <button class="btn btn-secondary" type="button" th:disabled="${(page - 1) < 0}" th:data-page="${page - 1}"
-            onclick="admin_get_history(this.getAttribute('data-page'))">&lsaquo;</button>
-        <span class="mx-2 fw-bold">Page <span th:text="${page + 1}">1</span> of <span
-                th:text="${maxPage}">10</span></span>
-        <button class="btn btn-secondary" type="button" th:disabled="${(page + 1) >= maxPage}"
-            th:data-page="${page + 1}" onclick="admin_get_history(this.getAttribute('data-page'))">&rsaquo;</button>
-        <button class="btn btn-secondary" type="button" th:data-page="${maxPage - 1}"
-            onclick="admin_get_history(this.getAttribute('data-page'))">&raquo;</button>
+    <div class="admin-section-heading">
+        <div>
+            <h3>Short links</h3>
+            <p>Manage destinations and view activity.</p>
+        </div>
+        <span class="record-count" th:text="${max >= 0 ? max + 1 : 0} + ' on this page'">0 on this page</span>
     </div>
-
-    <!-- History Table -->
-    <div class="table-responsive">
-        <table class="table table-striped" style="width: 100%;">
-            <thead>
-                <tr class="table-dark">
-                    <th scope="col" class="table-header-left">#</th>
-                    <th scope="col">Remove</th>
-                    <th scope="col">Original URL</th>
-                    <th scope="col">ShortURL</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">CreatorIp</th>
-                    <th scope="col">Created</th>
-                    <th scope="col">Clicks</th>
-                    <th scope="col" class="table-header-right">Logs</th>
-
-                </tr>
-            </thead>
-            <tbody th:if="${max >= 0}">
-                <tr th:each="i : ${#numbers.sequence(0, max)}">
-                    <th scope="row" th:text="${startIndex+i+1}">1</th>
-                    <td>
-                        <img src="/assets/img/trash.png" width="40"
-                            th:data-deleteUrl="'/delete/' + ${surlList.get(i).surl }+ '/' + ${surlList.get(i).deleteKey}"
-                            onclick="return admin_delete(this.getAttribute('data-deleteUrl'));" class="link-button" />
-                    </td>
-                    <td>
-                        <textarea class="form-control longurltxtbox" readonly onfocus="this.style.overflow='auto';"
-                            onblur="this.style.overflow='hidden';" th:text="${surlList.get(i).longUrl}"></textarea>
-                    </td>
-                    <td>
-                        <a th:href="'/' + ${surlList.get(i).surl}" target="_blank" class="shorturltxt"
-                            th:text="${surlList.get(i).surl}"></a>
-                    </td>
-                    <td>
-                        <a th:href="'/admin/enableDisable/surl/' + ${surlList.get(i).surl}"
-                            th:text="${surlList.get(i).isEnabled} ? 'Disable' : 'Enable'"></a>
-                    </td>
-                    <td th:text="${surlList.get(i).creatorIp}">123.45.67.89</td>
-                    <td class="text-center" th:text="${#strings.replace(surlList.get(i).created, 'T',' ')}">
-                        2024-02-16 05:57:26 PM
-                    </td>
-                    <td th:text="${surlList.get(i).hits}">4</td>
-                    <td>
-                        <img src="/assets/img/link.png" width="40" th:data-surl="${surlList.get(i).surl}"
-                            onclick="return admin_get_logs(this.getAttribute('data-surl'));" class="link-button" />
-                    </td>
-
-                </tr>
-            </tbody>
-        </table>
+    <p class="empty-state" th:if="${max < 0}">No short links yet.</p>
+    <div class="record-list" th:if="${max >= 0}">
+        <article class="record-card" th:each="i : ${#numbers.sequence(0, max)}">
+            <div class="record-header">
+                <div class="record-heading">
+                    <span class="record-index" th:text="'#' + ${startIndex+i+1}">#1</span>
+                    <a class="record-title" th:href="'/' + ${surlList.get(i).surl}" target="_blank"
+                        rel="noopener noreferrer" th:text="${surlList.get(i).surl}">short-id</a>
+                </div>
+                <div class="record-actions">
+                    <a th:href="'/admin/enableDisable/surl/' + ${surlList.get(i).surl}"
+                        th:class="${surlList.get(i).isEnabled} ? 'status-badge enabled' : 'status-badge disabled'"
+                        th:text="${surlList.get(i).isEnabled} ? 'Disable' : 'Enable'"
+                        th:aria-label="${surlList.get(i).isEnabled} ? 'Disable link' : 'Enable link'"></a>
+                    <button type="button" class="action-icon-btn action-info" th:data-surl="${surlList.get(i).surl}"
+                        onclick="return admin_get_logs(this.getAttribute('data-surl'));" title="View logs"
+                        aria-label="View logs"><i class="bi bi-list-ul"></i></button>
+                    <button type="button" class="action-icon-btn action-danger"
+                        th:data-deleteUrl="'/delete/' + ${surlList.get(i).surl} + '/' + ${surlList.get(i).deleteKey}"
+                        onclick="return admin_delete(this.getAttribute('data-deleteUrl'));" title="Delete link"
+                        aria-label="Delete link"><i class="bi bi-trash3"></i></button>
+                </div>
+            </div>
+            <div class="record-destination">
+                <span class="record-label">Original URL</span>
+                <span class="record-value" th:text="${surlList.get(i).longUrl}">https://example.com</span>
+            </div>
+            <dl class="record-meta">
+                <div><dt>Created</dt><dd th:text="${#strings.replace(surlList.get(i).created, 'T',' ')}">Date</dd></div>
+                <div><dt>Creator IP</dt><dd th:text="${surlList.get(i).creatorIp}">IP</dd></div>
+                <div><dt>Clicks</dt><dd th:text="${surlList.get(i).hits}">0</dd></div>
+            </dl>
+        </article>
     </div>
-
-    <!-- Pagination Navigation -->
-    <div>
-        <button class="btn btn-secondary" type="button" th:data-page="0"
-            onclick="admin_get_history(this.getAttribute('data-page'))">&laquo;</button>
-        <button class="btn btn-secondary" type="button" th:disabled="${(page - 1) < 0}" th:data-page="${page - 1}"
-            onclick="admin_get_history(this.getAttribute('data-page'))">&lsaquo;</button>
-        <span class="mx-2 fw-bold">Page <span th:text="${page + 1}">1</span> of <span
-                th:text="${maxPage}">10</span></span>
-        <button class="btn btn-secondary" type="button" th:disabled="${(page + 1) >= maxPage}"
-            th:data-page="${page + 1}" onclick="admin_get_history(this.getAttribute('data-page'))">&rsaquo;</button>
-        <button class="btn btn-secondary" type="button" th:data-page="${maxPage - 1}"
-            onclick="admin_get_history(this.getAttribute('data-page'))">&raquo;</button>
-    </div>
+    <div th:replace="~{layout::adminPagination}"></div>
 </body>
 
 </html>

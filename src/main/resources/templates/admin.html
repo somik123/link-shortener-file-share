@@ -4,29 +4,11 @@
 <head th:replace="~{layout::header(pageTitle='Short Link Admin')}"></head>
 
 <body onload="admin_get_history();">
-    <div class="contents contents-2">
-        <!-- Logo and Title -->
-        <div th:replace="~{layout::logoAndTitle(headerTitle='Admin - Short Link History')}"></div>
-
-        <!-- History Table -->
-        <div id="historyTable"></div>
-
-        <!-- Pagination Navigation (Disabled) -->
-        <div class="dropdown" style="display: none;">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="PageSelectButton"
-                data-bs-toggle="dropdown" aria-expanded="false">
-                Change Page
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="PageSelectButton">
-                <li><a class="dropdown-item" href="?pageno='.$i.'">Page '.$i.'</a></li>';
-            </ul>
-        </div>
-        <div style="padding-top: 10px;"></div>
-
-        <!-- Logs table will be loaded here -->
-        <div class="row g-3 slider closed" id="logsTable"></div>
-
-    </div>
+    <div th:replace="~{layout::logoAndTitle(headerTitle='Admin - Short Link History')}"></div>
+    <main class="contents-2">
+        <div class="admin-card" id="historyTable"></div>
+        <div class="admin-card admin-logs closed" id="logsTable"></div>
+    </main>
     <div th:replace="~{layout::adminFooter}"></div>
     <script src="/adminAssets/main.js"></script>
 </body>

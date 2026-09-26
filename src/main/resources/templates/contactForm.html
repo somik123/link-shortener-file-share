@@ -4,9 +4,8 @@
 <head th:replace="~{layout::header(pageTitle='Reach out')}"></head>
 
 <body>
+    <div th:replace="~{layout::logoAndTitle(headerTitle='Reach out')}"></div>
     <div class="contents">
-        <!-- Logo and Title -->
-        <div th:replace="~{layout::logoAndTitle(headerTitle='Reach out')}"></div>
 
         <!-- Reach out Form Message -->
         <div th:if="${status == 'yes'}" class="alert alert-success" role="alert">
