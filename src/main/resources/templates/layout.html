@@ -24,39 +24,45 @@
 
 <body>
 
-    <!-- Logo and Title -->
+    <!-- Navbar -->
     <div th:fragment="logoAndTitle(headerTitle)">
-        <div class="header-box">
-            <div th:if="${user == ''}" id="nav-box">
-                <a href="/">ShortLink</a>
+        <nav class="app-navbar">
+            <a class="brand" href="/"><i class="bi bi-link-45deg"></i> ShortLink</a>
+            <div th:if="${user == ''}" id="nav-box" class="nav-links">
+                <a href="/">Shorten</a>
                 <a href="/fileHome">FileShare</a>
-                <a id="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">
-                    <i id="theme-icon" class="bi bi-moon-fill"></i>
-                </a>
             </div>
-            <div th:if="${user != ''}" id="nav-box" style="width: 520px;">
-                <a href="/">ShortLink</a>
+            <div th:if="${user != ''}" id="nav-box" class="nav-links">
+                <a href="/">Shorten</a>
                 <a href="/fileHome">FileShare</a>
-                <a href="/admin/">ShortLink Admin</a>
-                <a href="/admin/file">FileShare Admin</a>
-                <a id="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+                <a href="/admin/">Link Admin</a>
+                <a href="/admin/file">File Admin</a>
+            </div>
+            <div class="nav-actions">
+                <button type="button" id="theme-toggle" class="icon-btn" aria-label="Toggle dark mode" title="Toggle dark mode">
                     <i id="theme-icon" class="bi bi-moon-fill"></i>
-                </a>
+                </button>
+                <div id="login-icon">
+                    <a th:if="${user == ''}" class="icon-btn" th:href="${isFile ? '/admin/file' : '/admin/'}"
+                        aria-label="Login" title="Admin login">
+                        <i class="bi bi-person-circle"></i></a>
+                    <form th:if="${user != ''}" th:action="@{/logout}" method="post">
+                        <button type="submit" class="icon-btn" aria-label="Logout" title="Logout">
+                            <i class="bi bi-box-arrow-right"></i>
+                        </button>
+                    </form>
+                </div>
             </div>
-            <div id="login-icon">
-                <a th:if="${user == ''}" th:href="${isFile ? '/admin/file' : '/admin/'}">
-                    <img src="/assets/img/login.png" style="width: 40px;" alt="Login" /></a>
-                <a th:if="${user != ''}" href="/logout"><img src="/assets/img/login.png" style="width: 40px;"
-                        alt="Logout" /></a>
-            </div>
-            <h2 class="text-header"><a href="" th:text="${headerTitle}">Short Link Generator</a></h2>
+        </nav>
+        <div class="hero-title">
+            <div class="badge-icon"><i class="bi bi-stars"></i></div>
+            <h2 th:text="${headerTitle}">Short Link Generator</h2>
         </div>
     </div>
 
     <div th:fragment="linkGenerator">
+        <div th:replace="~{layout::logoAndTitle(headerTitle='Short Link Generator')}"></div>
         <div class="contents">
-            <!-- Logo and Title -->
-            <div th:replace="~{layout::logoAndTitle(headerTitle='Short Link Generator')}"></div>
 
             <div class="shortlink-form">
                 <!-- Long URL Input Box -->
@@ -72,12 +78,12 @@
                     <div class="col-md-2">
                         <button type="submit" class="form-control btn btn-info btn-txt-bold" id="submit_btn"
                             onclick="return generate_shorturl();">
-                            Shorten
+                            <i class="bi bi-magic"></i> Shorten
                         </button>
                     </div>
                 </div>
                 <div class="spacer"></div>
-                <div style="text-align: center;"><span
+                <div class="form-hint"><span
                         th:text="'Short url should be greater then ' + ${shorturl_len} + ' chars and cannot be exactly ' + ${fileurl_len} + ' chars.'"></span>
                 </div>
 
@@ -126,9 +132,8 @@
     </div>
 
     <div th:fragment="fileUpload">
+        <div th:replace="~{layout::logoAndTitle(headerTitle='File Share')}"></div>
         <div class="contents">
-            <!-- Logo and Title -->
-            <div th:replace="~{layout::logoAndTitle(headerTitle='File Share')}"></div>
 
             <div class="file-upload-form">
                 <!-- File Upload Input Box -->
@@ -160,12 +165,12 @@
                     <div class="col-md-2">
                         <button type="submit" class="form-control btn btn-info btn-txt-bold" id="upload_btn"
                             onclick="return upload_file();">
-                            Upload
+                            <i class="bi bi-cloud-arrow-up"></i> Upload
                         </button>
                     </div>
                 </div>
                 <div class="spacer"></div>
-                <div th:if="${maxSize != null}" style="text-align: center;">Max allowed file size: <span
+                <div th:if="${maxSize != null}" class="form-hint">Max allowed file size: <span
                         th:text="${maxSize} + ' MB'"></span></div>
 
 
@@ -218,8 +223,23 @@
         </div>
     </div>
 
+    <nav th:fragment="adminPagination" th:if="${maxPage > 1}" class="admin-pagination"
+        aria-label="History pages">
+        <button class="btn btn-secondary" type="button" th:disabled="${page == 0}" data-page="0"
+            onclick="admin_get_history(this.getAttribute('data-page'))" aria-label="First page">&laquo;</button>
+        <button class="btn btn-secondary" type="button" th:disabled="${page == 0}" th:data-page="${page - 1}"
+            onclick="admin_get_history(this.getAttribute('data-page'))" aria-label="Previous page">&lsaquo;</button>
+        <span>Page <span th:text="${page + 1}">1</span> of <span th:text="${maxPage}">10</span></span>
+        <button class="btn btn-secondary" type="button" th:disabled="${page + 1 >= maxPage}"
+            th:data-page="${page + 1}" onclick="admin_get_history(this.getAttribute('data-page'))"
+            aria-label="Next page">&rsaquo;</button>
+        <button class="btn btn-secondary" type="button" th:disabled="${page + 1 >= maxPage}"
+            th:data-page="${maxPage - 1}" onclick="admin_get_history(this.getAttribute('data-page'))"
+            aria-label="Last page">&raquo;</button>
+    </nav>
+
     <div th:fragment="mainFooter">
-        <div class="contents footer footer-main">
+        <div class="footer footer-main">
             Copyright &#169; <a href="https://somik.org/" target="_blank">Somik.org</a> |
             <a href="/reach-out">Reach out</a>
         </div>
@@ -229,7 +249,7 @@
     </div>
 
     <div th:fragment="adminFooter">
-        <div class="contents footer">
+        <div class="footer footer-wide">
             Copyright &#169; <a href="https://somik.org/" target="_blank">Somik.org</a> |
             <a href="/reach-out">Reach out</a>
         </div>
@@ -239,9 +259,8 @@
     </div>
 
     <div th:fragment="loginForm">
+        <div th:replace="~{layout::logoAndTitle(headerTitle='Admin Login')}"></div>
         <div class="contents">
-            <!-- Logo and Title -->
-            <div th:replace="~{layout::logoAndTitle(headerTitle='Admin Login')}"></div>
 
             <div class="shortlink-form">
                 <div class="row g-3 mb-3 mt-3">
@@ -262,7 +281,8 @@
                                 <label for="password" class="form-label">Password</label>
                                 <input type="password" class="form-control" name="password" />
                             </div>
-                            <button type="submit" class="form-control btn btn-primary">Sign In</button>
+                            <button type="submit" class="form-control btn btn-primary"><i
+                                    class="bi bi-box-arrow-in-right"></i> Sign In</button>
                         </form>
                     </div>
                 </div>

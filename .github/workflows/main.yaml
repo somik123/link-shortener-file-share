@@ -1,23 +1,53 @@
 name: Docker Image Build
-on: push
+on:
+  pull_request:
+    branches:
+      - master
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - closed
 
 jobs:
-  build-and-push-image:
+  build-and-test:
+    if: github.event.action != 'closed' || github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1 ==> Checkout code
       - name: Checkout the code from github repo
         uses: actions/checkout@v4
 
-      # Step 2 ==> Docker login
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: maven
+
+      - name: Run complete test suite
+        run: mvn --batch-mode --no-transfer-progress clean test
+        env:
+          SHORTURL_PASS_HIDE: 'yes'
+          SITE_FULL_URL: https://example.invalid/
+          TELEGRAM_APIKEY: '000000000000000000000000'
+          TELEGRAM_ADMINID: '42'
+
+  publish-image:
+    needs: build-and-test
+    if: github.event.action == 'closed' && github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout the code from github repo
+        uses: actions/checkout@v4
+
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # Step 3 ==> Docker build and push
       - name: Build and push
         uses: docker/build-push-action@v5
         with:

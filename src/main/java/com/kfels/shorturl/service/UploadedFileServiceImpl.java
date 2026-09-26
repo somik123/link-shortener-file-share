@@ -175,7 +175,7 @@ public class UploadedFileServiceImpl implements UploadedFileService {
     @Override
     public boolean delete(String downloadKey, String deleteKey) {
         Boolean status = false;
-        UploadedFile uploadedFile = getUploadFileFromDownloadKey(downloadKey);
+        UploadedFile uploadedFile = getUploadFileFromDownloadKey(downloadKey, true);
         if (uploadedFile == null)
             return false;
 

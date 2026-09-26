@@ -1,5 +1,11 @@
 # Build application
-FROM somik123/ubuntu:26-jdk-mvn as builder
+FROM somik123/ubuntu:26-jdk-mvn AS builder
+
+# Native font libraries required by AWT for image rendering tests (captcha, Text2Image)
+RUN apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+       libfreetype6 fontconfig fonts-dejavu-core \
+    && rm -rf /var/lib/apt/lists/*
 
 # Finally start building spring boot app
 WORKDIR /app
