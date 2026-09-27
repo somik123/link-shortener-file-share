@@ -84,12 +84,19 @@ public class ApiController {
             String deleteUrl = String.format("/deleteSURL_%s_%s", shorturl.getSurl(), shorturl.getDeleteKey());
             StringBuilder msgBuilder = new StringBuilder();
 
-            msgBuilder.append(String.format("New Short url: %s\nLong url: %s\nDelete: %s", url, longUrl, deleteUrl));
+            msgBuilder.append("New Short url: ")
+                    .append(url)
+                    .append("\nLong url: ")
+                    .append(longUrl)
+                    .append("\n\nDelete: ")
+                    .append(deleteUrl);
 
-            if (!shorturl.isEnabled()) {
-                msgBuilder.append(
-                        String.format("%s\n\nEnable: /enableSURL_%s", msgBuilder.toString(), shorturl.getSurl()));
-            }
+            if (!shorturl.isEnabled())
+                msgBuilder.append("\nEnable: /enableSURL_")
+                        .append(shorturl.getSurl());
+            else
+                msgBuilder.append("\nDisable: /disableSURL_")
+                        .append(shorturl.getSurl());
 
             // Don't notify for shorturls generated for file uploads
             String siteUrl = System.getenv("SITE_FULL_URL");

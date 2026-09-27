@@ -11,7 +11,6 @@ import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayInputStream;
 import java.net.HttpURLConnection;
-import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -24,6 +23,11 @@ import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
 class ApiRequestHandlerTests {
+
+    @SuppressWarnings("unchecked")
+    private static <T> HttpResponse<T> mockResponse() {
+        return (HttpResponse<T>) mock(HttpResponse.class);
+    }
 
     @Test
     void encodesFormDataAndHandlesEmptyForm() {
@@ -59,10 +63,11 @@ class ApiRequestHandlerTests {
     @Test
     void getRequestReturnsSuccessfulBodyAndRejectsNonSuccessStatus() throws Exception {
         HttpClient client = mock(HttpClient.class);
-        HttpResponse<String> response = mock(HttpResponse.class);
+        HttpResponse<String> response = mockResponse();
         when(response.statusCode()).thenReturn(200);
         when(response.body()).thenReturn("telegram response");
-        when(client.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class))).thenReturn(response);
+        when(client.send(any(HttpRequest.class),
+            org.mockito.ArgumentMatchers.<HttpResponse.BodyHandler<String>>any())).thenReturn(response);
 
         try (MockedStatic<HttpClient> factory = mockStatic(HttpClient.class)) {
             factory.when(HttpClient::newHttpClient).thenReturn(client);
@@ -79,10 +84,11 @@ class ApiRequestHandlerTests {
     @Test
     void postRequestAcceptsStatusesBelow400AndRejectsErrors() throws Exception {
         HttpClient client = mock(HttpClient.class);
-        HttpResponse<String> response = mock(HttpResponse.class);
+        HttpResponse<String> response = mockResponse();
         when(response.statusCode()).thenReturn(399);
         when(response.body()).thenReturn("accepted");
-        when(client.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class))).thenReturn(response);
+        when(client.send(any(HttpRequest.class),
+            org.mockito.ArgumentMatchers.<HttpResponse.BodyHandler<String>>any())).thenReturn(response);
         Map<String, String> form = Map.of("text", "hello world");
 
         try (MockedStatic<HttpClient> factory = mockStatic(HttpClient.class)) {
@@ -100,9 +106,10 @@ class ApiRequestHandlerTests {
     @Test
     void downloadFileWritesResponseBytesAndReturnsFalseForInvalidUri() throws Exception {
         HttpClient client = mock(HttpClient.class);
-        HttpResponse<java.io.InputStream> response = mock(HttpResponse.class);
+        HttpResponse<java.io.InputStream> response = mockResponse();
         when(response.body()).thenReturn(new ByteArrayInputStream(new byte[] { 1, 2, 3 }));
-        when(client.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class))).thenReturn(response);
+        when(client.send(any(HttpRequest.class),
+            org.mockito.ArgumentMatchers.<HttpResponse.BodyHandler<java.io.InputStream>>any())).thenReturn(response);
         Path output = Files.createTempFile("telegram-download-", ".bin");
 
         try {

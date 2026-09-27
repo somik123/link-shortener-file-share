@@ -68,6 +68,15 @@ public class TelegramController {
                     replyToUser = String.format("Shorturl %s enabled for:\n%s", shorturl.getSurl(),
                             shorturl.getLongUrl());
                 }
+            } else if (message.startsWith("/disableSURL_")) {
+                String[] parts = message.split("_");
+                Shorturl shorturl = surlSvc.getShorturlDetails(parts[1]);
+                if (shorturl != null) {
+                    shorturl.setEnabled(false);
+                    surlSvc.save(shorturl);
+                    replyToUser = String.format("Shorturl %s disabled for:\n%s", shorturl.getSurl(),
+                            shorturl.getLongUrl());
+                }
             } else if (message.startsWith("/enableFile_")) {
                 String[] parts = message.split("_");
                 UploadedFile file = storageService.getUploadFileFromDownloadKey(parts[1]);
@@ -75,6 +84,14 @@ public class TelegramController {
                     file.setActive(true);
                     storageService.save(file);
                     replyToUser = String.format("File %s is enabled for download.", file.getId());
+                }
+            } else if (message.startsWith("/disableFile_")) {
+                String[] parts = message.split("_");
+                UploadedFile file = storageService.getUploadFileFromDownloadKey(parts[1]);
+                if (file != null) {
+                    file.setActive(false);
+                    storageService.save(file);
+                    replyToUser = String.format("File %s is disabled for download.", file.getId());
                 }
             } else if (message.startsWith("/shorten_")) {
                 String[] parts = message.split("_");

@@ -67,13 +67,23 @@ public class FileController {
 
             StringBuilder msgBuilder = new StringBuilder();
 
-            msgBuilder.append(String.format("New File uploaded: %s\nName: %s\nSize: %s\nType: %s\nDelete: %s", url,
-                    file.getOriginalFilename(), CommonUtils.formatSize(file.getSize()), file.getContentType(),
-                    deleteUrl));
-            if (!fileDTO.isEnabled()) {
-                msgBuilder.append(String.format("%s\n\nEnable: /enableFile_%s", msgBuilder.toString(),
-                        fileDTO.getDownloadKey()));
-            }
+            msgBuilder.append("New File uploaded: ")
+                    .append(url)
+                    .append("\nName: ")
+                    .append(file.getOriginalFilename())
+                    .append("\nSize: ")
+                    .append(CommonUtils.formatSize(file.getSize()))
+                    .append("\nType: ")
+                    .append(file.getContentType())
+                    .append("\n\nDelete: ")
+                    .append(deleteUrl);
+
+            if (!fileDTO.isEnabled())
+                msgBuilder.append("\nEnable: /enableFile_")
+                        .append(fileDTO.getDownloadKey());
+            else
+                msgBuilder.append("\nDisable: /disableFile_")
+                        .append(fileDTO.getDownloadKey());
 
             CommonUtils.asynSendTelegramMessage(msgBuilder.toString());
 
